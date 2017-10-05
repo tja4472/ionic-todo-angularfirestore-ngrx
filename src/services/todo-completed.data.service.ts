@@ -1,13 +1,14 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
 
-import { AngularFireDatabase } from 'angularfire2/database';
+import { AngularFirestore, AngularFirestoreCollection } from 'angularfire2/firestore';
 
 import { TodoCompleted } from '../shared/models/todo-completed.model';
 
-const FIREBASE_COMPLETED_TODOS = '/todo/completedTodos';
+const FIREBASE_COMPLETED_TODOS = 'completed-todos';
 
-interface IFirebaseRecord {
+interface IFirestoreDoc {
+    id: string;
     description?: string;
     name: string;
     isComplete: boolean;
@@ -15,53 +16,65 @@ interface IFirebaseRecord {
 
 @Injectable()
 export class TodoCompletedDataService {
-    private fbCompletedTodos: any; // readonly
+
+    private itemsCollection: AngularFirestoreCollection<IFirestoreDoc>;
+    private items: Observable<IFirestoreDoc[]>;
 
     constructor(
-        public af: AngularFireDatabase
+        public readonly afs: AngularFirestore,
     ) {
-        this.fbCompletedTodos = af.list(FIREBASE_COMPLETED_TODOS);
+        console.log('TodoCompletedDataService:constructor');
+        this.itemsCollection = afs.collection<IFirestoreDoc>(
+            FIREBASE_COMPLETED_TODOS,
+            //           (ref) => ref.orderBy('index', 'asc'),
+        );
+        this.items = this.itemsCollection.valueChanges();
     }
 
-    getData(): Observable<TodoCompleted[]> {
-        return this.af.list(
-            FIREBASE_COMPLETED_TODOS)
-            .snapshotChanges()
-            .map((actions) => actions.map((action) => {
-                if ((action === null)
-                    || (action.payload === null)
-                    || (action.payload.key === null)
-                ) {
-                    return new TodoCompleted();
-                }
-
-                const $key = action.payload.key;
-                const data = { $key, ...action.payload.val() };
-
-                return this.fromFirebaseRecord(data);
+    public getData(): Observable<TodoCompleted[]> {
+        return this.itemsCollection
+            .valueChanges()
+            .do((x) => {
+                console.log('TodoCompletedDataService:valueChanges()>', x);
+            })
+            .map((items) => items.map((item) => {
+                return this.fromFirestoreDoc(item);
             }));
     }
 
-    removeItem(itemKey: string) {
-        this.fbCompletedTodos.remove(itemKey);
+    public removeItem(
+        id: string,
+    ): void {
+        this.itemsCollection.doc(id).delete();
     }
 
-    save(item: TodoCompleted) {
-        console.log('save>', item);
+    public save(
+        item: TodoCompleted,
+    ): void {
+        const doc = this.toFirestoreDoc(item);
 
         if (item.isNew()) {
-            // insert.
-            this.fbCompletedTodos.push(this.toFirebaseRecord(item));
-        } else {
-            // update.
-            this.fbCompletedTodos.update(item.$key, this.toFirebaseRecord(item));
+            doc.id = this.afs.createId();
         }
+
+        this.itemsCollection.doc(doc.id).set(doc);
     }
 
-    private toFirebaseRecord(item: TodoCompleted): IFirebaseRecord {
+    private toFirestoreDoc(
+        item: TodoCompleted,
+    ): IFirestoreDoc {
         //
-        const result: IFirebaseRecord = {
+        let id: string;
+
+        if (item.$key === undefined) {
+            id = '';
+        } else {
+            id = item.$key;
+        }
+
+        const result: IFirestoreDoc = {
             description: item.description,
+            id,
             isComplete: item.isComplete,
             name: item.name,
         };
@@ -70,12 +83,13 @@ export class TodoCompletedDataService {
         return result;
     }
 
-
-    private fromFirebaseRecord(x: any): TodoCompleted {
+    private fromFirestoreDoc(
+        x: IFirestoreDoc,
+    ): TodoCompleted {
         console.log('TodoCompletedDataService:fromFirebaseRecord>', x);
         const result = new TodoCompleted(
             {
-                $key: x.$key,
+                $key: x.id,
                 description: x.description,
                 name: x.name,
             });

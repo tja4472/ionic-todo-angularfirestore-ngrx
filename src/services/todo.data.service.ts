@@ -1,16 +1,17 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
 
-import { AngularFireDatabase } from 'angularfire2/database';
+import { AngularFirestore, AngularFirestoreCollection } from 'angularfire2/firestore';
 
 import { IReorderArrayIndexes } from '../shared/models/reorder-array-indexes.model';
 import { Todo } from '../shared/models/todo.model';
 
 import { reorderArray } from 'ionic-angular';
 
-const FIREBASE_CURRENT_TODOS = '/todo/currentTodos';
+const FIREBASE_CURRENT_TODOS = 'current-todos';
 
-interface IFirebaseTodo {
+interface IFirestoreDoc {
+    id: string;
     description?: string;
     index: number;
     name: string;
@@ -19,89 +20,104 @@ interface IFirebaseTodo {
 
 @Injectable()
 export class TodoDataService {
-
-    private fbCurrentTodos: any; // readonly
+    private itemsCollection: AngularFirestoreCollection<IFirestoreDoc>;
+    private items: Observable<IFirestoreDoc[]>;
 
     constructor(
-        public af: AngularFireDatabase
+        public readonly afs: AngularFirestore,
     ) {
         console.log('TodoDataService:constructor');
-        this.fbCurrentTodos = af.list(FIREBASE_CURRENT_TODOS);
+        this.itemsCollection = afs.collection<IFirestoreDoc>(
+            FIREBASE_CURRENT_TODOS,
+            (ref) => ref.orderBy('index', 'asc'),
+        );
+        this.items = this.itemsCollection.valueChanges();
     }
 
-    getData(): Observable<Todo[]> {
-        return this.af.list(
-            FIREBASE_CURRENT_TODOS,
-            (ref) => ref.orderByChild('index'))
-            .snapshotChanges()
-            .map((actions) => actions.map((action) => {
-                if ((action === null)
-                    || (action.payload === null)
-                    || (action.payload.key === null)
-                ) {
-                    return new Todo();
-                }
-
-                const $key = action.payload.key;
-                const data = { $key, ...action.payload.val() };
-
-                return this.fromFirebaseTodo(data);
+    public getData(): Observable<Todo[]> {
+        return this.itemsCollection
+            .valueChanges()
+            .do((x) => {
+                console.log('TodoDataService:valueChanges()>', x);
+            })
+            .map((items) => items.map((item) => {
+                return this.fromFirestoreDoc(item);
             }));
     }
 
-    reorderItemsAndUpdate(indexes: IReorderArrayIndexes, todos: Todo[]) {
+    public reorderItemsAndUpdate(
+        indexes: IReorderArrayIndexes,
+        todos: Todo[],
+    ): void {
         const itemsToSave = [...todos];
         reorderArray(itemsToSave, indexes);
+        itemsToSave.forEach((t, i) => {
+            if (t.$key === undefined) {
+                return;
+            }
 
-        for (let x = 0; x < itemsToSave.length; x++) {
-            this.fbCurrentTodos.update(itemsToSave[x].$key, { index: x });
+            this.itemsCollection.doc(t.$key).update({ index: i });
+        });
+    }
+
+    public removeItem(
+        id: string,
+    ): void {
+        this.itemsCollection.doc(id).delete();
+    }
+
+    public save(
+        item: Todo,
+    ): void {
+        const doc = this.toFirestoreDoc(item);
+
+        if (item.isNew()) {
+            doc.id = this.afs.createId();
         }
+
+        this.itemsCollection.doc(doc.id).set(doc);
     }
 
-    removeItem(itemKey: string) {
-        this.fbCurrentTodos.remove(itemKey);
-    }
-
-    save(todo: Todo) {
-        console.log('save>', todo);
-        console.log('save:todo.isNew()>', todo.isNew());
-
-        if (todo.isNew()) {
-            // insert.
-            this.fbCurrentTodos.push(this.toFirebaseTodo(todo));
-        } else {
-            // update.
-            this.fbCurrentTodos.update(todo.$key, this.toFirebaseTodo(todo));
-        }
-    }
-
-    private toFirebaseTodo(todo: Todo): IFirebaseTodo {
+    private toFirestoreDoc(
+        item: Todo,
+    ): IFirestoreDoc {
         //
-        const result: IFirebaseTodo = {
-            description: todo.description,
-            index: todo.index,
-            isComplete: todo.isComplete,
-            name: todo.name,
+        let id: string;
+
+        if (item.$key === undefined) {
+            id = '';
+        } else {
+            id = item.$key;
+        }
+
+        const result: IFirestoreDoc = {
+            description: item.description,
+            id,
+            index: item.index,
+            isComplete: item.isComplete,
+            name: item.name,
         };
 
-        console.log('toFirebaseTodo>', result);
+        // console.log('toFirebaseTodo>', result);
         return result;
     }
 
-    private fromFirebaseTodo(x: any): Todo {
+    private fromFirestoreDoc(
+        x: IFirestoreDoc,
+    ): Todo {
         //
-        console.log('TodoDataService:fromFirebaseTodo>', x);
+        // console.log('TodoDataService:fromFirebaseTodo>', x);
 
         const result: Todo = new Todo(
             {
-                $key: x.$key,
+                $key: x.id,
                 description: x.description,
                 index: x.index,
                 isComplete: x.isComplete,
                 name: x.name,
             });
 
-        console.log('TodoDataService:fromFirebaseTodo:result>', result);
+        // console.log('TodoDataService:fromFirebaseTodo:result>', result);
 
         if (result.isComplete === undefined) {
             result.isComplete = false;

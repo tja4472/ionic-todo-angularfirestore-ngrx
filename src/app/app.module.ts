@@ -40,8 +40,7 @@ import { TodoService } from '../services/todo.service';
 
 import { AngularFireModule } from 'angularfire2';
 import { AngularFireAuthModule } from 'angularfire2/auth';
-import { AngularFireDatabaseModule } from 'angularfire2/database';
-// import { AngularFireOfflineModule } from 'angularfire2-offline';
+import { AngularFirestoreModule } from 'angularfire2/firestore';
 import { MY_FIREBASE_APP_CONFIG } from './my-firebase-app-config';
 
 import { EffectsModule } from '@ngrx/effects';
@@ -82,9 +81,8 @@ import './rxjs-operators';
     BrowserModule,
     IonicModule.forRoot(MyApp),
     AngularFireModule.initializeApp(MY_FIREBASE_APP_CONFIG),
-    // AngularFireOfflineModule,
     AngularFireAuthModule,
-    AngularFireDatabaseModule,
+    AngularFirestoreModule.enablePersistence(),
     StoreModule.forRoot(reducers, { metaReducers }),
     StoreDevtoolsModule.instrument(),
     EffectsModule.forRoot([

@@ -36,28 +36,9 @@ export class TodoListPage {
   }
 
   toggleCompleteItem(item: Todo) {
-    console.log('completeItem:item>', item);
-    const newItem = Object.assign(item, {});
+    const newItem = Object.assign(new Todo(), item);
     newItem.isComplete = !newItem.isComplete;
-    // item.isComplete = !item.isComplete;
-    /*
-        if (item.isComplete) {
-              console.log('was true');
-          item.isComplete = false;
-        } else {
-              console.log('was false');
-          item.isComplete = true;
-        }
-    */
-    console.log('completeItem:item:BBBB>', newItem);
-
     this.todoService.save(newItem);
-
-    /*
-        if (item.isComplete) {
-          this.presentActionSheet();
-        }
-    */
   }
 
   editItem(item: Todo) {
