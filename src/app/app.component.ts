@@ -115,19 +115,19 @@ export class MyApp {
         }
       });
 
-/*
-      this.loginService.auth$.subscribe((firebaseUser) => {
-        console.log('>>>>>>>>>>firebaseUser>', firebaseUser);
+      /*
+            this.loginService.auth$.subscribe((firebaseUser) => {
+              console.log('>>>>>>>>>>firebaseUser>', firebaseUser);
 
-                      if (firebaseUser) {
-                        this.doSignedIn();
-                        // this.rootPage = TodoListPage;
-                      } else {
-                        this.doSignedOut();
-                        // this.rootPage = SignInPage;
-                      }
-      });
-*/
+                            if (firebaseUser) {
+                              this.doSignedIn();
+                              // this.rootPage = TodoListPage;
+                            } else {
+                              this.doSignedOut();
+                              // this.rootPage = SignInPage;
+                            }
+            });
+      */
       /*
       this.loginService.getLoginState()
         .subscribe((loginState) => {
@@ -158,13 +158,19 @@ export class MyApp {
   openPage(page: IPageInterface) {
     // Reset the content nav to have just this page
     // we wouldn't want the back button to show in this scenario
-    this.nav.setRoot(page.component);
+    // this.nav.setRoot(page.component);
+    // this.rootPage = page.component;
 
     if (page.logsOut === true) {
+      this.loginService.logout();
+      /*
       // Give the menu time to close before changing to logged out
       setTimeout(() => {
         this.loginService.logout();
       }, 1000);
+      */
+    } else {
+      this.rootPage = page.component;
     }
   }
 
