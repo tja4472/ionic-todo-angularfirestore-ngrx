@@ -5,7 +5,12 @@ import { AngularFirestore, AngularFirestoreCollection } from 'angularfire2/fires
 
 import { TodoCompleted } from '../shared/models/todo-completed.model';
 
-const FIREBASE_COMPLETED_TODOS = 'completed-todos';
+import { LoginService } from './login.service';
+import { SignedInUser } from '../models/signed-in-user.model';
+
+// const FIREBASE_COMPLETED_TODOS = 'completed-todos';
+const DATA_COLLECTION = 'completed-todos';
+const USERS_COLLECTION = 'users';
 
 interface IFirestoreDoc {
     id: string;
@@ -18,28 +23,37 @@ interface IFirestoreDoc {
 export class TodoCompletedDataService {
 
     private itemsCollection: AngularFirestoreCollection<IFirestoreDoc>;
-    private items: Observable<IFirestoreDoc[]>;
+    // private items: Observable<IFirestoreDoc[]>;
+    private isSignedIn: boolean;
 
     constructor(
         public readonly afs: AngularFirestore,
+        private loginService: LoginService,
     ) {
         console.log('TodoCompletedDataService:constructor');
-        this.itemsCollection = afs.collection<IFirestoreDoc>(
-            FIREBASE_COMPLETED_TODOS,
-            //           (ref) => ref.orderBy('index', 'asc'),
-        );
-        this.items = this.itemsCollection.valueChanges();
+
+        this.loginService.notifier$.subscribe((signedInUser: SignedInUser) => {
+            console.log('TodoDataService:signedInUser>', signedInUser);
+            if (signedInUser) {
+                this.isSignedIn = true;
+                this.init();
+            } else {
+                this.isSignedIn = false;
+            }
+        });
     }
 
     public getData(): Observable<TodoCompleted[]> {
-        return this.itemsCollection
-            .valueChanges()
-            .do((x) => {
-                console.log('TodoCompletedDataService:valueChanges()>', x);
-            })
-            .map((items) => items.map((item) => {
-                return this.fromFirestoreDoc(item);
-            }));
+        //
+        if (this.isSignedIn) {
+            return this.itemsCollection
+                .valueChanges()
+                .map((items) => items.map((item) => {
+                    return this.fromFirestoreDoc(item);
+                }));
+        } else {
+            return Observable.from<TodoCompleted[]>([]);
+        }
     }
 
     public removeItem(
@@ -58,6 +72,14 @@ export class TodoCompletedDataService {
         }
 
         this.itemsCollection.doc(doc.id).set(doc);
+    }
+
+    private init(): void {
+        this.itemsCollection = this.afs.collection(USERS_COLLECTION)
+            .doc(this.loginService.signedInUser.userId)
+            .collection<IFirestoreDoc>(
+            DATA_COLLECTION,
+        );
     }
 
     private toFirestoreDoc(

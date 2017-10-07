@@ -8,7 +8,11 @@ import { Todo } from '../shared/models/todo.model';
 
 import { reorderArray } from 'ionic-angular';
 
-const FIREBASE_CURRENT_TODOS = 'current-todos';
+import { LoginService } from './login.service';
+import { SignedInUser } from '../models/signed-in-user.model';
+
+const DATA_COLLECTION = 'current-todos';
+const USERS_COLLECTION = 'users';
 
 interface IFirestoreDoc {
     id: string;
@@ -21,28 +25,37 @@ interface IFirestoreDoc {
 @Injectable()
 export class TodoDataService {
     private itemsCollection: AngularFirestoreCollection<IFirestoreDoc>;
-    private items: Observable<IFirestoreDoc[]>;
+
+    private isSignedIn: boolean;
 
     constructor(
         public readonly afs: AngularFirestore,
+        private loginService: LoginService,
     ) {
         console.log('TodoDataService:constructor');
-        this.itemsCollection = afs.collection<IFirestoreDoc>(
-            FIREBASE_CURRENT_TODOS,
-            (ref) => ref.orderBy('index', 'asc'),
-        );
-        this.items = this.itemsCollection.valueChanges();
+
+        this.loginService.notifier$.subscribe((signedInUser: SignedInUser) => {
+            console.log('TodoDataService:signedInUser>', signedInUser);
+            if (signedInUser) {
+                this.isSignedIn = true;
+                this.init();
+            } else {
+                this.isSignedIn = false;
+            }
+        });
     }
 
     public getData(): Observable<Todo[]> {
-        return this.itemsCollection
-            .valueChanges()
-            .do((x) => {
-                console.log('TodoDataService:valueChanges()>', x);
-            })
-            .map((items) => items.map((item) => {
-                return this.fromFirestoreDoc(item);
-            }));
+        //
+        if (this.isSignedIn) {
+            return this.itemsCollection
+                .valueChanges()
+                .map((items) => items.map((item) => {
+                    return this.fromFirestoreDoc(item);
+                }));
+        } else {
+            return Observable.from<Todo[]>([]);
+        }
     }
 
     public reorderItemsAndUpdate(
@@ -76,6 +89,15 @@ export class TodoDataService {
         }
 
         this.itemsCollection.doc(doc.id).set(doc);
+    }
+
+    private init(): void {
+        this.itemsCollection = this.afs.collection(USERS_COLLECTION)
+            .doc(this.loginService.signedInUser.userId)
+            .collection<IFirestoreDoc>(
+            DATA_COLLECTION,
+            (ref) => ref.orderBy('index', 'asc'),
+        );
     }
 
     private toFirestoreDoc(

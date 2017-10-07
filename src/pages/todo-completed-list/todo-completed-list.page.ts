@@ -27,6 +27,11 @@ export class TodoCompletedListPage {
     this.todoCompletedService.initialise();
   }
 
+  ionViewWillUnload() {
+    console.log('ionViewWillUnload');
+    this.todoCompletedService.unlisten();
+  }
+
   checkItem(item: TodoCompleted) {
     if (!item.isComplete) {
       this.todoCompletedService.moveToCurrent(item);

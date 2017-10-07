@@ -30,6 +30,12 @@ export class TodoListPage {
     this.todoService.initialise();
   }
 
+  ionViewWillUnload() {
+    console.log('ionViewWillUnload');
+    this.todoService.unlisten();
+  }
+
+
   addItem() {
     console.log('addItem');
     this.showModal();

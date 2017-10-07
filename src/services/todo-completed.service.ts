@@ -27,7 +27,12 @@ export class TodoCompletedService {
 
     initialise(): void {
         this.store.dispatch(
-            new TodoCompletedActions.Load());
+            new TodoCompletedActions.ListenForData());
+    }
+
+    unlisten(): void {
+        this.store.dispatch(
+            new TodoCompletedActions.UnlistenForData());
     }
 
     isLoaded(): Observable<boolean> {

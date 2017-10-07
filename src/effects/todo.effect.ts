@@ -3,6 +3,9 @@ import { Injectable } from '@angular/core';
 import { Effect, Actions } from '@ngrx/effects';
 import { Store } from '@ngrx/store';
 
+// import { of } from 'rxjs/observable/of';
+import { empty } from 'rxjs/observable/empty';
+
 import * as FromRootReducer from '../reducers';
 
 import * as TodoAction from '../actions/todo.action';
@@ -27,43 +30,52 @@ export class TodoEffects {
       const completed = state.todo.todos.filter((a) => a.isComplete);
       this.fb1DataService.clearCompletedTodos(completed);
     });
-/*
-  @Effect() clearCompleted$ = this.updates$
-    .whenAction(ToDoActions.CLEAR_COMPLETED)
-    .do(x => {
-      let completed = x.state.todo.todos.filter(a => a.isComplete);
-      this.fb1DataService.clearCompletedTodos(completed);
-    })
-    // Terminate effect.
-    .ignoreElements();
-*/
+  /*
+    @Effect() clearCompleted$ = this.updates$
+      .whenAction(ToDoActions.CLEAR_COMPLETED)
+      .do(x => {
+        let completed = x.state.todo.todos.filter(a => a.isComplete);
+        this.fb1DataService.clearCompletedTodos(completed);
+      })
+      // Terminate effect.
+      .ignoreElements();
+  */
 
   // tslint:disable-next-line:member-ordering
-  @Effect() loadCollection$ = this.actions$
-    .ofType(TodoAction.LOAD)
-    .do((x) => { console.log('Effect:loadCollection$:A', x); })
+  @Effect() listenForData$ = this.actions$
+    .ofType(TodoAction.LISTEN_FOR_DATA, TodoAction.UNLISTEN_FOR_DATA)
+    .do((x) => { console.log('Effect:listenForData$:A', x); })
     .withLatestFrom(this.state$)
     // tslint:disable-next-line:no-unused-variable
-    .filter(([, state]) => state.login.isAuthenticated)
+    // .filter(([, state]) => state.login.isAuthenticated)
     // Watch database node and get items.
-    .switchMap(() => this.todoDataService.getData())
-    .do((x) => { console.log('Effect:loadCollection$:B', x); })
+    .switchMap(([action]) => {
+      console.log('Effect:listenForData$:action>', action);
+
+      if (action.type === TodoAction.UNLISTEN_FOR_DATA) {
+        console.log('TodoAction.UNLISTEN_FOR_DATA');
+        return empty();
+      } else {
+        return this.todoDataService.getData();
+      }
+    })
+    .do((x) => { console.log('Effect:listenForData$:B', x); })
     .map((items: Todo[]) => new TodoAction.LoadSuccess(items));
 
 
-/*
-  @Effect() loadCollection$ = this.updates$
-    .whenAction(ToDoActions.LOAD)
-    .do(x => { console.log('Effect:loadCollection$:A', x); })
-    .filter(x => x.state.login.isAuthenticated)
+  /*
+    @Effect() loadCollection$ = this.updates$
+      .whenAction(ToDoActions.LOAD)
+      .do(x => { console.log('Effect:loadCollection$:A', x); })
+      .filter(x => x.state.login.isAuthenticated)
 
-    // Watch database node and get items.
-    .switchMap(x => this.todoDataService.getData())
-    .do(x => { console.log('Effect:loadCollection$:B', x); })
-    .map((items: ToDo[]) => this.todoActions.loadSuccess(items));
-  // Terminate effect.
-  // .ignoreElements());
-*/
+      // Watch database node and get items.
+      .switchMap(x => this.todoDataService.getData())
+      .do(x => { console.log('Effect:loadCollection$:B', x); })
+      .map((items: ToDo[]) => this.todoActions.loadSuccess(items));
+    // Terminate effect.
+    // .ignoreElements());
+  */
   // tslint:disable-next-line:member-ordering
   @Effect({ dispatch: false }) reorderList$ = this.actions$
     .ofType(TodoAction.REORDER_LIST)
@@ -75,19 +87,19 @@ export class TodoEffects {
         x.action.payload,
         x.state.todo.todos);
     });
-/*
-  @Effect() reorderList$ = this.updates$
-    .whenAction(ToDoActions.REORDER_LIST)
-    .do(x => {
-      console.log('Effect:reorderList$:A', x);
-      this.todoDataService.reorderItemsAndUpdate(
-        x.action.payload.indexes,
-        x.state.todo.todos);
-    })
+  /*
+    @Effect() reorderList$ = this.updates$
+      .whenAction(ToDoActions.REORDER_LIST)
+      .do(x => {
+        console.log('Effect:reorderList$:A', x);
+        this.todoDataService.reorderItemsAndUpdate(
+          x.action.payload.indexes,
+          x.state.todo.todos);
+      })
 
-    // Terminate effect.
-    .ignoreElements();
-*/
+      // Terminate effect.
+      .ignoreElements();
+  */
 
   // tslint:disable-next-line:member-ordering
   @Effect({ dispatch: false }) removeItem$ = this.actions$
@@ -98,18 +110,18 @@ export class TodoEffects {
       this.todoDataService.removeItem(payload);
     });
 
-/*
-  @Effect() removeItem$ = this.updates$
-    .whenAction(ToDoActions.REMOVE)
-    .do(x => {
-      console.log('Effect:removeItem$:A', x);
-      this.todoDataService.removeItem(
-        x.action.payload);
-    })
+  /*
+    @Effect() removeItem$ = this.updates$
+      .whenAction(ToDoActions.REMOVE)
+      .do(x => {
+        console.log('Effect:removeItem$:A', x);
+        this.todoDataService.removeItem(
+          x.action.payload);
+      })
 
-    // Terminate effect.
-    .ignoreElements();
-*/
+      // Terminate effect.
+      .ignoreElements();
+  */
   // tslint:disable-next-line:member-ordering
   @Effect({ dispatch: false }) save$ = this.actions$
     .ofType(TodoAction.SAVE)
@@ -118,17 +130,17 @@ export class TodoEffects {
       console.log('Effect:save$:A', payload);
       this.todoDataService.save(payload);
     });
-/*
-  @Effect() save$ = this.updates$
-    .whenAction(ToDoActions.SAVE)
-    .do(x => {
-      console.log('Effect:save$:A', x);
-      this.todoDataService.save(
-        x.action.payload);
-    })
+  /*
+    @Effect() save$ = this.updates$
+      .whenAction(ToDoActions.SAVE)
+      .do(x => {
+        console.log('Effect:save$:A', x);
+        this.todoDataService.save(
+          x.action.payload);
+      })
 
-    // Terminate effect.
-    .ignoreElements();
-}
-*/
+      // Terminate effect.
+      .ignoreElements();
+  }
+  */
 }

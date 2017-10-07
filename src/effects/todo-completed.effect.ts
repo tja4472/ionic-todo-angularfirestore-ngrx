@@ -3,6 +3,8 @@ import { Injectable } from '@angular/core';
 import { Effect, Actions } from '@ngrx/effects';
 import { Store } from '@ngrx/store';
 
+import { empty } from 'rxjs/observable/empty';
+
 import * as FromRootReducer from '../reducers';
 
 import * as TodoCompletedAction from '../actions/todo-completed.action';
@@ -20,14 +22,21 @@ export class TodoCompletedEffects {
   ) { }
 
   // tslint:disable-next-line:member-ordering
-  @Effect() loadCollection$ = this.actions$
-    .ofType(TodoCompletedAction.LOAD)
-    .do((x) => { console.log('Effect:loadCollection$:A', x); })
+  @Effect() listenForData$ = this.actions$
+    .ofType(TodoCompletedAction.LISTEN_FOR_DATA, TodoCompletedAction.UNLISTEN_FOR_DATA)
+    .do((x) => { console.log('Effect:listenForData$:A', x); })
     .withLatestFrom(this.state$)
-    .filter(([, state]) => state.login.isAuthenticated)
+    // .filter(([, state]) => state.login.isAuthenticated)
     // Watch database node and get items.
-    .switchMap(() => this.dataService.getData())
-    .do((x) => { console.log('Effect:loadCollection$:B', x); })
+    .switchMap(([action]) => {
+      if (action.type === TodoCompletedAction.UNLISTEN_FOR_DATA) {
+        console.log('TodoCompletedAction.UNLISTEN_FOR_DATA');
+        return empty();
+      } else {
+        return this.dataService.getData();
+      }
+    })
+    .do((x) => { console.log('Effect:listenForData$:B', x); })
     .map((items: TodoCompleted[]) => new TodoCompletedAction.LoadSuccess(items));
 
   // tslint:disable-next-line:member-ordering

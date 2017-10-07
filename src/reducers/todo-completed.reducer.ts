@@ -18,7 +18,7 @@ export function reducer(
     action: todoCompletedAction.Actions,
 ): IState {
     switch (action.type) {
-        case todoCompletedAction.LOAD: {
+        case todoCompletedAction.LISTEN_FOR_DATA: {
             return {
                 ...state,
                 loading: true,

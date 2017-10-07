@@ -5,14 +5,15 @@ import { Action } from '@ngrx/store';
 import { TodoCompleted } from '../shared/models/todo-completed.model';
 
 
-export const LOAD = '[TodoCompletedActions] Load';
+export const LISTEN_FOR_DATA = '[TodoCompletedActions] Listen For Data';
 export const LOAD_SUCCESS = '[TodoCompletedActions] Load Success';
 export const MOVE_TO_CURRENT = '[TodoCompletedActions] Move To Current';
 export const REMOVE = '[TodoCompletedActions] Remove';
 export const SAVE = '[TodoCompletedActions] Save';
+export const UNLISTEN_FOR_DATA = '[TodoCompletedActions] Unlisten For Data';
 
-export class Load implements Action {
-    readonly type = LOAD;
+export class ListenForData implements Action {
+    readonly type = LISTEN_FOR_DATA;
 
     constructor() { }
 }
@@ -41,9 +42,16 @@ export class Save implements Action {
     constructor(public payload: TodoCompleted) { }
 }
 
+export class UnlistenForData implements Action {
+    readonly type = UNLISTEN_FOR_DATA;
+
+    constructor() { }
+}
+
 export type Actions =
-    Load |
+    ListenForData |
     LoadSuccess |
     MoveToCurrent |
     Remove |
-    Save;
+    Save |
+    UnlistenForData;

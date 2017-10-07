@@ -19,6 +19,8 @@ import { SignedInUser } from '../models/signed-in-user.model';
 export class LoginService {
     public notifier$: ReplaySubject<SignedInUser | null> = new ReplaySubject<SignedInUser>(1);
 
+    public signedInUser: SignedInUser;
+
     private readonly CLASS_NAME = 'LoginService';
 
     // tslint:disable-next-line:member-ordering
@@ -54,6 +56,7 @@ export class LoginService {
         af.authState.subscribe((firebaseUser) => {
             if (!firebaseUser) {
                 console.log('%s:authState: No user is signed in.', this.CLASS_NAME);
+                // this.signedInUser = null;
                 this.notifier$.next(null);
                 this.store.dispatch(
                     new LoginActions.Logout());
@@ -61,7 +64,8 @@ export class LoginService {
             }
 
             console.log(`%s:User is signed in>`, this.CLASS_NAME, firebaseUser.uid);
-            this.notifier$.next(this.createSignedInUser(firebaseUser));
+            this.signedInUser = this.createSignedInUser(firebaseUser);
+            this.notifier$.next(this.signedInUser);
 
             this.store.dispatch(
                 new LoginActions.RestoreAuthentication({

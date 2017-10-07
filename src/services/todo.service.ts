@@ -28,7 +28,12 @@ export class TodoService {
 
     initialise(): void {
         this.store.dispatch(
-            new TodoActions.Load());
+            new TodoActions.ListenForData());
+    }
+
+    unlisten(): void {
+        this.store.dispatch(
+            new TodoActions.UnlistenForData());
     }
 
     isLoaded(): Observable<boolean> {
