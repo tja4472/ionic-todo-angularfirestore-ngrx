@@ -11,6 +11,8 @@ import { SignInPage } from '../pages/sign-in/sign-in.page';
 import { RegisterPage } from '../pages/register/register.page';
 import { TodoCompletedListPage } from '../pages/todo-completed-list/todo-completed-list.page';
 
+import { TodoListsPage } from '../todo-lists/pages/todo-lists/todo-lists.page';
+
 import { LoginService } from '../services/login.service';
 
 import { SignedInUser } from '../models/signed-in-user.model';
@@ -38,6 +40,7 @@ export class MyApp {
   loggedInPages: IPageInterface[] = [
     { title: 'Current Todos', component: TodoListPage, icon: 'calendar' },
     { title: 'Completed Todos', component: TodoCompletedListPage, icon: 'calendar' },
+    { title: 'Todo Lists', component: TodoListsPage, icon: 'calendar' },
     { title: 'Sign Out', component: Page1, icon: 'log-out', logsOut: true }
   ];
 
@@ -50,7 +53,6 @@ export class MyApp {
 
   rootPage: any; // = Page1;
   loginState$: any;
-  pages: IPageInterface[];
 
   private readonly CLASS_NAME = 'MyApp';
 
@@ -63,17 +65,6 @@ export class MyApp {
     public statusBar: StatusBar,
   ) {
     this.initializeApp();
-
-    // used for an example of ngFor and navigation
-    this.pages = [
-      { title: 'Page One', component: Page1, icon: 'calendar' },
-      { title: 'Page Two', component: Page2, icon: 'calendar' },
-      { title: 'Current todos', component: TodoListPage, icon: 'calendar' },
-      { title: 'Completed todos', component: TodoCompletedListPage, icon: 'calendar' },
-      { title: 'Sign In', component: SignInPage, icon: 'log-in' },
-      { title: 'Register', component: RegisterPage, icon: 'person-add' },
-      { title: 'Sign Out', component: SignInPage, logsOut: true, icon: 'log-out' },
-    ];
 
     // loginService.initialise();
 

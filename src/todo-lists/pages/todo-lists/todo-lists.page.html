@@ -1,0 +1,17 @@
+<ion-header>
+  <ion-navbar>
+    <button menuToggle
+            ion-button
+            icon-only>
+      <ion-icon name="menu"></ion-icon>
+    </button>
+    <ion-title>Todo Lists</ion-title>
+  </ion-navbar>
+</ion-header>
+
+<ion-content>
+  <tja-todo-lists-list [items]="todos$ | async"
+                       (addItem)="addItem()"
+                       (editItem)="editItem($event)"
+                       (removeItem)="removeItem($event)"></tja-todo-lists-list>
+</ion-content>

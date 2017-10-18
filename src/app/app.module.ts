@@ -13,6 +13,14 @@ import { SignInPage } from '../pages/sign-in/sign-in.page';
 import { TodoCompletedListPage } from '../pages/todo-completed-list/todo-completed-list.page';
 import { TodoListPage } from '../pages/todo-list/todo-list.page';
 
+import { TodoListsPage } from '../todo-lists/pages/todo-lists/todo-lists.page';
+import { TodoListsService } from '../todo-lists/services/todo-lists.service';
+import { TodoListsListComponent } from '../todo-lists/components/todo-lists-list/todo-lists-list.component';
+import { TodoListsDetailModal } from '../todo-lists/modals/todo-lists-detail/todo-lists-detail.modal';
+import { TodoListsDetailComponent } from '../todo-lists/components/todo-lists-detail/todo-lists-detail.component';
+import { TodoListsEffects } from '../todo-lists/todo-lists.effect';
+import { TodoListsDataService } from '../todo-lists/services/todo-lists.data.service';
+
 import { TodoCompletedDetailModal } from '../modals/todo-completed-detail/todo-completed-detail.modal';
 import { TodoDetailModal } from '../modals/todo-detail/todo-detail.modal';
 
@@ -56,6 +64,9 @@ import { TodoEffects } from '../effects/todo.effect';
 // Add the RxJS Observable operators we need in this app.
 import './rxjs-operators';
 
+
+
+
 @NgModule({
   declarations: [
     CreateUserComponent,
@@ -65,12 +76,16 @@ import './rxjs-operators';
     TodoListPopover,
     TodoDetailComponent,
     TodoListComponent,
+    TodoListsListComponent,
+    TodoListsDetailModal,
+    TodoListsDetailComponent,
     TodoCompletedDetailComponent,
     TodoCompletedListComponent,
     MyApp,
     Page1,
     Page2,
     TodoListPage,
+    TodoListsPage,
     SignInPage,
     TodoCompletedDetailModal,
     TodoDetailModal,
@@ -89,6 +104,7 @@ import './rxjs-operators';
       LoginEffects,
       TodoCompletedEffects,
       TodoEffects,
+      TodoListsEffects,
     ]),
   ],
   // tslint:disable-next-line:object-literal-sort-keys
@@ -98,9 +114,11 @@ import './rxjs-operators';
     Page1,
     Page2,
     TodoListPage,
+    TodoListsPage,
     SignInPage,
     TodoCompletedDetailModal,
     TodoDetailModal,
+    TodoListsDetailModal,
     RegisterPage,
     TodoCompletedListPage,
     TodoListPopover,
@@ -113,6 +131,8 @@ import './rxjs-operators';
     TodoCompletedService,
     TodoDataService,
     TodoService,
+    TodoListsDataService,
+    TodoListsService,
     ValidationService,
     { provide: ErrorHandler, useClass: IonicErrorHandler },
   ]

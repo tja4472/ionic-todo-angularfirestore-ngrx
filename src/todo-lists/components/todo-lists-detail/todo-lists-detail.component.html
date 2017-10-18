@@ -1,0 +1,34 @@
+<ion-header>
+    <ion-toolbar>
+        <ion-buttons left>
+            <button ion-button
+                    (click)="dismiss()">
+                cancel
+            </button>
+        </ion-buttons>
+        <ion-buttons end>
+            <button ion-button
+                    (click)="save()"
+                    [disabled]="!(this.viewForm.dirty && this.viewForm.valid)">
+                save
+            </button>
+        </ion-buttons>
+    </ion-toolbar>
+</ion-header>
+
+<ion-content padding>
+    <form [formGroup]="viewForm"
+          novalidate>
+        <ion-list>
+            <ion-item>
+                <ion-label stacked
+                           color="primary">Name</ion-label>
+                <ion-input type="text"
+                           formControlName="name">
+                </ion-input>
+            </ion-item>
+
+            <tja-control-messages [control]="viewForm.controls['name']"></tja-control-messages>
+        </ion-list>
+    </form>
+</ion-content>

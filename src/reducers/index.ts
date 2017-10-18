@@ -13,18 +13,21 @@ import { storeFreeze } from 'ngrx-store-freeze';
 import * as fromLoginReducer from './login.reducer';
 import * as fromTodoCompletedReducer from './todo-completed.reducer';
 import * as fromTodoReducer from './todo.reducer';
+import * as fromTodoListReducer from '../todo-lists/todo-lists.reducer';
 
 export interface IState {
     // These property names have to match those in the compose.
     login: fromLoginReducer.IState;
     todo: fromTodoReducer.IState;
     todoCompleted: fromTodoCompletedReducer.IState;
+    todoList: fromTodoListReducer.IState;
 }
 
 export const reducers: ActionReducerMap<IState> = {
     login: fromLoginReducer.reducer,
     todo: fromTodoReducer.reducer,
     todoCompleted: fromTodoCompletedReducer.reducer,
+    todoList: fromTodoListReducer.reducer,
 };
 
 export const metaReducers: Array<MetaReducer<IState>> = [storeFreeze];
@@ -78,3 +81,12 @@ export const getTodoCompleted_GetTodoCompletedList
     = createSelector(
         getTodoCompletedState,
         fromTodoCompletedReducer.getTodoCompletedList);
+// todoList
+export const getTodoListState = (state: IState) => state.todoList;
+
+// tslint:disable-next-line:variable-name
+export const getTodoList_GetLoaded = createSelector(getTodoListState, fromTodoListReducer.getLoaded);
+// tslint:disable-next-line:variable-name
+export const getTodoList_GetLoading = createSelector(getTodoListState, fromTodoListReducer.getLoading);
+// tslint:disable-next-line:variable-name
+export const getTodoList_GetTodoLists = createSelector(getTodoListState, fromTodoListReducer.getTodoLists);
