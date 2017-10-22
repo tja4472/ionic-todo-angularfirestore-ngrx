@@ -4,12 +4,14 @@ import { TodoListsItem } from './todo-lists-item.model';
 export interface IState {
     loaded: boolean;
     loading: boolean;
+    selectedListId: string | null;
     todoLists: TodoListsItem[];
 }
 
 const initialState: IState = {
     loaded: false,
     loading: false,
+    selectedListId: null,
     todoLists: []
 };
 
@@ -30,7 +32,15 @@ export function reducer(
             return {
                 loaded: true,
                 loading: false,
+                selectedListId: null,
                 todoLists: items.map((book) => book)
+            };
+        }
+
+        case Action.SET_SELECTED_LIST: {
+            return {
+                ...state,
+                selectedListId: action.listId,
             };
         }
 

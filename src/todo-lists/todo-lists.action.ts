@@ -8,6 +8,7 @@ export const LISTEN_FOR_DATA = '[TodoListsActions] Listen For Data';
 export const LOAD_SUCCESS = '[TodoListsActions] Load Success';
 export const REMOVE = '[TodoListsActions] Remove';
 export const SAVE = '[TodoListsActions] Save';
+export const SET_SELECTED_LIST = '[TodoListsActions] Set Selected List';
 export const UNLISTEN_FOR_DATA = '[TodoListsActions] Unlisten For Data';
 
 export class ListenForData implements Action {
@@ -34,6 +35,12 @@ export class Save implements Action {
     constructor(public payload: TodoListsItem) { }
 }
 
+export class SetSelectedList implements Action {
+    readonly type = SET_SELECTED_LIST;
+
+    constructor(public listId: string) { }
+}
+
 export class UnlistenForData implements Action {
     readonly type = UNLISTEN_FOR_DATA;
 
@@ -45,4 +52,5 @@ export type Actions =
     LoadSuccess |
     Remove |
     Save |
+    SetSelectedList |
     UnlistenForData;
