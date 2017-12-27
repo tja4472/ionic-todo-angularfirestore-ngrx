@@ -62,7 +62,7 @@ import { TodoCompletedEffects } from '../effects/todo-completed.effect';
 import { TodoEffects } from '../effects/todo.effect';
 
 // Add the RxJS Observable operators we need in this app.
-import './rxjs-operators';
+// import './rxjs-operators';
 
 
 

@@ -1,6 +1,9 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
 
+// Use Deep imports here for smallest bunlde size
+import { map } from 'rxjs/operators/map';
+
 import { AngularFirestore, AngularFirestoreCollection } from 'angularfire2/firestore';
 
 import { IReorderArrayIndexes } from '../shared/models/reorder-array-indexes.model';
@@ -50,9 +53,11 @@ export class TodoDataService {
         if (this.isSignedIn) {
             return this.itemsCollection
                 .valueChanges()
-                .map((items) => items.map((item) => {
-                    return this.fromFirestoreDoc(item);
-                }));
+                .pipe(
+                    map((items) => items.map((item) => {
+                        return this.fromFirestoreDoc(item);
+                    })),
+                );
         } else {
             return Observable.from<Todo[]>([]);
         }

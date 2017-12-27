@@ -78,7 +78,9 @@ export class TodoCompletedDataService {
         this.itemsCollection = this.afs.collection(USERS_COLLECTION)
             .doc(this.loginService.signedInUser.userId)
             .collection<IFirestoreDoc>(
-            DATA_COLLECTION,
+            // Filter by taskListId
+            // DATA_COLLECTION, (ref) => ref.where('name', '==', 'bb')
+            DATA_COLLECTION
         );
     }
 
