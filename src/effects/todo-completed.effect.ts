@@ -7,10 +7,17 @@ import { empty } from 'rxjs/observable/empty';
 
 import * as FromRootReducer from '../reducers';
 
-import * as TodoCompletedAction from '../actions/todo-completed.action';
 import { Fb1DataService } from '../services/fb1.data.service';
 import { TodoCompletedDataService } from '../services/todo-completed.data.service';
 import { TodoCompleted } from '../shared/models/todo-completed.model';
+
+import {
+  LoadSuccess,
+  MoveToCurrent,
+  Remove,
+  Save,
+  TodoCompletedActionTypes,
+} from '../actions/todo-completed.action';
 
 @Injectable()
 export class TodoCompletedEffects {
@@ -23,13 +30,14 @@ export class TodoCompletedEffects {
 
   // tslint:disable-next-line:member-ordering
   @Effect() listenForData$ = this.actions$
-    .ofType(TodoCompletedAction.LISTEN_FOR_DATA, TodoCompletedAction.UNLISTEN_FOR_DATA)
+    .ofType(TodoCompletedActionTypes.ListenForData,
+      TodoCompletedActionTypes.UnlistenForData)
     .do((x) => { console.log('Effect:listenForData$:A', x); })
     .withLatestFrom(this.state$)
     // .filter(([, state]) => state.login.isAuthenticated)
     // Watch database node and get items.
     .switchMap(([action]) => {
-      if (action.type === TodoCompletedAction.UNLISTEN_FOR_DATA) {
+      if (action.type === TodoCompletedActionTypes.UnlistenForData) {
         console.log('TodoCompletedAction.UNLISTEN_FOR_DATA');
         return empty();
       } else {
@@ -37,12 +45,12 @@ export class TodoCompletedEffects {
       }
     })
     .do((x) => { console.log('Effect:listenForData$:B', x); })
-    .map((items: TodoCompleted[]) => new TodoCompletedAction.LoadSuccess(items));
+    .map((items: TodoCompleted[]) => new LoadSuccess(items));
 
   // tslint:disable-next-line:member-ordering
   @Effect({ dispatch: false }) moveToCurrent$ = this.actions$
-    .ofType(TodoCompletedAction.MOVE_TO_CURRENT)
-    .map((action: TodoCompletedAction.MoveToCurrent) => action.payload)
+    .ofType(TodoCompletedActionTypes.MoveToCurrent)
+    .map((action: MoveToCurrent) => action.payload)
     .do((payload) => {
       console.log('Effect:moveToCurrent$:A', payload);
       this.fb1DataService.moveToCurrent(payload);
@@ -61,8 +69,8 @@ export class TodoCompletedEffects {
   */
   // tslint:disable-next-line:member-ordering
   @Effect({ dispatch: false }) removeItem$ = this.actions$
-    .ofType(TodoCompletedAction.REMOVE)
-    .map((action: TodoCompletedAction.Remove) => action.payload)
+    .ofType(TodoCompletedActionTypes.Remove)
+    .map((action: Remove) => action.payload)
     .do((payload) => {
       console.log('Effect:removeItem$:A', payload);
       this.dataService.removeItem(payload);
@@ -82,8 +90,8 @@ export class TodoCompletedEffects {
 
   // tslint:disable-next-line:member-ordering
   @Effect({ dispatch: false }) save$ = this.actions$
-    .ofType(TodoCompletedAction.SAVE)
-    .map((action: TodoCompletedAction.Save) => action.payload)
+    .ofType(TodoCompletedActionTypes.Save)
+    .map((action: Save) => action.payload)
     .do((payload) => {
       console.log('Effect:save$:A', payload);
       this.dataService.save(payload);

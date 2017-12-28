@@ -1,4 +1,4 @@
-import * as Action from './todo-lists.action';
+import { TodoListsActionTypes, TodoListsActions } from './todo-lists.action';
 import { TodoListsItem } from './todo-lists-item.model';
 
 export interface IState {
@@ -17,16 +17,16 @@ const initialState: IState = {
 
 export function reducer(
     state = initialState,
-    action: Action.Actions): IState {
+    action: TodoListsActions): IState {
     switch (action.type) {
-        case Action.LISTEN_FOR_DATA: {
+        case TodoListsActionTypes.ListenForData: {
             return {
                 ...state,
                 loading: true,
             };
         }
 
-        case Action.LOAD_SUCCESS: {
+        case TodoListsActionTypes.LoadSuccess: {
             const items: TodoListsItem[] = action.payload;
 
             return {
@@ -37,7 +37,7 @@ export function reducer(
             };
         }
 
-        case Action.SET_SELECTED_LIST: {
+        case TodoListsActionTypes.SetSelectedList: {
             return {
                 ...state,
                 selectedListId: action.listId,

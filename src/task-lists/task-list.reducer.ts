@@ -1,6 +1,6 @@
 import { createEntityAdapter, EntityAdapter, EntityState } from '@ngrx/entity';
 
-import * as taskListAction from './task-list.action';
+import { TaskListActionTypes, TaskListActions} from './task-list.action';
 
 import { ITaskList } from './task-list.model';
 
@@ -23,16 +23,16 @@ export const initialState: IState = adapter.getInitialState({
 
 export function reducer(
     state = initialState,
-    action: taskListAction.Actions): IState {
+    action: TaskListActions): IState {
     switch (action.type) {
-        case taskListAction.LISTEN_FOR_DATA: {
+        case TaskListActionTypes.ListenForData: {
             return {
                 ...state,
                 loading: true,
             };
         }
 
-        case taskListAction.LOAD_SUCCESS: {
+        case TaskListActionTypes.LoadSuccess: {
             return {
                 ...adapter.addMany(action.payload, state),
                 loaded: true,
@@ -52,7 +52,7 @@ export function reducer(
             */
         }
 
-        case taskListAction.SET_SELECTED_LIST: {
+        case TaskListActionTypes.SetSelectedList: {
             return {
                 ...state,
                 selectedTaskListId: action.listId,

@@ -7,7 +7,12 @@ import { empty } from 'rxjs/observable/empty';
 
 import * as FromRootReducer from '../reducers';
 
-import * as FromAction from './todo-lists.action';
+import {
+  LoadSuccess,
+  Remove,
+  Save,
+  TodoListsActionTypes,
+} from './todo-lists.action';
 
 import { TodoListsDataService } from './services/todo-lists.data.service';
 
@@ -24,7 +29,8 @@ export class TodoListsEffects {
 
   // tslint:disable-next-line:member-ordering
   @Effect() listenForData$ = this.actions$
-    .ofType(FromAction.LISTEN_FOR_DATA, FromAction.UNLISTEN_FOR_DATA)
+    .ofType(TodoListsActionTypes.ListenForData,
+      TodoListsActionTypes.UnlistenForData)
     .do((x) => { console.log('Effect:listenForData$:A', x); })
     .withLatestFrom(this.state$)
     // tslint:disable-next-line:no-unused-variable
@@ -33,7 +39,7 @@ export class TodoListsEffects {
     .switchMap(([action]) => {
       console.log('Effect:listenForData$:action>', action);
 
-      if (action.type === FromAction.UNLISTEN_FOR_DATA) {
+      if (action.type === TodoListsActionTypes.UnlistenForData) {
         console.log('TodoAction.UNLISTEN_FOR_DATA');
         return empty();
       } else {
@@ -41,12 +47,12 @@ export class TodoListsEffects {
       }
     })
     .do((x) => { console.log('Effect:listenForData$:B', x); })
-    .map((items: TodoListsItem[]) => new FromAction.LoadSuccess(items));
+    .map((items: TodoListsItem[]) => new LoadSuccess(items));
 
   // tslint:disable-next-line:member-ordering
   @Effect({ dispatch: false }) removeItem$ = this.actions$
-    .ofType(FromAction.REMOVE)
-    .map((action: FromAction.Remove) => action.payload)
+    .ofType(TodoListsActionTypes.Remove)
+    .map((action: Remove) => action.payload)
     .do((payload) => {
       console.log('Effect:removeItem$:A', payload);
       this.dataService.removeItem(payload);
@@ -54,8 +60,8 @@ export class TodoListsEffects {
 
   // tslint:disable-next-line:member-ordering
   @Effect({ dispatch: false }) save$ = this.actions$
-    .ofType(FromAction.SAVE)
-    .map((action: FromAction.Save) => action.payload)
+    .ofType(TodoListsActionTypes.Save)
+    .map((action: Save) => action.payload)
     .do((payload) => {
       console.log('Effect:save$:A', payload);
       this.dataService.save(payload);

@@ -5,57 +5,68 @@ import { Action } from '@ngrx/store';
 import { IReorderArrayIndexes } from '../shared/models/reorder-array-indexes.model';
 import { Todo } from '../shared/models/todo.model';
 
-export const CLEAR_COMPLETED = '[ToDoActions] Clear Completed';
-export const LISTEN_FOR_DATA = '[ToDoActions] Listen For Data';
-export const LOAD_SUCCESS = '[ToDoActions] Load Success';
-export const REORDER_LIST = '[ToDoActions] Reorder List';
-export const REMOVE = '[ToDoActions] Remove';
-export const SAVE = '[ToDoActions] Save';
-export const UNLISTEN_FOR_DATA = '[ToDoActions] Unlisten For Data';
+export enum TodoActionTypes {
+    ClearCompleted = '[TodoActions] Clear Completed',
+    ListenForData = '[TodoActions] Listen For Data',
+    LoadSuccess = '[TodoActions] Load Success',
+    ReorderList = '[TodoActions] Reorder List',
+    Remove = '[TodoActions] Remove',
+    Save = '[TodoActions] Save',
+    UnlistenForData = '[TodoActions] Unlisten For Data',
+}
+/*
+export const CLEAR_COMPLETED = '[TodoActions] Clear Completed';
+export const LISTEN_FOR_DATA = '[TodoActions] Listen For Data';
+export const LOAD_SUCCESS = '[TodoActions] Load Success';
+export const REORDER_LIST = '[TodoActions] Reorder List';
+export const REMOVE = '[TodoActions] Remove';
+export const SAVE = '[TodoActions] Save';
+export const UNLISTEN_FOR_DATA = '[TodoActions] Unlisten For Data';
+*/
 
 export class ClearCompleted implements Action {
-    readonly type = CLEAR_COMPLETED;
+    readonly type = TodoActionTypes.ClearCompleted;
 
     constructor() { }
 }
 
 export class ListenForData implements Action {
-    readonly type = LISTEN_FOR_DATA;
+    readonly type = TodoActionTypes.ListenForData;
 
     constructor() { }
 }
 
 export class LoadSuccess implements Action {
-    readonly type = LOAD_SUCCESS;
+    readonly type = TodoActionTypes.LoadSuccess;
 
     constructor(public payload: Todo[]) { }
 }
 
 export class Remove implements Action {
-    readonly type = REMOVE;
+    readonly type = TodoActionTypes.Remove;
 
     constructor(public payload: string) { } // itemKey
 }
 
 export class ReorderList implements Action {
-    readonly type = REORDER_LIST;
+    readonly type = TodoActionTypes.ReorderList;
 
     constructor(public payload: IReorderArrayIndexes) { }
 }
 
 export class Save implements Action {
-    readonly type = SAVE;
+    readonly type = TodoActionTypes.Save;
 
     constructor(public payload: Todo) { }
 }
 
 export class UnlistenForData implements Action {
-    readonly type = UNLISTEN_FOR_DATA;
+    readonly type = TodoActionTypes.UnlistenForData;
 
     constructor() { }
 }
 
-export type Actions =
+export type TodoActions =
     ClearCompleted |
     ListenForData |
     LoadSuccess |

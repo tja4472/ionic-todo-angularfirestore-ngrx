@@ -1,4 +1,4 @@
-import * as todoAction from '../actions/todo.action';
+import { TodoActions, TodoActionTypes } from '../actions/todo.action';
 import { Todo } from '../shared/models/todo.model';
 
 export interface IState {
@@ -15,16 +15,16 @@ const initialState: IState = {
 
 export function reducer(
     state = initialState,
-    action: todoAction.Actions): IState {
+    action: TodoActions): IState {
     switch (action.type) {
-        case todoAction.LISTEN_FOR_DATA: {
+        case TodoActionTypes.ListenForData: {
             return {
                 ...state,
                 loading: true,
             };
         }
 
-        case todoAction.LOAD_SUCCESS: {
+        case TodoActionTypes.LoadSuccess: {
             const items: Todo[] = action.payload;
 
             return {

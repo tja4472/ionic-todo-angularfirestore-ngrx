@@ -1,4 +1,4 @@
-import * as todoCompletedAction from '../actions/todo-completed.action';
+import { TodoCompletedActions, TodoCompletedActionTypes } from '../actions/todo-completed.action';
 import { TodoCompleted } from '../shared/models/todo-completed.model';
 
 export interface IState {
@@ -15,17 +15,17 @@ const initialState: IState = {
 
 export function reducer(
     state = initialState,
-    action: todoCompletedAction.Actions,
+    action: TodoCompletedActions,
 ): IState {
     switch (action.type) {
-        case todoCompletedAction.LISTEN_FOR_DATA: {
+        case TodoCompletedActionTypes.ListenForData: {
             return {
                 ...state,
                 loading: true,
             };
         }
 
-        case todoCompletedAction.LOAD_SUCCESS: {
+        case TodoCompletedActionTypes.LoadSuccess: {
             const items: TodoCompleted[] = action.payload;
 
             return {

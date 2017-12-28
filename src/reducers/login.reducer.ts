@@ -1,4 +1,4 @@
-import * as loginAction from '../actions/login.action';
+import { LoginActionTypes, LoginActions } from '../actions/login.action';
 
 export interface IState {
     displayName: string;
@@ -16,24 +16,24 @@ const initialState: IState = {
 
 export function reducer(
     state = initialState,
-    action: loginAction.Actions,
+    action: LoginActions,
 ): IState {
     switch (action.type) {
-        case loginAction.CLEAR_ERROR: {
+        case LoginActionTypes.ClearError: {
             return {
                 ...state,
                 error: null,
             };
         }
 
-        case loginAction.GOOGLE_AUTHENTICATION: {
+        case LoginActionTypes.GoogleAuthentication: {
             return {
                 ...state,
                 isAuthenticating: true,
             };
         }
 
-        case loginAction.RESTORE_AUTHENTICATION: {
+        case LoginActionTypes.RestoreAuthentication: {
             return {
                 ...state,
                 displayName: makeDisplayName(action.payload),
@@ -42,7 +42,7 @@ export function reducer(
             };
         }
 
-        case loginAction.LOGOUT: {
+        case LoginActionTypes.Logout: {
             return {
                 ...state,
                 displayName: '',
@@ -51,10 +51,10 @@ export function reducer(
             };
         }
 
-        case loginAction.ANONYMOUS_AUTHENTICATION:
-        case loginAction.BEGIN_AUTHENTICATION:
-        case loginAction.CREATE_USER:
-        case loginAction.EMAIL_AUTHENTICATION: {
+        case LoginActionTypes.AnonymousAuthentication:
+        case LoginActionTypes.BeginAuthentication:
+        case LoginActionTypes.CreateUser:
+        case LoginActionTypes.EmailAuthentication: {
             return {
                 ...state,
                 error: null,
@@ -62,9 +62,9 @@ export function reducer(
             };
         }
 
-        case loginAction.ANONYMOUS_AUTHENTICATION_FAILURE:
-        case loginAction.CREATE_USER_FAILURE:
-        case loginAction.EMAIL_AUTHENTICATION_FAILURE: {
+        case LoginActionTypes.AnonymousAuthenticationFailure:
+        case LoginActionTypes.CreateUserFailure:
+        case LoginActionTypes.EmailAuthenticationFailure: {
             return {
                 ...state,
                 error: action.payload,
