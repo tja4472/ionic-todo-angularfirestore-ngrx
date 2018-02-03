@@ -50,8 +50,12 @@ export class TodoListPage {
   }
 
   toggleCompleteItem(item: Todo) {
-    const newItem = Object.assign(new Todo(), item);
+    /*
+    const newItem: Todo = Object.assign(new Todo(), item);
     newItem.isComplete = !newItem.isComplete;
+    this.todoService.save(newItem);
+*/
+    const newItem: Todo = { ...item, isComplete: !item.isComplete };
     this.todoService.save(newItem);
   }
 

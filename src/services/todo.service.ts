@@ -42,10 +42,7 @@ export class TodoService {
   }
 
   remove(todo: Todo) {
-    if (todo.$key === undefined) {
-      return;
-    }
-    this.store.dispatch(new TodoActions.Remove(todo.$key));
+    this.store.dispatch(new TodoActions.Remove(todo.id));
   }
 
   save(todo: Todo) {

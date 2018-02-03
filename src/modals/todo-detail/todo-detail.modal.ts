@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { NavParams, ViewController } from 'ionic-angular';
 
-import { Todo } from '../../shared/models/todo.model';
+import { EmptyTodo, Todo } from '../../shared/models/todo.model';
 
 @Component({
   selector: 'tja-modal-todo-detail',
@@ -15,37 +15,19 @@ export class TodoDetailModal {
 
   constructor(navParams: NavParams, public viewController: ViewController) {
     console.log(`%s:constructor`, this.CLASS_NAME);
-    // navParams passes by reference.
-    const navParamsTodo: Readonly<Todo> = Object.assign(
-      new Todo(),
-      navParams.get('todo'),
-    );
-    console.log('navParamsTodo>', navParamsTodo);
-    console.log('navParamsTodo.isNew()>', navParamsTodo.isNew());
 
-    this.viewTodo = Object.assign(new Todo(), navParamsTodo);
-    console.log('this.todo>', this.viewTodo);
-    /*
-    if (navParamsTodo) {
-      //  this.todo = Object.assign(this.todo, paramTodo);
-      console.log('paramTodo = true');
-      this.viewTodo = Object.assign(new Todo(), navParamsTodo);
+    const paramItem: Todo = navParams.get('todo');
+
+    if (paramItem === undefined) {
+      // new item.
+      this.viewTodo = EmptyTodo();
     } else {
-      console.log('paramTodo = false');
-      this.viewTodo = new Todo();
+      // navParams passes by reference.
+      // this.viewTodo = Object.assign({}, paramItem);
+      this.viewTodo = { ...paramItem };
     }
-    */
 
-    /*
-        this.isEditing = !!paramTodo;
-
-        if (this.isEditing) {
-          console.log('isEditing');
-          this._todo = paramTodo;
-        }
-        this.todo = this._todo;
-        console.log('+++this.todo>', this.todo);
-    */
+    console.log('this.viewTodo>', this.viewTodo);
   }
 
   public viewItemCancelled() {

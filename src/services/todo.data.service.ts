@@ -73,11 +73,7 @@ export class TodoDataService {
     const itemsToSave = [...todos];
     reorderArray(itemsToSave, indexes);
     itemsToSave.forEach((t, i) => {
-      if (t.$key === undefined) {
-        return;
-      }
-
-      this.itemsCollection.doc(t.$key).update({ index: i });
+      this.itemsCollection.doc(t.id).update({ index: i });
     });
   }
 
@@ -88,7 +84,7 @@ export class TodoDataService {
   public save(item: Todo): void {
     const doc = this.toFirestoreDoc(item);
 
-    if (item.isNew()) {
+    if (item.id === '') {
       doc.id = this.afs.createId();
     }
 
@@ -106,17 +102,9 @@ export class TodoDataService {
 
   private toFirestoreDoc(item: Todo): IFirestoreDoc {
     //
-    let id: string;
-
-    if (item.$key === undefined) {
-      id = '';
-    } else {
-      id = item.$key;
-    }
-
     const result: IFirestoreDoc = {
       description: item.description,
-      id,
+      id: item.id,
       index: item.index,
       isComplete: item.isComplete,
       name: item.name,
@@ -130,20 +118,20 @@ export class TodoDataService {
     //
     // console.log('TodoDataService:fromFirebaseTodo>', x);
 
-    const result: Todo = new Todo({
-      $key: x.id,
+    const result: Todo = {
       description: x.description,
+      id: x.id,
       index: x.index,
       isComplete: x.isComplete,
       name: x.name,
-    });
+    };
 
     // console.log('TodoDataService:fromFirebaseTodo:result>', result);
-
+/*
     if (result.isComplete === undefined) {
       result.isComplete = false;
     }
-
+*/
     return result;
   }
 }

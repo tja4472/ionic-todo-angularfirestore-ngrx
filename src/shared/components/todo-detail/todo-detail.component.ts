@@ -24,7 +24,7 @@ export class TodoDetailComponent {
 
   ngOnInit() {
     console.log('###%s:ngOnInit>', this.CLASS_NAME, this.todo);
-    console.log('this.todo.isNew()>', this.todo.isNew());
+    // console.log('this.todo.isNew()>', this.todo.isNew());
     /*
                 if (this.todo.$key === undefined) {
                     this.isEditing = false;
@@ -52,12 +52,14 @@ export class TodoDetailComponent {
     console.log('this.todoForm.value>', this.todoForm.value);
     console.log('this.todo>', this.todo);
 
-    // const editedItem: ITodo = { ...this.todo, ...this.todoForm.value };
+    const editedItem: Todo = { ...this.todo, ...this.todoForm.value };
+    /*
     const editedItem: Todo = Object.assign(
       new Todo(),
-      this.todo,
+      this.todoInput,
       this.todoForm.value,
     );
+    */
     console.log('editedItem>', editedItem);
 
     this.itemSaved.emit(editedItem);
