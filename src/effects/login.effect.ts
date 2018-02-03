@@ -20,14 +20,47 @@ export class LoginEffects {
   constructor(
     private actions$: Actions,
     private state$: Store<IState>,
-    public af: AngularFireAuth,
+    public auth$: AngularFireAuth,
   ) { }
+
+// tslint:disable-next-line:member-ordering
+  @Effect({ dispatch: false }) logActions$ = this.actions$
+  .ofType('@ngrx/effects/init')
+  .do((action) => {
+      console.log('logActions$', action);
+  })
+  .switchMap(() => this.auth$.authState)
+  .map((aa) => {
+    if(aa) {
+      console.log('aaaaaa>', aa);
+    } else {
+      console.log('bbbbbb>', aa);
+    }
+  })
+  .do((xx) => console.log('xx>', xx));
+
+  /*
+    @Effect() checkAuth$ = this.action$.ofType(actions.CHECK_AUTH)
+        .do((action) => console.log(`Received ${action.type}`))
+        .switchMap(() => this.auth$.authState)
+        .map((_result) => {
+            debugger
+            if (_result) {
+                console.log("in auth subscribe", _result)
+                return { type: actions.CHECK_AUTH_SUCCESS, payload: _result }
+            } else {
+                console.log("in auth subscribe - no user", _result)
+                return { type: actions.CHECK_AUTH_NO_USER, payload: null }
+            }
+
+        }).catch((res: any) => Observable.of({ type: actions.CHECK_AUTH_FAILED, payload: res }))
+  */
 
   // tslint:disable-next-line:member-ordering
   @Effect({ dispatch: false }) anonymousAuthentication$ = this.actions$
     .ofType(LoginActionTypes.AnonymousAuthentication)
     .map(() =>
-      this.af.auth.signInAnonymously()
+      this.auth$.auth.signInAnonymously()
         .then((user) => this.state$.dispatch(new RestoreAuthentication({
           displayName: user.auth.displayName,
           email: user.auth.email,
@@ -42,7 +75,7 @@ export class LoginEffects {
     // .do(x => console.log('login.effect:createUser>', x))
     .map((action: CreateUser) => action.payload)
     .map((payload) => {
-      this.af.auth.createUserWithEmailAndPassword(
+      this.auth$.auth.createUserWithEmailAndPassword(
         payload.userName,
         payload.password
       )
@@ -83,7 +116,7 @@ export class LoginEffects {
     // .do(x => console.log('login.effect:authorizeWithGoogle>', x))
     // .map((action: LoginActions.GoogleAuthenticationAction) => action.payload)
     .map(() => {
-      this.af.auth.signInWithPopup(
+      this.auth$.auth.signInWithPopup(
         new firebase.auth.GoogleAuthProvider()
       )
         .then((user) => this.state$.dispatch(new RestoreAuthentication({
