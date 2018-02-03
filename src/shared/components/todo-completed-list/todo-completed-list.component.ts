@@ -13,8 +13,7 @@ export class TodoCompletedListComponent {
 
   private readonly CLASS_NAME = 'CompletedTodoListComponent';
 
-  constructor(
-  ) {
+  constructor() {
     console.log(`%s:constructor`, this.CLASS_NAME);
   }
 }

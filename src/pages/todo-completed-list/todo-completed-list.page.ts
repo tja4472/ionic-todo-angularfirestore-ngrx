@@ -5,11 +5,14 @@ import { Observable } from 'rxjs/Observable';
 import { TodoCompletedService } from '../../services/todo-completed.service';
 
 import { TodoCompleted } from '../../shared/models/todo-completed.model';
-import { IModalResult, TodoCompletedDetailModal } from '../../modals/todo-completed-detail/todo-completed-detail.modal';
+import {
+  IModalResult,
+  TodoCompletedDetailModal,
+} from '../../modals/todo-completed-detail/todo-completed-detail.modal';
 
 @Component({
   selector: 'tja-page-todo-completed-list',
-  templateUrl: 'todo-completed-list.page.html'
+  templateUrl: 'todo-completed-list.page.html',
 })
 export class TodoCompletedListPage {
   data$: Observable<TodoCompleted[]>;
@@ -17,7 +20,7 @@ export class TodoCompletedListPage {
   constructor(
     public navCtrl: NavController,
     public modalCtrl: ModalController,
-    public todoCompletedService: TodoCompletedService
+    public todoCompletedService: TodoCompletedService,
   ) {
     //
     this.data$ = todoCompletedService.getData();
@@ -40,7 +43,9 @@ export class TodoCompletedListPage {
 
   editItem(item: TodoCompleted) {
     console.log('editItem:item>', item);
-    const modal = this.modalCtrl.create(TodoCompletedDetailModal, { todo: item });
+    const modal = this.modalCtrl.create(TodoCompletedDetailModal, {
+      todo: item,
+    });
 
     //    modal.onDidDismiss(data => {
     modal.onDidDismiss((modalResult: IModalResult) => {
@@ -52,7 +57,6 @@ export class TodoCompletedListPage {
 
       if (modalResult.todo === undefined) {
         return;
-
       }
       if (modalResult.isRemoved) {
         this.todoCompletedService.remove(modalResult.todo);
@@ -69,9 +73,7 @@ export class TodoCompletedListPage {
     modal.present();
   }
 
-  toggleCompleteItem(
-    item: TodoCompleted,
-  ) {
+  toggleCompleteItem(item: TodoCompleted) {
     console.log('toggleCompleteItem:item>', item);
 
     if (item.isComplete) {

@@ -6,14 +6,12 @@ export interface ITodoListPopoverResult {
 }
 
 @Component({
-  templateUrl: 'todo-list.popover.html'
+  templateUrl: 'todo-list.popover.html',
 })
 export class TodoListPopover {
   private readonly CLASS_NAME = 'TodoListPopover';
 
-  constructor(
-    public viewCtrl: ViewController
-  ) {
+  constructor(public viewCtrl: ViewController) {
     console.log(`%s:constructor`, this.CLASS_NAME);
   }
 

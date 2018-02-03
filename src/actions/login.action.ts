@@ -3,20 +3,20 @@
 import { Action } from '@ngrx/store';
 
 export enum LoginActionTypes {
-    AnonymousAuthentication = '[Login] Anonymous Authentication',
+  AnonymousAuthentication = '[Login] Anonymous Authentication',
 
-    AnonymousAuthenticationFailure = '[Login] Anonymous Authentication Failure',
-    BeginAuthentication = '[Login] Begin Authentication',
-    ClearError = '[Login] Clear Error',
-    BeginAuthenticationFailure = '[Login] Begin Authentication Failure',
-    CreateUser = '[Login] Create User',
-    CreateUserFailure = '[Login] Create User Failure',
-    EmailAuthentication = '[Login] Email Authentication',
-    EmailAuthenticationFailure = '[Login] Email Authentication Failure',
-    GoogleAuthentication = '[Login] Google Authentication',
-    GoogleAuthenticationFailure = '[Login] Google Authentication Failure',
-    Logout = '[Login] Logout',
-    RestoreAuthentication = '[Login] Restore Authentication',
+  AnonymousAuthenticationFailure = '[Login] Anonymous Authentication Failure',
+  BeginAuthentication = '[Login] Begin Authentication',
+  ClearError = '[Login] Clear Error',
+  BeginAuthenticationFailure = '[Login] Begin Authentication Failure',
+  CreateUser = '[Login] Create User',
+  CreateUserFailure = '[Login] Create User Failure',
+  EmailAuthentication = '[Login] Email Authentication',
+  EmailAuthenticationFailure = '[Login] Email Authentication Failure',
+  GoogleAuthentication = '[Login] Google Authentication',
+  GoogleAuthenticationFailure = '[Login] Google Authentication Failure',
+  Logout = '[Login] Logout',
+  RestoreAuthentication = '[Login] Restore Authentication',
 }
 
 // export const ANONYMOUS_AUTHENTICATION = '[Login] Anonymous Authentication';
@@ -35,104 +35,110 @@ export const LOGOUT = '[Login] Logout';
 export const RESTORE_AUTHENTICATION = '[Login] Restore Authentication';
 */
 export class AnonymousAuthentication implements Action {
-    readonly type = LoginActionTypes.AnonymousAuthentication;
+  readonly type = LoginActionTypes.AnonymousAuthentication;
 
-    constructor() { }
+  constructor() {}
 }
 
 export class AnonymousAuthenticationFailure implements Action {
-    readonly type = LoginActionTypes.AnonymousAuthenticationFailure;
+  readonly type = LoginActionTypes.AnonymousAuthenticationFailure;
 
-    constructor(public payload: any) { } // error
+  constructor(public payload: any) {} // error
 }
 
 export class BeginAuthentication implements Action {
-    readonly type = LoginActionTypes.BeginAuthentication;
+  readonly type = LoginActionTypes.BeginAuthentication;
 
-    constructor() { }
+  constructor() {}
 }
 
 export class BeginAuthenticationFailure implements Action {
-    readonly type = LoginActionTypes.BeginAuthenticationFailure;
+  readonly type = LoginActionTypes.BeginAuthenticationFailure;
 
-    constructor() { }
+  constructor() {}
 }
 
 export class ClearError implements Action {
-    readonly type = LoginActionTypes.ClearError;
+  readonly type = LoginActionTypes.ClearError;
 
-    constructor() { }
+  constructor() {}
 }
 
 export class CreateUser implements Action {
-    readonly type = LoginActionTypes.CreateUser;
+  readonly type = LoginActionTypes.CreateUser;
 
-    constructor(public payload: {
-        userName: string,
-        password: string
-    }) { }
+  constructor(
+    public payload: {
+      userName: string;
+      password: string;
+    },
+  ) {}
 }
 
 export class CreateUserFailure implements Action {
-    readonly type = LoginActionTypes.CreateUserFailure;
+  readonly type = LoginActionTypes.CreateUserFailure;
 
-    constructor(public payload: any) { } // error
+  constructor(public payload: any) {} // error
 }
 
 export class EmailAuthentication implements Action {
-    readonly type = LoginActionTypes.EmailAuthentication;
+  readonly type = LoginActionTypes.EmailAuthentication;
 
-    constructor(public payload: {
-        userName: string,
-        password: string
-    }) { }
+  constructor(
+    public payload: {
+      userName: string;
+      password: string;
+    },
+  ) {}
 }
 
 export class EmailAuthenticationFailure implements Action {
-    readonly type = LoginActionTypes.EmailAuthenticationFailure;
+  readonly type = LoginActionTypes.EmailAuthenticationFailure;
 
-    constructor(public payload: any) { } // error
+  constructor(public payload: any) {} // error
 }
 
 export class GoogleAuthentication implements Action {
-    readonly type = LoginActionTypes.GoogleAuthentication;
+  readonly type = LoginActionTypes.GoogleAuthentication;
 
-    constructor() { }
+  constructor() {}
 }
 
 export class GoogleAuthenticationFailure implements Action {
-    readonly type = LoginActionTypes.GoogleAuthenticationFailure;
+  readonly type = LoginActionTypes.GoogleAuthenticationFailure;
 
-    constructor(public payload: any) { } // error
+  constructor(public payload: any) {} // error
 }
 
 export class Logout implements Action {
-    readonly type = LoginActionTypes.Logout;
+  readonly type = LoginActionTypes.Logout;
 
-    constructor() { }
+  constructor() {}
 }
 
 export class RestoreAuthentication implements Action {
-    readonly type = LoginActionTypes.RestoreAuthentication;
+  readonly type = LoginActionTypes.RestoreAuthentication;
 
-    constructor(public payload: {
-        isAnonymous: boolean;
-        displayName: string | null,
-        email: string | null,
-    }) { }
+  constructor(
+    public payload: {
+      isAnonymous: boolean;
+      displayName: string | null;
+      email: string | null;
+    },
+  ) {}
 }
 
 export type LoginActions =
-    AnonymousAuthentication |
-    AnonymousAuthenticationFailure |
-    BeginAuthentication |
-    BeginAuthenticationFailure |
-    ClearError |
-    CreateUser |
-    CreateUserFailure |
-    EmailAuthentication |
-    EmailAuthenticationFailure |
-    GoogleAuthentication |
-    GoogleAuthenticationFailure |
-    Logout |
-    RestoreAuthentication;
+  | AnonymousAuthentication
+  | AnonymousAuthenticationFailure
+  | BeginAuthentication
+  | BeginAuthenticationFailure
+  | ClearError
+  | CreateUser
+  | CreateUserFailure
+  | EmailAuthentication
+  | EmailAuthenticationFailure
+  | GoogleAuthentication
+  | GoogleAuthenticationFailure
+  | Logout
+  | RestoreAuthentication;

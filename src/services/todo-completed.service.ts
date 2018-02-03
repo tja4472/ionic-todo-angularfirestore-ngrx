@@ -10,55 +10,49 @@ import * as TodoCompletedActions from '../actions/todo-completed.action';
 
 @Injectable()
 export class TodoCompletedService {
-    constructor(
-        private store: Store<FromRootReducer.IState>
-    ) {
-    }
+  constructor(private store: Store<FromRootReducer.IState>) {}
 
-    getData(): Observable<TodoCompleted[]> {
-        /*
+  getData(): Observable<TodoCompleted[]> {
+    /*
                 this.store.select(s => s.todoCompleted)
                 .subscribe(x => console.log('sssss>', x));
                 let a = this.store.select(s => s.todoCompleted.todoCompletedList);
                 return a;
         */
-        return this.store.select(FromRootReducer.getTodoCompleted_GetTodoCompletedList);
+    return this.store.select(
+      FromRootReducer.getTodoCompleted_GetTodoCompletedList,
+    );
+  }
+
+  initialise(): void {
+    this.store.dispatch(new TodoCompletedActions.ListenForData());
+  }
+
+  unlisten(): void {
+    this.store.dispatch(new TodoCompletedActions.UnlistenForData());
+  }
+
+  isLoaded(): Observable<boolean> {
+    return this.store.select(FromRootReducer.getTodoCompleted_GetLoaded);
+  }
+
+  isLoading(): Observable<boolean> {
+    return this.store.select(FromRootReducer.getTodoCompleted_GetLoading);
+  }
+
+  moveToCurrent(item: TodoCompleted) {
+    this.store.dispatch(new TodoCompletedActions.MoveToCurrent(item));
+  }
+
+  remove(todo: TodoCompleted) {
+    if (todo.$key === undefined) {
+      return;
     }
 
-    initialise(): void {
-        this.store.dispatch(
-            new TodoCompletedActions.ListenForData());
-    }
+    this.store.dispatch(new TodoCompletedActions.Remove(todo.$key));
+  }
 
-    unlisten(): void {
-        this.store.dispatch(
-            new TodoCompletedActions.UnlistenForData());
-    }
-
-    isLoaded(): Observable<boolean> {
-        return this.store.select(FromRootReducer.getTodoCompleted_GetLoaded);
-    }
-
-    isLoading(): Observable<boolean> {
-        return this.store.select(FromRootReducer.getTodoCompleted_GetLoading);
-    }
-
-    moveToCurrent(item: TodoCompleted) {
-        this.store.dispatch(
-            new TodoCompletedActions.MoveToCurrent(item));
-    }
-
-    remove(todo: TodoCompleted) {
-        if (todo.$key === undefined) {
-            return;
-        }
-
-        this.store.dispatch(
-            new TodoCompletedActions.Remove(todo.$key));
-    }
-
-    save(item: TodoCompleted) {
-        this.store.dispatch(
-            new TodoCompletedActions.Save(item));
-    }
+  save(item: TodoCompleted) {
+    this.store.dispatch(new TodoCompletedActions.Save(item));
+  }
 }

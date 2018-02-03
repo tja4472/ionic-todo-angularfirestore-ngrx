@@ -19,7 +19,8 @@ export class TodoListsPage {
   constructor(
     public navCtrl: NavController,
     public modalCtrl: ModalController,
-    private todoService: TodoListsService) {
+    private todoService: TodoListsService,
+  ) {
     //
     this.todos$ = todoService.getData();
   }
@@ -32,7 +33,6 @@ export class TodoListsPage {
     console.log('ionViewWillUnload');
     this.todoService.unlisten();
   }
-
 
   addItem() {
     console.log('addItem');

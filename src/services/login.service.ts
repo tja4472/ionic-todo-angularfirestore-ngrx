@@ -17,14 +17,16 @@ import { SignedInUser } from '../models/signed-in-user.model';
 // https://github.com/davidanaya/bi-dashboard-v1/blob/db0e3b71ef70d48453f776eb687aa465507146b0/src/app/auth/shared/services/auth.service.ts
 @Injectable()
 export class LoginService {
-    public notifier$: ReplaySubject<SignedInUser | null> = new ReplaySubject<SignedInUser>(1);
+  public notifier$: ReplaySubject<SignedInUser | null> = new ReplaySubject<
+    SignedInUser
+  >(1);
 
-    public signedInUser: SignedInUser;
+  public signedInUser: SignedInUser;
 
-    private readonly CLASS_NAME = 'LoginService';
+  private readonly CLASS_NAME = 'LoginService';
 
-    // tslint:disable-next-line:member-ordering
-    /*
+  // tslint:disable-next-line:member-ordering
+  /*
     auth$ = this.af.authState.do((firebaseUser) => {
         console.log('@@@@@@@@@@@@@@@@@@');
         if (!firebaseUser) {
@@ -47,35 +49,35 @@ export class LoginService {
     });
     */
 
-    constructor(
-        private af: AngularFireAuth,
-        private store: Store<FromRootReducer.IState>,
-    ) {
-        console.log(`%s:constructor`, this.CLASS_NAME);
+  constructor(
+    private af: AngularFireAuth,
+    private store: Store<FromRootReducer.IState>,
+  ) {
+    console.log(`%s:constructor`, this.CLASS_NAME);
 
-        af.authState.subscribe((firebaseUser) => {
-            if (!firebaseUser) {
-                console.log('%s:authState: No user is signed in.', this.CLASS_NAME);
-                // this.signedInUser = null;
-                this.notifier$.next(null);
-                this.store.dispatch(
-                    new LoginActions.Logout());
-                return;
-            }
+    af.authState.subscribe((firebaseUser) => {
+      if (!firebaseUser) {
+        console.log('%s:authState: No user is signed in.', this.CLASS_NAME);
+        // this.signedInUser = null;
+        this.notifier$.next(null);
+        this.store.dispatch(new LoginActions.Logout());
+        return;
+      }
 
-            console.log(`%s:User is signed in>`, this.CLASS_NAME, firebaseUser.uid);
-            this.signedInUser = this.createSignedInUser(firebaseUser);
-            this.notifier$.next(this.signedInUser);
+      console.log(`%s:User is signed in>`, this.CLASS_NAME, firebaseUser.uid);
+      this.signedInUser = this.createSignedInUser(firebaseUser);
+      this.notifier$.next(this.signedInUser);
 
-            this.store.dispatch(
-                new LoginActions.RestoreAuthentication({
-                    displayName: firebaseUser.displayName,
-                    email: firebaseUser.email,
-                    isAnonymous: firebaseUser.isAnonymous,
-                }));
-        });
-    }
-    /*
+      this.store.dispatch(
+        new LoginActions.RestoreAuthentication({
+          displayName: firebaseUser.displayName,
+          email: firebaseUser.email,
+          isAnonymous: firebaseUser.isAnonymous,
+        }),
+      );
+    });
+  }
+  /*
         initialise(): void {
             this.store.dispatch(
                 new LoginActions.BeginAuthenticationAction());
@@ -105,86 +107,74 @@ export class LoginService {
         }
     */
 
-    public clearError$(): void {
-        this.store.dispatch(
-            new LoginActions.ClearError());
-    }
+  public clearError$(): void {
+    this.store.dispatch(new LoginActions.ClearError());
+  }
 
-    public error$() {
-        // this works
-        return this.store.select(FromRootReducer.getLogin_GetError);
+  public error$() {
+    // this works
+    return this.store.select(FromRootReducer.getLogin_GetError);
 
-        // this works
-        // return this.store.select((s) => s.login.error);
-    }
+    // this works
+    // return this.store.select((s) => s.login.error);
+  }
 
-    getLoginState() {
-        return this.store.select(FromRootReducer.getLoginState);
-    }
+  getLoginState() {
+    return this.store.select(FromRootReducer.getLoginState);
+  }
 
-    anonymousAuthentication() {
-        this.store.dispatch(
-            new LoginActions.AnonymousAuthentication());
-    }
+  anonymousAuthentication() {
+    this.store.dispatch(new LoginActions.AnonymousAuthentication());
+  }
 
-    createUser(
-        userName: string,
-        password: string
-    ) {
-        this.store.dispatch(
-            new LoginActions.CreateUser({
-                password,
-                userName,
-            }));
-    }
+  createUser(userName: string, password: string) {
+    this.store.dispatch(
+      new LoginActions.CreateUser({
+        password,
+        userName,
+      }),
+    );
+  }
 
-    emailAuthentication(
-        userName: string,
-        password: string
-    ) {
-        /*
+  emailAuthentication(userName: string, password: string) {
+    /*
                 this.store.dispatch(
                     new LoginActions.EmailAuthenticationAction({
                         userName,
                         password
                     }));
         */
-        console.log('emailAuthentication');
-        this.store.dispatch(
-            new LoginActions.BeginAuthentication());
-        this.af.auth.signInWithEmailAndPassword(userName, password).catch((error: firebase.FirebaseError) => {
-            // Handle Errors here.
-            // var errorCode = error.code;
-            // var errorMessage = error.message;
-            console.log('emailAuthentication>', error);
-            this.store.dispatch(
-                new LoginActions.EmailAuthenticationFailure(error));
-            // ...
-        });
-    }
+    console.log('emailAuthentication');
+    this.store.dispatch(new LoginActions.BeginAuthentication());
+    this.af.auth
+      .signInWithEmailAndPassword(userName, password)
+      .catch((error: firebase.FirebaseError) => {
+        // Handle Errors here.
+        // var errorCode = error.code;
+        // var errorMessage = error.message;
+        console.log('emailAuthentication>', error);
+        this.store.dispatch(new LoginActions.EmailAuthenticationFailure(error));
+        // ...
+      });
+  }
 
-    googleAuthentication() {
-        this.store.dispatch(
-            new LoginActions.GoogleAuthentication());
-    }
+  googleAuthentication() {
+    this.store.dispatch(new LoginActions.GoogleAuthentication());
+  }
 
-    logout() {
-        // this.store.dispatch(
-        //    new LoginActions.LogoutAction());
-        this.af.auth.signOut();
-    }
+  logout() {
+    // this.store.dispatch(
+    //    new LoginActions.LogoutAction());
+    this.af.auth.signOut();
+  }
 
-    private createSignedInUser(
-        user: firebase.User
-    ): SignedInUser {
-        const result: SignedInUser = new SignedInUser(
-            {
-                email: user.email,
-                firebaseDisplayName: user.displayName,
-                userId: user.uid,
-            }
-        );
+  private createSignedInUser(user: firebase.User): SignedInUser {
+    const result: SignedInUser = new SignedInUser({
+      email: user.email,
+      firebaseDisplayName: user.displayName,
+      userId: user.uid,
+    });
 
-        return result;
-    }
+    return result;
+  }
 }

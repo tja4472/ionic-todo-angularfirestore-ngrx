@@ -45,7 +45,6 @@ import { TodoCompletedService } from '../services/todo-completed.service';
 import { TodoDataService } from '../services/todo.data.service';
 import { TodoService } from '../services/todo.service';
 
-
 import { AngularFireModule } from 'angularfire2';
 import { AngularFireAuthModule } from 'angularfire2/auth';
 import { AngularFirestoreModule } from 'angularfire2/firestore';
@@ -63,9 +62,6 @@ import { TodoEffects } from '../effects/todo.effect';
 
 // Add the RxJS Observable operators we need in this app.
 // import './rxjs-operators';
-
-
-
 
 @NgModule({
   declarations: [
@@ -135,9 +131,9 @@ import { TodoEffects } from '../effects/todo.effect';
     TodoListsService,
     ValidationService,
     { provide: ErrorHandler, useClass: IonicErrorHandler },
-  ]
+  ],
 })
-export class AppModule { }
+export class AppModule {}
 
 /*
 so I need some initial state loaded before angular does anything.. for example

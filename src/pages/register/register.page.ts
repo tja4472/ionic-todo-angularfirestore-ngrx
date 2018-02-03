@@ -14,9 +14,7 @@ export class RegisterPage {
 
   private readonly CLASS_NAME = 'RegisterPage';
 
-  constructor(
-    private loginService: LoginService,
-  ) {
+  constructor(private loginService: LoginService) {
     console.log('%s:constructor', this.CLASS_NAME);
     this.error$ = loginService.error$();
   }

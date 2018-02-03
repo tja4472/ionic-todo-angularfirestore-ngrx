@@ -11,7 +11,7 @@ export interface IModalResult {
 
 @Component({
   selector: 'tja-modal-todo-completed-detail',
-  templateUrl: 'todo-completed-detail.modal.html'
+  templateUrl: 'todo-completed-detail.modal.html',
 })
 export class TodoCompletedDetailModal {
   public viewTodoCompleted: TodoCompleted;
@@ -24,7 +24,10 @@ export class TodoCompletedDetailModal {
   ) {
     console.log(`%s:constructor`, this.CLASS_NAME);
     // navParams passes by reference.
-    const navParamsTodo: Readonly<TodoCompleted> = Object.assign(new TodoCompleted(), navParams.get('todo'));
+    const navParamsTodo: Readonly<TodoCompleted> = Object.assign(
+      new TodoCompleted(),
+      navParams.get('todo'),
+    );
 
     // console.log('params:get>', navParams.get('todo'));
     // const navParamsTodo: TodoCompleted = navParams.get('todo');

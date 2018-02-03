@@ -1,9 +1,17 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { ActionSheetController, NavController, ModalController, PopoverController } from 'ionic-angular';
+import {
+  ActionSheetController,
+  NavController,
+  ModalController,
+  PopoverController,
+} from 'ionic-angular';
 import { Observable } from 'rxjs/Observable';
 import { TodoService } from '../../services/todo.service';
 
-import { TodoListPopover, ITodoListPopoverResult } from '../../components/todo-list-popover/todo-list.popover';
+import {
+  TodoListPopover,
+  ITodoListPopoverResult,
+} from '../../components/todo-list-popover/todo-list.popover';
 import { Todo } from '../../shared/models/todo.model';
 import { TodoDetailModal } from '../../modals/todo-detail/todo-detail.modal';
 import { IReorderArrayIndexes } from '../../shared/models/reorder-array-indexes.model';
@@ -21,7 +29,8 @@ export class TodoListPage {
     public modalCtrl: ModalController,
     public popoverCtrl: PopoverController,
     public actionSheetCtrl: ActionSheetController,
-    private todoService: TodoService) {
+    private todoService: TodoService,
+  ) {
     //
     this.todos$ = todoService.getData();
   }
@@ -34,7 +43,6 @@ export class TodoListPage {
     console.log('ionViewWillUnload');
     this.todoService.unlisten();
   }
-
 
   addItem() {
     console.log('addItem');
@@ -62,14 +70,15 @@ export class TodoListPage {
             this.todoService.clearCompletedItems();
           },
           text: 'Clear completed?',
-        }, {
+        },
+        {
           handler: () => {
             console.log('Cancel clicked');
           },
           role: 'cancel',
           text: 'Cancel',
-        }
-      ]
+        },
+      ],
     });
     actionSheet.present();
   }
@@ -101,7 +110,7 @@ export class TodoListPage {
         });
     */
     popover.present({
-      ev
+      ev,
     });
   }
 

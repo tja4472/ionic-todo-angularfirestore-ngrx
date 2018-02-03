@@ -25,11 +25,12 @@ export class TodoEffects {
     private actions$: Actions,
     private state$: Store<FromRootReducer.IState>,
     private fb1DataService: Fb1DataService,
-    private todoDataService: TodoDataService
-  ) { }
+    private todoDataService: TodoDataService,
+  ) {}
 
   // tslint:disable-next-line:member-ordering
-  @Effect({ dispatch: false }) clearCompleted$ = this.actions$
+  @Effect({ dispatch: false })
+  clearCompleted$ = this.actions$
     .ofType(TodoActionTypes.ClearCompleted)
     .withLatestFrom(this.state$)
     .do(([, state]) => {
@@ -48,10 +49,12 @@ export class TodoEffects {
   */
 
   // tslint:disable-next-line:member-ordering
-  @Effect() listenForData$ = this.actions$
-    .ofType(TodoActionTypes.ListenForData,
-    TodoActionTypes.UnlistenForData)
-    .do((x) => { console.log('Effect:listenForData$:A', x); })
+  @Effect()
+  listenForData$ = this.actions$
+    .ofType(TodoActionTypes.ListenForData, TodoActionTypes.UnlistenForData)
+    .do((x) => {
+      console.log('Effect:listenForData$:A', x);
+    })
     .withLatestFrom(this.state$)
     // tslint:disable-next-line:no-unused-variable
     // .filter(([, state]) => state.login.isAuthenticated)
@@ -66,9 +69,10 @@ export class TodoEffects {
         return this.todoDataService.getData();
       }
     })
-    .do((x) => { console.log('Effect:listenForData$:B', x); })
+    .do((x) => {
+      console.log('Effect:listenForData$:B', x);
+    })
     .map((items: Todo[]) => new LoadSuccess(items));
-
 
   /*
     @Effect() loadCollection$ = this.updates$
@@ -84,7 +88,8 @@ export class TodoEffects {
     // .ignoreElements());
   */
   // tslint:disable-next-line:member-ordering
-  @Effect({ dispatch: false }) reorderList$ = this.actions$
+  @Effect({ dispatch: false })
+  reorderList$ = this.actions$
     .ofType(TodoActionTypes.ReorderList)
     .withLatestFrom(this.state$)
     .map(([action, state]) => ({ action: action as ReorderList, state }))
@@ -92,7 +97,8 @@ export class TodoEffects {
       console.log('Effect:reorderList$:A', x);
       this.todoDataService.reorderItemsAndUpdate(
         x.action.payload,
-        x.state.todo.todos);
+        x.state.todo.todos,
+      );
     });
   /*
     @Effect() reorderList$ = this.updates$
@@ -109,7 +115,8 @@ export class TodoEffects {
   */
 
   // tslint:disable-next-line:member-ordering
-  @Effect({ dispatch: false }) removeItem$ = this.actions$
+  @Effect({ dispatch: false })
+  removeItem$ = this.actions$
     .ofType(TodoActionTypes.Remove)
     .map((action: Remove) => action.payload)
     .do((payload) => {
@@ -130,7 +137,8 @@ export class TodoEffects {
       .ignoreElements();
   */
   // tslint:disable-next-line:member-ordering
-  @Effect({ dispatch: false }) save$ = this.actions$
+  @Effect({ dispatch: false })
+  save$ = this.actions$
     .ofType(TodoActionTypes.Save)
     .map((action: Save) => action.payload)
     .do((payload) => {

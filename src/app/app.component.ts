@@ -1,4 +1,3 @@
-
 import { Component, ViewChild } from '@angular/core';
 import { MenuController, Nav, Platform } from 'ionic-angular';
 import { StatusBar } from '@ionic-native/status-bar';
@@ -25,7 +24,7 @@ export interface IPageInterface {
 }
 
 @Component({
-  templateUrl: 'app.html'
+  templateUrl: 'app.html',
 })
 export class MyApp {
   @ViewChild(Nav) nav: Nav;
@@ -39,17 +38,19 @@ export class MyApp {
 
   loggedInPages: IPageInterface[] = [
     { title: 'Current Todos', component: TodoListPage, icon: 'calendar' },
-    { title: 'Completed Todos', component: TodoCompletedListPage, icon: 'calendar' },
+    {
+      component: TodoCompletedListPage,
+      icon: 'calendar',
+      title: 'Completed Todos',
+    },
     { title: 'Todo Lists', component: TodoListsPage, icon: 'calendar' },
-    { title: 'Sign Out', component: Page1, icon: 'log-out', logsOut: true }
+    { title: 'Sign Out', component: Page1, icon: 'log-out', logsOut: true },
   ];
 
   loggedOutPages: IPageInterface[] = [
     { title: 'Sign In', component: SignInPage, icon: 'log-in' },
     { title: 'Register', component: RegisterPage, icon: 'person-add' },
   ];
-
-
 
   rootPage: any; // = Page1;
   loginState$: any;
@@ -136,12 +137,14 @@ export class MyApp {
         });
       */
     });
-
   }
 
   // Used in view.
   public isActive(page: IPageInterface) {
-    if (this.nav.getActive() && this.nav.getActive().component === page.component) {
+    if (
+      this.nav.getActive() &&
+      this.nav.getActive().component === page.component
+    ) {
       return 'primary';
     }
     return;
@@ -172,7 +175,6 @@ export class MyApp {
       console.error('Didn\'t set nav root');
     });
 
-
     this.displayUserName = user.displayName;
   }
 
@@ -190,11 +192,19 @@ export class MyApp {
     const loggedOutMenu = 'loggedOutMenu';
 
     if (!this.menu.get(loggedInMenu)) {
-      console.error(`%s:enableMenu() *** WARNING: Menu not found>`, this.CLASS_NAME, loggedInMenu);
+      console.error(
+        `%s:enableMenu() *** WARNING: Menu not found>`,
+        this.CLASS_NAME,
+        loggedInMenu,
+      );
     }
 
     if (!this.menu.get(loggedOutMenu)) {
-      console.error(`%s:enableMenu() *** WARNING: Menu not found>`, this.CLASS_NAME, loggedOutMenu);
+      console.error(
+        `%s:enableMenu() *** WARNING: Menu not found>`,
+        this.CLASS_NAME,
+        loggedOutMenu,
+      );
     }
 
     this.menu.enable(loggedIn, loggedInMenu);

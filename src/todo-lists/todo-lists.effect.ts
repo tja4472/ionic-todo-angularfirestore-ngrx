@@ -23,15 +23,19 @@ export class TodoListsEffects {
   constructor(
     private actions$: Actions,
     private state$: Store<FromRootReducer.IState>,
-
-    private dataService: TodoListsDataService
-  ) { }
+    private dataService: TodoListsDataService,
+  ) {}
 
   // tslint:disable-next-line:member-ordering
-  @Effect() listenForData$ = this.actions$
-    .ofType(TodoListsActionTypes.ListenForData,
-      TodoListsActionTypes.UnlistenForData)
-    .do((x) => { console.log('Effect:listenForData$:A', x); })
+  @Effect()
+  listenForData$ = this.actions$
+    .ofType(
+      TodoListsActionTypes.ListenForData,
+      TodoListsActionTypes.UnlistenForData,
+    )
+    .do((x) => {
+      console.log('Effect:listenForData$:A', x);
+    })
     .withLatestFrom(this.state$)
     // tslint:disable-next-line:no-unused-variable
     // .filter(([, state]) => state.login.isAuthenticated)
@@ -46,11 +50,14 @@ export class TodoListsEffects {
         return this.dataService.getData();
       }
     })
-    .do((x) => { console.log('Effect:listenForData$:B', x); })
+    .do((x) => {
+      console.log('Effect:listenForData$:B', x);
+    })
     .map((items: TodoListsItem[]) => new LoadSuccess(items));
 
   // tslint:disable-next-line:member-ordering
-  @Effect({ dispatch: false }) removeItem$ = this.actions$
+  @Effect({ dispatch: false })
+  removeItem$ = this.actions$
     .ofType(TodoListsActionTypes.Remove)
     .map((action: Remove) => action.payload)
     .do((payload) => {
@@ -59,7 +66,8 @@ export class TodoListsEffects {
     });
 
   // tslint:disable-next-line:member-ordering
-  @Effect({ dispatch: false }) save$ = this.actions$
+  @Effect({ dispatch: false })
+  save$ = this.actions$
     .ofType(TodoListsActionTypes.Save)
     .map((action: Save) => action.payload)
     .do((payload) => {

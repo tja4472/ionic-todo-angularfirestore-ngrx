@@ -20,10 +20,7 @@ export class SignInPage {
 
   private readonly CLASS_NAME = 'SignInPage';
 
-  constructor(
-    public loginService: LoginService,
-    public nav: NavController,
-  ) {
+  constructor(public loginService: LoginService, public nav: NavController) {
     console.log('%s:constructor', this.CLASS_NAME);
     this.viewError$ = loginService.error$();
   }

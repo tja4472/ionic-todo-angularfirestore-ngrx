@@ -1,46 +1,46 @@
 import { createEntityAdapter, EntityAdapter, EntityState } from '@ngrx/entity';
 
-import { TaskListActionTypes, TaskListActions} from './task-list.action';
+import { TaskListActionTypes, TaskListActions } from './task-list.action';
 
 import { ITaskList } from './task-list.model';
 
 export interface IState extends EntityState<ITaskList> {
-    loaded: boolean;
-    loading: boolean;
-    selectedTaskListId: string | null;
+  loaded: boolean;
+  loading: boolean;
+  selectedTaskListId: string | null;
 }
 
-export const adapter: EntityAdapter<ITaskList> = createEntityAdapter<ITaskList>({
+export const adapter: EntityAdapter<ITaskList> = createEntityAdapter<ITaskList>(
+  {
     selectId: (taskList: ITaskList) => taskList.id,
     sortComparer: false,
-});
+  },
+);
 
 export const initialState: IState = adapter.getInitialState({
-    loaded: false,
-    loading: false,
-    selectedTaskListId: null,
+  loaded: false,
+  loading: false,
+  selectedTaskListId: null,
 });
 
-export function reducer(
-    state = initialState,
-    action: TaskListActions): IState {
-    switch (action.type) {
-        case TaskListActionTypes.ListenForData: {
-            return {
-                ...state,
-                loading: true,
-            };
-        }
+export function reducer(state = initialState, action: TaskListActions): IState {
+  switch (action.type) {
+    case TaskListActionTypes.ListenForData: {
+      return {
+        ...state,
+        loading: true,
+      };
+    }
 
-        case TaskListActionTypes.LoadSuccess: {
-            return {
-                ...adapter.addMany(action.payload, state),
-                loaded: true,
-                loading: false,
-                selectedTaskListId: state.selectedTaskListId,
-            };
+    case TaskListActionTypes.LoadSuccess: {
+      return {
+        ...adapter.addMany(action.payload, state),
+        loaded: true,
+        loading: false,
+        selectedTaskListId: state.selectedTaskListId,
+      };
 
-            /*
+      /*
                         const items: TodoListsItem[] = action.payload;
 
                         return {
@@ -50,19 +50,19 @@ export function reducer(
                             todoLists: items.map((book) => book)
                         };
             */
-        }
-
-        case TaskListActionTypes.SetSelectedList: {
-            return {
-                ...state,
-                selectedTaskListId: action.listId,
-            };
-        }
-
-        default: {
-            return state;
-        }
     }
+
+    case TaskListActionTypes.SetSelectedList: {
+      return {
+        ...state,
+        selectedTaskListId: action.listId,
+      };
+    }
+
+    default: {
+      return state;
+    }
+  }
 }
 
 // =========

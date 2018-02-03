@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { NavParams, ViewController } from 'ionic-angular';
 
-import { TodoListsItem} from '../../todo-lists-item.model';
+import { TodoListsItem } from '../../todo-lists-item.model';
 
 @Component({
   selector: 'tja-modal-todo-lists-detail',
@@ -13,13 +13,13 @@ export class TodoListsDetailModal {
 
   private readonly CLASS_NAME = 'TodoListsDetailModal';
 
-  constructor(
-    navParams: NavParams,
-    public viewController: ViewController
-  ) {
+  constructor(navParams: NavParams, public viewController: ViewController) {
     console.log(`%s:constructor`, this.CLASS_NAME);
     // navParams passes by reference.
-    const navParamsTodo: Readonly<TodoListsItem> = Object.assign(new TodoListsItem(), navParams.get('todo'));
+    const navParamsTodo: Readonly<TodoListsItem> = Object.assign(
+      new TodoListsItem(),
+      navParams.get('todo'),
+    );
     console.log('navParamsTodo>', navParamsTodo);
     console.log('navParamsTodo.isNew()>', navParamsTodo.isNew());
 
@@ -36,7 +36,6 @@ export class TodoListsDetailModal {
     }
     */
 
-
     /*
         this.isEditing = !!paramTodo;
 
@@ -47,7 +46,6 @@ export class TodoListsDetailModal {
         this.todo = this._todo;
         console.log('+++this.todo>', this.todo);
     */
-
   }
 
   public viewItemCancelled() {

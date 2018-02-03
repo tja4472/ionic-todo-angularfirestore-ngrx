@@ -13,13 +13,13 @@ export class TodoDetailModal {
 
   private readonly CLASS_NAME = 'TodoDetailModal';
 
-  constructor(
-    navParams: NavParams,
-    public viewController: ViewController
-  ) {
+  constructor(navParams: NavParams, public viewController: ViewController) {
     console.log(`%s:constructor`, this.CLASS_NAME);
     // navParams passes by reference.
-    const navParamsTodo: Readonly<Todo> = Object.assign(new Todo(), navParams.get('todo'));
+    const navParamsTodo: Readonly<Todo> = Object.assign(
+      new Todo(),
+      navParams.get('todo'),
+    );
     console.log('navParamsTodo>', navParamsTodo);
     console.log('navParamsTodo.isNew()>', navParamsTodo.isNew());
 
@@ -36,7 +36,6 @@ export class TodoDetailModal {
     }
     */
 
-
     /*
         this.isEditing = !!paramTodo;
 
@@ -47,7 +46,6 @@ export class TodoDetailModal {
         this.todo = this._todo;
         console.log('+++this.todo>', this.todo);
     */
-
   }
 
   public viewItemCancelled() {

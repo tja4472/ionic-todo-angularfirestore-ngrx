@@ -11,54 +11,44 @@ import * as TodoActions from '../actions/todo.action';
 
 @Injectable()
 export class TodoService {
-    constructor(
-        private store: Store<FromRootReducer.IState>
-    ) {
-    }
+  constructor(private store: Store<FromRootReducer.IState>) {}
 
-    clearCompletedItems() {
-        this.store.dispatch(
-            new TodoActions.ClearCompleted()
-        );
-    }
+  clearCompletedItems() {
+    this.store.dispatch(new TodoActions.ClearCompleted());
+  }
 
-    getData(): Observable<Todo[]> {
-        return this.store.select(FromRootReducer.getTodo_GetTodos);
-    }
+  getData(): Observable<Todo[]> {
+    return this.store.select(FromRootReducer.getTodo_GetTodos);
+  }
 
-    initialise(): void {
-        this.store.dispatch(
-            new TodoActions.ListenForData());
-    }
+  initialise(): void {
+    this.store.dispatch(new TodoActions.ListenForData());
+  }
 
-    unlisten(): void {
-        this.store.dispatch(
-            new TodoActions.UnlistenForData());
-    }
+  unlisten(): void {
+    this.store.dispatch(new TodoActions.UnlistenForData());
+  }
 
-    isLoaded(): Observable<boolean> {
-        return this.store.select(FromRootReducer.getTodo_GetLoaded);
-    }
+  isLoaded(): Observable<boolean> {
+    return this.store.select(FromRootReducer.getTodo_GetLoaded);
+  }
 
-    isLoading(): Observable<boolean> {
-        return this.store.select(FromRootReducer.getTodo_GetLoading);
-    }
+  isLoading(): Observable<boolean> {
+    return this.store.select(FromRootReducer.getTodo_GetLoading);
+  }
 
-    reorderItems(indexes: IReorderArrayIndexes) {
-        this.store.dispatch(
-            new TodoActions.ReorderList(indexes));
-    }
+  reorderItems(indexes: IReorderArrayIndexes) {
+    this.store.dispatch(new TodoActions.ReorderList(indexes));
+  }
 
-    remove(todo: Todo) {
-        if (todo.$key === undefined) {
-            return;
-        }
-        this.store.dispatch(
-            new TodoActions.Remove(todo.$key));
+  remove(todo: Todo) {
+    if (todo.$key === undefined) {
+      return;
     }
+    this.store.dispatch(new TodoActions.Remove(todo.$key));
+  }
 
-    save(todo: Todo) {
-        this.store.dispatch(
-            new TodoActions.Save(todo));
-    }
+  save(todo: Todo) {
+    this.store.dispatch(new TodoActions.Save(todo));
+  }
 }

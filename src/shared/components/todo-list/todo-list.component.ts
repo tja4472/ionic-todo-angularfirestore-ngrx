@@ -8,7 +8,6 @@ import { Todo } from '../../models/todo.model';
   templateUrl: 'todo-list.component.html',
 })
 export class TodoListComponent {
-
   @Input() public todos: Todo[];
   @Output() public addItem = new EventEmitter();
   @Output() public toggleCompleteItem = new EventEmitter<Todo>();
@@ -18,8 +17,7 @@ export class TodoListComponent {
 
   private readonly CLASS_NAME = 'TodoListComponent';
 
-  constructor(
-  ) {
+  constructor() {
     console.log(`%s:constructor`, this.CLASS_NAME);
   }
 }

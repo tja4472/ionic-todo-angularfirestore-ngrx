@@ -10,40 +10,39 @@ import { TodoCompletedDataService } from '../services/todo-completed.data.servic
 
 @Injectable()
 export class Fb1DataService {
-    constructor(
-        private todoCompletedDataService: TodoCompletedDataService,
-        private todoDataService: TodoDataService
-    ) { }
+  constructor(
+    private todoCompletedDataService: TodoCompletedDataService,
+    private todoDataService: TodoDataService,
+  ) {}
 
-    clearCompletedTodos(items: Todo[]) {
-        console.log('clearCompletedTodos>', items);
+  clearCompletedTodos(items: Todo[]) {
+    console.log('clearCompletedTodos>', items);
 
-        items.map((x: Todo) => {
-            console.log('x>', x);
-            if (x.$key === undefined) {
-                return;
-            }
-            const todoCompleted = Object.assign(new TodoCompleted(),
-                {
-                    description: x.description,
-                    name: x.name,
-                });
+    items.map((x: Todo) => {
+      console.log('x>', x);
+      if (x.$key === undefined) {
+        return;
+      }
+      const todoCompleted = Object.assign(new TodoCompleted(), {
+        description: x.description,
+        name: x.name,
+      });
 
-            this.todoCompletedDataService.save(todoCompleted);
+      this.todoCompletedDataService.save(todoCompleted);
 
-            this.todoDataService.removeItem(x.$key);
-        });
-    }
+      this.todoDataService.removeItem(x.$key);
+    });
+  }
 
-    moveToCurrent(item: TodoCompleted) {
-        console.log('moveToCurrent>', item);
+  moveToCurrent(item: TodoCompleted) {
+    console.log('moveToCurrent>', item);
 
-        const todo: Todo = new Todo();
-        todo.description = item.description;
-        // todo.isComplete = item.isComplete;
-        todo.name = item.name;
+    const todo: Todo = new Todo();
+    todo.description = item.description;
+    // todo.isComplete = item.isComplete;
+    todo.name = item.name;
 
-        /*
+    /*
                 const todo: ITodo = {
                     $key: item.$key,
                     description: item.description,
@@ -53,11 +52,11 @@ export class Fb1DataService {
                     userId: '',
                 };
         */
-        this.todoDataService.save(todo);
+    this.todoDataService.save(todo);
 
-        if (item.$key === undefined) {
-            return;
-        }
-        this.todoCompletedDataService.removeItem(item.$key);
+    if (item.$key === undefined) {
+      return;
     }
+    this.todoCompletedDataService.removeItem(item.$key);
+  }
 }

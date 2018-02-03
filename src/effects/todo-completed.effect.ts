@@ -26,13 +26,18 @@ export class TodoCompletedEffects {
     private state$: Store<FromRootReducer.IState>,
     private dataService: TodoCompletedDataService,
     private fb1DataService: Fb1DataService,
-  ) { }
+  ) {}
 
   // tslint:disable-next-line:member-ordering
-  @Effect() listenForData$ = this.actions$
-    .ofType(TodoCompletedActionTypes.ListenForData,
-      TodoCompletedActionTypes.UnlistenForData)
-    .do((x) => { console.log('Effect:listenForData$:A', x); })
+  @Effect()
+  listenForData$ = this.actions$
+    .ofType(
+      TodoCompletedActionTypes.ListenForData,
+      TodoCompletedActionTypes.UnlistenForData,
+    )
+    .do((x) => {
+      console.log('Effect:listenForData$:A', x);
+    })
     .withLatestFrom(this.state$)
     // .filter(([, state]) => state.login.isAuthenticated)
     // Watch database node and get items.
@@ -44,11 +49,14 @@ export class TodoCompletedEffects {
         return this.dataService.getData();
       }
     })
-    .do((x) => { console.log('Effect:listenForData$:B', x); })
+    .do((x) => {
+      console.log('Effect:listenForData$:B', x);
+    })
     .map((items: TodoCompleted[]) => new LoadSuccess(items));
 
   // tslint:disable-next-line:member-ordering
-  @Effect({ dispatch: false }) moveToCurrent$ = this.actions$
+  @Effect({ dispatch: false })
+  moveToCurrent$ = this.actions$
     .ofType(TodoCompletedActionTypes.MoveToCurrent)
     .map((action: MoveToCurrent) => action.payload)
     .do((payload) => {
@@ -68,7 +76,8 @@ export class TodoCompletedEffects {
       .ignoreElements();
   */
   // tslint:disable-next-line:member-ordering
-  @Effect({ dispatch: false }) removeItem$ = this.actions$
+  @Effect({ dispatch: false })
+  removeItem$ = this.actions$
     .ofType(TodoCompletedActionTypes.Remove)
     .map((action: Remove) => action.payload)
     .do((payload) => {
@@ -89,7 +98,8 @@ export class TodoCompletedEffects {
   */
 
   // tslint:disable-next-line:member-ordering
-  @Effect({ dispatch: false }) save$ = this.actions$
+  @Effect({ dispatch: false })
+  save$ = this.actions$
     .ofType(TodoCompletedActionTypes.Save)
     .map((action: Save) => action.payload)
     .do((payload) => {

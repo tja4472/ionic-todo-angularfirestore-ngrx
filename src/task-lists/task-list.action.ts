@@ -5,12 +5,12 @@ import { Action } from '@ngrx/store';
 import { ITaskList } from './task-list.model';
 
 export enum TaskListActionTypes {
-    ListenForData = '[TaskList] Listen For Data',
-    LoadSuccess = '[TaskList] Load Success',
-    Remove = '[TaskList] Remove',
-    Save = '[TaskList] Save',
-    SetSelectedList = '[TaskList] Set Selected List',
-    UnlistenForData = '[TaskList] Unlisten For Data',
+  ListenForData = '[TaskList] Listen For Data',
+  LoadSuccess = '[TaskList] Load Success',
+  Remove = '[TaskList] Remove',
+  Save = '[TaskList] Save',
+  SetSelectedList = '[TaskList] Set Selected List',
+  UnlistenForData = '[TaskList] Unlisten For Data',
 }
 /*
 export const LISTEN_FOR_DATA = '[TaskList] Listen For Data';
@@ -21,45 +21,45 @@ export const SET_SELECTED_LIST = '[TaskList] Set Selected List';
 export const UNLISTEN_FOR_DATA = '[TaskList] Unlisten For Data';
 */
 export class ListenForData implements Action {
-    readonly type = TaskListActionTypes.ListenForData;
+  readonly type = TaskListActionTypes.ListenForData;
 
-    constructor() { }
+  constructor() {}
 }
 
 export class LoadSuccess implements Action {
-    readonly type = TaskListActionTypes.LoadSuccess;
+  readonly type = TaskListActionTypes.LoadSuccess;
 
-    constructor(public payload: ITaskList[]) { }
+  constructor(public payload: ITaskList[]) {}
 }
 
 export class Remove implements Action {
-    readonly type = TaskListActionTypes.Remove;
+  readonly type = TaskListActionTypes.Remove;
 
-    constructor(public payload: string) { } // itemKey
+  constructor(public payload: string) {} // itemKey
 }
 
 export class Save implements Action {
-    readonly type = TaskListActionTypes.Save;
+  readonly type = TaskListActionTypes.Save;
 
-    constructor(public payload: ITaskList) { }
+  constructor(public payload: ITaskList) {}
 }
 
 export class SetSelectedList implements Action {
-    readonly type = TaskListActionTypes.SetSelectedList;
+  readonly type = TaskListActionTypes.SetSelectedList;
 
-    constructor(public listId: string) { }
+  constructor(public listId: string) {}
 }
 
 export class UnlistenForData implements Action {
-    readonly type = TaskListActionTypes.UnlistenForData;
+  readonly type = TaskListActionTypes.UnlistenForData;
 
-    constructor() { }
+  constructor() {}
 }
 
 export type TaskListActions =
-    ListenForData |
-    LoadSuccess |
-    Remove |
-    Save |
-    SetSelectedList |
-    UnlistenForData;
+  | ListenForData
+  | LoadSuccess
+  | Remove
+  | Save
+  | SetSelectedList
+  | UnlistenForData;
