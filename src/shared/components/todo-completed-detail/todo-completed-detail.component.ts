@@ -22,7 +22,7 @@ export class TodoCompletedDetailComponent {
 
   ngOnInit() {
     console.log('###%s:ngOnInit>', this.CLASS_NAME, this.todoCompleted);
-    console.log('this.todo.isNew()>', this.todoCompleted.isNew());
+    // console.log('this.todo.isNew()>', this.todoCompleted.isNew());
 
     this.todoForm = this.formBuilder.group({
       description: [this.todoCompleted.description],
@@ -50,7 +50,10 @@ export class TodoCompletedDetailComponent {
 
     console.log('this.todoForm.value>', this.todoForm.value);
     console.log('this.todo>', this.todoCompleted);
-
+    const saveItem = this.prepareSaveItem();
+    console.log('saveItem>', saveItem);
+    this.itemSaved.emit(saveItem);
+/*
     // const editedItem: ITodo = { ...this.todo, ...this.todoForm.value };
     const editedItem: TodoCompleted = Object.assign(
       new TodoCompleted(),
@@ -60,5 +63,20 @@ export class TodoCompletedDetailComponent {
     console.log('editedItem>', editedItem);
 
     this.itemSaved.emit(editedItem);
+*/
+  }
+
+  private prepareSaveItem(): TodoCompleted {
+    // const formModel: IFormModel = this.viewForm.value;
+    const formModel = this.todoForm.value;
+
+    const saveItem: TodoCompleted = {
+      ...this.todoCompleted,
+      description: formModel.description,
+      isComplete: formModel.isComplete,
+      name: formModel.name,
+    };
+
+    return saveItem;
   }
 }

@@ -1,20 +1,16 @@
-export class TodoCompleted {
-  $key?: string = undefined;
-  description?: string = undefined;
-  isComplete: boolean = true;
-  name: string = '';
+// tslint:disable-next-line:interface-name
+export interface TodoCompleted {
+  readonly $key: string;
+  readonly description?: string;
+  readonly isComplete: boolean;
+  readonly name: string;
+}
 
-  public constructor(fields?: {
-    $key?: string;
-    description?: string;
-    isComplete?: boolean;
-    name?: string;
-  }) {
-    if (fields) {
-      Object.assign(this, fields);
-    }
-  }
-  public isNew(): boolean {
-    return this.$key === undefined;
-  }
+export function NewTodoCompleted(): TodoCompleted {
+  return {
+    $key: '',
+    description: '',
+    isComplete: true,
+    name: '',
+  };
 }

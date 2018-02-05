@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { NavParams, ViewController } from 'ionic-angular';
 
-import { TodoCompleted } from '../../shared/models/todo-completed.model';
+import { TodoCompleted, NewTodoCompleted } from '../../shared/models/todo-completed.model';
 
 export interface IModalResult {
   isRemoved: boolean;
@@ -23,16 +23,16 @@ export class TodoCompletedDetailModal {
     public viewController: ViewController,
   ) {
     console.log(`%s:constructor`, this.CLASS_NAME);
-    // navParams passes by reference.
-    const navParamsTodo: Readonly<TodoCompleted> = Object.assign(
-      new TodoCompleted(),
-      navParams.get('todo'),
-    );
 
-    // console.log('params:get>', navParams.get('todo'));
-    // const navParamsTodo: TodoCompleted = navParams.get('todo');
-    this.viewTodoCompleted = Object.assign(new TodoCompleted(), navParamsTodo);
-    console.log('this.viewTodoCompleted>', this.viewTodoCompleted);
+    const paramItem: TodoCompleted = navParams.get('todo');
+
+    if (paramItem === undefined) {
+      // new item.
+      this.viewTodoCompleted = NewTodoCompleted();
+    } else {
+      // navParams passes by reference.
+      this.viewTodoCompleted = { ...paramItem };
+    }
   }
 
   public viewItemCancelled() {
