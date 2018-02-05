@@ -6,7 +6,10 @@ import {
   AngularFirestoreCollection,
 } from 'angularfire2/firestore';
 
-import { TodoCompleted, NewTodoCompleted } from '../shared/models/todo-completed.model';
+import {
+  TodoCompleted,
+  NewTodoCompleted,
+} from '../shared/models/todo-completed.model';
 
 import { LoginService } from './login.service';
 import { SignedInUser } from '../models/signed-in-user.model';
@@ -65,7 +68,7 @@ export class TodoCompletedDataService {
   public save(item: TodoCompleted): void {
     const doc = this.toFirestoreDoc(item);
 
-    if (item.$key === '') {
+    if (item.id === '') {
       doc.id = this.afs.createId();
     }
 
@@ -87,10 +90,10 @@ export class TodoCompletedDataService {
     //
     let id: string;
 
-    if (item.$key === undefined) {
+    if (item.id === undefined) {
       id = '';
     } else {
-      id = item.$key;
+      id = item.id;
     }
 
     const result: IFirestoreDoc = {
@@ -108,8 +111,8 @@ export class TodoCompletedDataService {
     console.log('TodoCompletedDataService:fromFirebaseRecord>', x);
     const result: TodoCompleted = {
       ...NewTodoCompleted(),
-      $key: x.id,
       description: x.description,
+      id: x.id,
       name: x.name,
     };
 

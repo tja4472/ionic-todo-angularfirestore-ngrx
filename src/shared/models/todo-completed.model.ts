@@ -1,6 +1,6 @@
 // tslint:disable-next-line:interface-name
 export interface TodoCompleted {
-  readonly $key: string;
+  readonly id: string;
   readonly description?: string;
   readonly isComplete: boolean;
   readonly name: string;
@@ -8,8 +8,8 @@ export interface TodoCompleted {
 
 export function NewTodoCompleted(): TodoCompleted {
   return {
-    $key: '',
     description: '',
+    id: '',
     isComplete: true,
     name: '',
   };

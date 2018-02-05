@@ -45,15 +45,15 @@ export class Fb1DataService {
     const todo: Todo = {
       ...NewTodo(),
       description: item.description,
-      id: item.$key!,
+      id: item.id!,
       name: item.name,
     };
 
     this.todoDataService.save(todo);
 
-    if (item.$key === undefined) {
+    if (item.id === undefined) {
       return;
     }
-    this.todoCompletedDataService.removeItem(item.$key);
+    this.todoCompletedDataService.removeItem(item.id);
   }
 }

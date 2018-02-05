@@ -45,11 +45,11 @@ export class TodoCompletedService {
   }
 
   remove(todo: TodoCompleted) {
-    if (todo.$key === undefined) {
+    if (todo.id === undefined) {
       return;
     }
 
-    this.store.dispatch(new TodoCompletedActions.Remove(todo.$key));
+    this.store.dispatch(new TodoCompletedActions.Remove(todo.id));
   }
 
   save(item: TodoCompleted) {
