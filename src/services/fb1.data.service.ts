@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 
-import { EmptyTodo, Todo } from '../shared/models/todo.model';
+import { NewTodo, Todo } from '../shared/models/todo.model';
 
 import { TodoCompleted } from '../shared/models/todo-completed.model';
 import { TodoDataService } from '../services/todo.data.service';
@@ -34,7 +34,7 @@ export class Fb1DataService {
     console.log('moveToCurrent>', item);
 
     const todo: Todo = {
-      ...EmptyTodo(),
+      ...NewTodo(),
       description: item.description,
       id: item.$key!,
       name: item.name,

@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { NavParams, ViewController } from 'ionic-angular';
 
-import { EmptyTodo, Todo } from '../../shared/models/todo.model';
+import { Todo, NewTodo } from '../../shared/models/todo.model';
 
 @Component({
   selector: 'tja-modal-todo-detail',
@@ -20,10 +20,9 @@ export class TodoDetailModal {
 
     if (paramItem === undefined) {
       // new item.
-      this.viewTodo = EmptyTodo();
+      this.viewTodo = NewTodo();
     } else {
       // navParams passes by reference.
-      // this.viewTodo = Object.assign({}, paramItem);
       this.viewTodo = { ...paramItem };
     }
 
