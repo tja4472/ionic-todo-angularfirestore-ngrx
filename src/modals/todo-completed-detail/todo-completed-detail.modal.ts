@@ -1,7 +1,10 @@
 import { Component } from '@angular/core';
 import { NavParams, ViewController } from 'ionic-angular';
 
-import { TodoCompleted, NewTodoCompleted } from '../../shared/models/todo-completed.model';
+import {
+  TodoCompleted,
+  NewTodoCompleted,
+} from '../../shared/models/todo-completed.model';
 
 export interface IModalResult {
   isRemoved: boolean;
