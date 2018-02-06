@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { Validators, FormBuilder, FormGroup } from '@angular/forms';
 
-export interface IUserFormResult {
+export interface UserFormResult {
   email: string;
   password: string;
 }
@@ -13,7 +13,7 @@ export interface IUserFormResult {
 export class CreateUserComponent {
   @Input() public error: any;
 
-  @Output() public createUser = new EventEmitter<IUserFormResult>();
+  @Output() public createUser = new EventEmitter<UserFormResult>();
 
   public signupForm: FormGroup;
   private readonly CLASS_NAME = 'CreateUserComponent';
@@ -35,7 +35,7 @@ export class CreateUserComponent {
       this.CLASS_NAME,
       this.signupForm.value.password,
     );
-    const result: IUserFormResult = {
+    const result: UserFormResult = {
       email: this.signupForm.value.username,
       password: this.signupForm.value.password,
     };

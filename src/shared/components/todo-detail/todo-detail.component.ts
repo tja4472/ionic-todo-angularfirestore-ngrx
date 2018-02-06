@@ -3,7 +3,7 @@ import { Validators, FormBuilder } from '@angular/forms';
 
 import { Todo } from '../../models/todo.model';
 
-interface IFormModel {
+interface FormModel {
   description: any;
   isComplete: any;
   name: any;
@@ -37,7 +37,7 @@ export class TodoDetailComponent {
       description: [this.dataModel.description],
       isComplete: [this.dataModel.isComplete],
       name: [this.dataModel.name, Validators.required],
-    } as IFormModel);
+    } as FormModel);
   }
 
   dismiss() {
@@ -61,7 +61,7 @@ export class TodoDetailComponent {
   }
 
   private prepareSaveItem(): Todo {
-    const formModel: IFormModel = this.viewForm.value;
+    const formModel: FormModel = this.viewForm.value;
 
     const saveItem: Todo = {
       ...this.dataModel,

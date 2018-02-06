@@ -23,7 +23,7 @@ import {
 export class TodoCompletedEffects {
   constructor(
     private actions$: Actions,
-    private state$: Store<FromRootReducer.IState>,
+    private state$: Store<FromRootReducer.State>,
     private dataService: TodoCompletedDataService,
     private fb1DataService: Fb1DataService,
   ) {}

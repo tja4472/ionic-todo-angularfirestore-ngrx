@@ -22,7 +22,7 @@ import { TodoListsItem } from './todo-lists-item.model';
 export class TodoListsEffects {
   constructor(
     private actions$: Actions,
-    private state$: Store<FromRootReducer.IState>,
+    private state$: Store<FromRootReducer.State>,
     private dataService: TodoListsDataService,
   ) {}
 

@@ -2,28 +2,28 @@ import { createEntityAdapter, EntityAdapter, EntityState } from '@ngrx/entity';
 
 import { TaskListActionTypes, TaskListActions } from './task-list.action';
 
-import { ITaskList } from './task-list.model';
+import { TaskList } from './task-list.model';
 
-export interface IState extends EntityState<ITaskList> {
+export interface State extends EntityState<TaskList> {
   loaded: boolean;
   loading: boolean;
   selectedTaskListId: string | null;
 }
 
-export const adapter: EntityAdapter<ITaskList> = createEntityAdapter<ITaskList>(
+export const adapter: EntityAdapter<TaskList> = createEntityAdapter<TaskList>(
   {
-    selectId: (taskList: ITaskList) => taskList.id,
+    selectId: (taskList: TaskList) => taskList.id,
     sortComparer: false,
   },
 );
 
-export const initialState: IState = adapter.getInitialState({
+export const initialState: State = adapter.getInitialState({
   loaded: false,
   loading: false,
   selectedTaskListId: null,
 });
 
-export function reducer(state = initialState, action: TaskListActions): IState {
+export function reducer(state = initialState, action: TaskListActions): State {
   switch (action.type) {
     case TaskListActionTypes.ListenForData: {
       return {
@@ -68,6 +68,6 @@ export function reducer(state = initialState, action: TaskListActions): IState {
 // =========
 // Selectors
 // =========
-export const getLoaded = (state: IState) => state.loaded;
-export const getLoading = (state: IState) => state.loading;
-export const getSelectedId = (state: IState) => state.selectedTaskListId;
+export const getLoaded = (state: State) => state.loaded;
+export const getLoading = (state: State) => state.loading;
+export const getSelectedId = (state: State) => state.selectedTaskListId;

@@ -6,7 +6,7 @@ import { TodoCompletedService } from '../../services/todo-completed.service';
 
 import { TodoCompleted } from '../../shared/models/todo-completed.model';
 import {
-  IModalResult,
+  ModalResult,
   TodoCompletedDetailModal,
 } from '../../modals/todo-completed-detail/todo-completed-detail.modal';
 
@@ -48,7 +48,7 @@ export class TodoCompletedListPage {
     });
 
     //    modal.onDidDismiss(data => {
-    modal.onDidDismiss((modalResult: IModalResult) => {
+    modal.onDidDismiss((modalResult: ModalResult) => {
       console.log('editItem:onDidDismiss>: modalResult', modalResult);
 
       if (modalResult.isCancelled) {

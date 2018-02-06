@@ -4,13 +4,13 @@ import {
 } from '../actions/todo-completed.action';
 import { TodoCompleted } from '../shared/models/todo-completed.model';
 
-export interface IState {
+export interface State {
   loaded: boolean;
   loading: boolean;
   todoCompletedList: TodoCompleted[];
 }
 
-const initialState: IState = {
+const initialState: State = {
   loaded: false,
   loading: false,
   todoCompletedList: [],
@@ -19,7 +19,7 @@ const initialState: IState = {
 export function reducer(
   state = initialState,
   action: TodoCompletedActions,
-): IState {
+): State {
   switch (action.type) {
     case TodoCompletedActionTypes.ListenForData: {
       return {
@@ -47,6 +47,6 @@ export function reducer(
 // =========
 // Selectors
 // =========
-export const getLoaded = (state: IState) => state.loaded;
-export const getLoading = (state: IState) => state.loading;
-export const getTodoCompletedList = (state: IState) => state.todoCompletedList;
+export const getLoaded = (state: State) => state.loaded;
+export const getLoading = (state: State) => state.loading;
+export const getTodoCompletedList = (state: State) => state.todoCompletedList;

@@ -1,4 +1,4 @@
-export interface ITaskList {
+export interface TaskList {
   id: string;
   name: string;
 }

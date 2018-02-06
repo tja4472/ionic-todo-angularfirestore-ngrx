@@ -2,7 +2,7 @@ import { TodoCompleted } from '../../models/todo-completed.model';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { Validators, FormBuilder } from '@angular/forms';
 
-interface IFormModel {
+interface FormModel {
   description: any;
   isComplete: any;
   name: any;
@@ -37,7 +37,7 @@ export class TodoCompletedDetailComponent {
       description: [this.dataModel.description],
       isComplete: [this.dataModel.isComplete],
       name: [this.dataModel.name, Validators.required],
-    } as IFormModel);
+    } as FormModel);
   }
 
   public viewDismiss() {
@@ -66,7 +66,7 @@ export class TodoCompletedDetailComponent {
 
   private prepareSaveItem(): TodoCompleted {
     //
-    const formModel: IFormModel = this.todoForm.value;
+    const formModel: FormModel = this.todoForm.value;
 
     const saveItem: TodoCompleted = {
       ...this.dataModel,

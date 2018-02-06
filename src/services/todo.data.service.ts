@@ -9,7 +9,7 @@ import {
   AngularFirestoreCollection,
 } from 'angularfire2/firestore';
 
-import { IReorderArrayIndexes } from '../shared/models/reorder-array-indexes.model';
+import { ReorderArrayIndexes } from '../shared/models/reorder-array-indexes.model';
 import { Todo } from '../shared/models/todo.model';
 
 import { reorderArray } from 'ionic-angular';
@@ -20,7 +20,7 @@ import { SignedInUser } from '../models/signed-in-user.model';
 const DATA_COLLECTION = 'current-todos';
 const USERS_COLLECTION = 'users';
 
-interface IFirestoreDoc {
+interface FirestoreDoc {
   id: string;
   description?: string;
   index: number;
@@ -30,7 +30,7 @@ interface IFirestoreDoc {
 
 @Injectable()
 export class TodoDataService {
-  private itemsCollection: AngularFirestoreCollection<IFirestoreDoc>;
+  private itemsCollection: AngularFirestoreCollection<FirestoreDoc>;
 
   private isSignedIn: boolean;
 
@@ -67,7 +67,7 @@ export class TodoDataService {
   }
 
   public reorderItemsAndUpdate(
-    indexes: IReorderArrayIndexes,
+    indexes: ReorderArrayIndexes,
     todos: Todo[],
   ): void {
     const itemsToSave = [...todos];
@@ -95,14 +95,14 @@ export class TodoDataService {
     this.itemsCollection = this.afs
       .collection(USERS_COLLECTION)
       .doc(this.loginService.signedInUser.userId)
-      .collection<IFirestoreDoc>(DATA_COLLECTION, (ref) =>
+      .collection<FirestoreDoc>(DATA_COLLECTION, (ref) =>
         ref.orderBy('index', 'asc'),
       );
   }
 
-  private toFirestoreDoc(item: Todo): IFirestoreDoc {
+  private toFirestoreDoc(item: Todo): FirestoreDoc {
     //
-    const result: IFirestoreDoc = {
+    const result: FirestoreDoc = {
       description: item.description,
       id: item.id,
       index: item.index,
@@ -114,7 +114,7 @@ export class TodoDataService {
     return result;
   }
 
-  private fromFirestoreDoc(x: IFirestoreDoc): Todo {
+  private fromFirestoreDoc(x: FirestoreDoc): Todo {
     //
     // console.log('TodoDataService:fromFirebaseTodo>', x);
 

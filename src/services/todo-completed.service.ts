@@ -10,7 +10,7 @@ import * as TodoCompletedActions from '../actions/todo-completed.action';
 
 @Injectable()
 export class TodoCompletedService {
-  constructor(private store: Store<FromRootReducer.IState>) {}
+  constructor(private store: Store<FromRootReducer.State>) {}
 
   getData(): Observable<TodoCompleted[]> {
     /*

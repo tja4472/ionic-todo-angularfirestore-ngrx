@@ -51,7 +51,7 @@ export class LoginService {
 
   constructor(
     private af: AngularFireAuth,
-    private store: Store<FromRootReducer.IState>,
+    private store: Store<FromRootReducer.State>,
   ) {
     console.log(`%s:constructor`, this.CLASS_NAME);
 

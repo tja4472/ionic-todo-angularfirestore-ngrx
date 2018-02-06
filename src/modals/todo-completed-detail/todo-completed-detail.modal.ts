@@ -6,7 +6,7 @@ import {
   newTodoCompleted,
 } from '../../shared/models/todo-completed.model';
 
-export interface IModalResult {
+export interface ModalResult {
   isRemoved: boolean;
   isCancelled: boolean;
   todo?: TodoCompleted;
@@ -40,7 +40,7 @@ export class TodoCompletedDetailModal {
 
   public viewItemCancelled() {
     console.log('viewItemCancelled>');
-    const modalResult: IModalResult = {
+    const modalResult: ModalResult = {
       isCancelled: true,
       isRemoved: false,
     };
@@ -49,7 +49,7 @@ export class TodoCompletedDetailModal {
 
   public viewItemRemove() {
     console.log('viewItemRemove');
-    const modalResult: IModalResult = {
+    const modalResult: ModalResult = {
       isCancelled: false,
       isRemoved: true,
       todo: this.viewTodoCompleted,
@@ -59,7 +59,7 @@ export class TodoCompletedDetailModal {
 
   public viewItemSaved(item: TodoCompleted) {
     console.log('viewItemSaved>', item);
-    const modalResult: IModalResult = {
+    const modalResult: ModalResult = {
       isCancelled: false,
       isRemoved: false,
       todo: item,

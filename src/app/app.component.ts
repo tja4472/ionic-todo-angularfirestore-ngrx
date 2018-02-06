@@ -16,7 +16,7 @@ import { LoginService } from '../services/login.service';
 
 import { SignedInUser } from '../models/signed-in-user.model';
 
-export interface IPageInterface {
+export interface PageInterface {
   title: string;
   component: any;
   icon: string;
@@ -31,12 +31,12 @@ export class MyApp {
 
   public displayUserName: string;
 
-  appPages: IPageInterface[] = [
+  appPages: PageInterface[] = [
     { title: 'Page One', component: Page1, icon: 'calendar' },
     { title: 'Page Two', component: Page2, icon: 'calendar' },
   ];
 
-  loggedInPages: IPageInterface[] = [
+  loggedInPages: PageInterface[] = [
     { title: 'Current Todos', component: TodoListPage, icon: 'calendar' },
     {
       component: TodoCompletedListPage,
@@ -47,7 +47,7 @@ export class MyApp {
     { title: 'Sign Out', component: Page1, icon: 'log-out', logsOut: true },
   ];
 
-  loggedOutPages: IPageInterface[] = [
+  loggedOutPages: PageInterface[] = [
     { title: 'Sign In', component: SignInPage, icon: 'log-in' },
     { title: 'Register', component: RegisterPage, icon: 'person-add' },
   ];
@@ -140,7 +140,7 @@ export class MyApp {
   }
 
   // Used in view.
-  public isActive(page: IPageInterface) {
+  public isActive(page: PageInterface) {
     if (
       this.nav.getActive() &&
       this.nav.getActive().component === page.component
@@ -149,7 +149,7 @@ export class MyApp {
     }
     return;
   }
-  openPage(page: IPageInterface) {
+  openPage(page: PageInterface) {
     // Reset the content nav to have just this page
     // we wouldn't want the back button to show in this scenario
     // this.nav.setRoot(page.component);

@@ -2,7 +2,7 @@
 // tslint:disable:no-empty
 import { Action } from '@ngrx/store';
 
-import { IReorderArrayIndexes } from '../shared/models/reorder-array-indexes.model';
+import { ReorderArrayIndexes } from '../shared/models/reorder-array-indexes.model';
 import { Todo } from '../shared/models/todo.model';
 
 export enum TodoActionTypes {
@@ -51,7 +51,7 @@ export class Remove implements Action {
 export class ReorderList implements Action {
   readonly type = TodoActionTypes.ReorderList;
 
-  constructor(public payload: IReorderArrayIndexes) {}
+  constructor(public payload: ReorderArrayIndexes) {}
 }
 
 export class Save implements Action {

@@ -1,19 +1,19 @@
 import { TodoActions, TodoActionTypes } from '../actions/todo.action';
 import { Todo } from '../shared/models/todo.model';
 
-export interface IState {
+export interface State {
   loaded: boolean;
   loading: boolean;
   todos: Todo[];
 }
 
-const initialState: IState = {
+const initialState: State = {
   loaded: false,
   loading: false,
   todos: [],
 };
 
-export function reducer(state = initialState, action: TodoActions): IState {
+export function reducer(state = initialState, action: TodoActions): State {
   switch (action.type) {
     case TodoActionTypes.ListenForData: {
       return {
@@ -41,6 +41,6 @@ export function reducer(state = initialState, action: TodoActions): IState {
 // =========
 // Selectors
 // =========
-export const getLoaded = (state: IState) => state.loaded;
-export const getLoading = (state: IState) => state.loading;
-export const getTodos = (state: IState) => state.todos;
+export const getLoaded = (state: State) => state.loaded;
+export const getLoading = (state: State) => state.loading;
+export const getTodos = (state: State) => state.todos;

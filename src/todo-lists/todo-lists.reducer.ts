@@ -1,14 +1,14 @@
 import { TodoListsActionTypes, TodoListsActions } from './todo-lists.action';
 import { TodoListsItem } from './todo-lists-item.model';
 
-export interface IState {
+export interface State {
   loaded: boolean;
   loading: boolean;
   selectedListId: string | null;
   todoLists: TodoListsItem[];
 }
 
-const initialState: IState = {
+const initialState: State = {
   loaded: false,
   loading: false,
   selectedListId: null,
@@ -18,7 +18,7 @@ const initialState: IState = {
 export function reducer(
   state = initialState,
   action: TodoListsActions,
-): IState {
+): State {
   switch (action.type) {
     case TodoListsActionTypes.ListenForData: {
       return {
@@ -54,6 +54,6 @@ export function reducer(
 // =========
 // Selectors
 // =========
-export const getLoaded = (state: IState) => state.loaded;
-export const getLoading = (state: IState) => state.loading;
-export const getTodoLists = (state: IState) => state.todoLists;
+export const getLoaded = (state: State) => state.loaded;
+export const getLoading = (state: State) => state.loading;
+export const getTodoLists = (state: State) => state.todoLists;

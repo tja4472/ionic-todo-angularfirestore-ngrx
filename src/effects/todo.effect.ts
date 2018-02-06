@@ -23,7 +23,7 @@ import { Todo } from '../shared/models/todo.model';
 export class TodoEffects {
   constructor(
     private actions$: Actions,
-    private state$: Store<FromRootReducer.IState>,
+    private state$: Store<FromRootReducer.State>,
     private fb1DataService: Fb1DataService,
     private todoDataService: TodoDataService,
   ) {}

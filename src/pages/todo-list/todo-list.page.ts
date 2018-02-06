@@ -10,11 +10,11 @@ import { TodoService } from '../../services/todo.service';
 
 import {
   TodoListPopover,
-  ITodoListPopoverResult,
+  TodoListPopoverResult,
 } from '../../components/todo-list-popover/todo-list.popover';
 import { Todo } from '../../shared/models/todo.model';
 import { TodoDetailModal } from '../../modals/todo-detail/todo-detail.modal';
-import { IReorderArrayIndexes } from '../../shared/models/reorder-array-indexes.model';
+import { ReorderArrayIndexes } from '../../shared/models/reorder-array-indexes.model';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -90,7 +90,7 @@ export class TodoListPage {
   presentPopover(ev: any) {
     const popover = this.popoverCtrl.create(TodoListPopover);
 
-    popover.onDidDismiss((result: ITodoListPopoverResult) => {
+    popover.onDidDismiss((result: TodoListPopoverResult) => {
       console.log('popover.onDidDismiss>', result);
 
       if (!!!result) {
@@ -118,7 +118,7 @@ export class TodoListPage {
     });
   }
 
-  reorderItems(indexes: IReorderArrayIndexes) {
+  reorderItems(indexes: ReorderArrayIndexes) {
     console.log('reorderItems:indexes>', indexes);
     console.log('reorderItems:indexes.from>', indexes.from);
     console.log('reorderItems:indexes.to>', indexes.to);

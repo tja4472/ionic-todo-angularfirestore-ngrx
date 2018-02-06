@@ -18,7 +18,7 @@ import { SignedInUser } from '../models/signed-in-user.model';
 const DATA_COLLECTION = 'completed-todos';
 const USERS_COLLECTION = 'users';
 
-interface IFirestoreDoc {
+interface FirestoreDoc {
   id: string;
   description?: string;
   name: string;
@@ -27,7 +27,7 @@ interface IFirestoreDoc {
 
 @Injectable()
 export class TodoCompletedDataService {
-  private itemsCollection: AngularFirestoreCollection<IFirestoreDoc>;
+  private itemsCollection: AngularFirestoreCollection<FirestoreDoc>;
   // private items: Observable<IFirestoreDoc[]>;
   private isSignedIn: boolean;
 
@@ -79,14 +79,14 @@ export class TodoCompletedDataService {
     this.itemsCollection = this.afs
       .collection(USERS_COLLECTION)
       .doc(this.loginService.signedInUser.userId)
-      .collection<IFirestoreDoc>(
+      .collection<FirestoreDoc>(
         // Filter by taskListId
         // DATA_COLLECTION, (ref) => ref.where('name', '==', 'bb')
         DATA_COLLECTION,
       );
   }
 
-  private toFirestoreDoc(item: TodoCompleted): IFirestoreDoc {
+  private toFirestoreDoc(item: TodoCompleted): FirestoreDoc {
     //
     let id: string;
 
@@ -96,7 +96,7 @@ export class TodoCompletedDataService {
       id = item.id;
     }
 
-    const result: IFirestoreDoc = {
+    const result: FirestoreDoc = {
       description: item.description,
       id,
       isComplete: item.isComplete,
@@ -107,7 +107,7 @@ export class TodoCompletedDataService {
     return result;
   }
 
-  private fromFirestoreDoc(x: IFirestoreDoc): TodoCompleted {
+  private fromFirestoreDoc(x: FirestoreDoc): TodoCompleted {
     console.log('TodoCompletedDataService:fromFirebaseRecord>', x);
     const result: TodoCompleted = {
       ...newTodoCompleted(),

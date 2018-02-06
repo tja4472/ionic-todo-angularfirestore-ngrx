@@ -5,6 +5,7 @@
   "rules": {
     // "tslint:recommended" overrides
     // ------------------------------
+    "interface-name": [true, "never-prefix"],
     "member-access": [false],
     "no-consecutive-blank-lines": false,
     "no-console": [false],

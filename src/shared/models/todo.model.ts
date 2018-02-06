@@ -1,4 +1,3 @@
-// tslint:disable-next-line:interface-name
 export interface Todo {
   readonly description?: string;
   readonly id: string;

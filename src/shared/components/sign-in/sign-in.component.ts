@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
-export interface ISignInComponentResult {
+export interface SignInComponentResult {
   email: string;
   password: string;
 }
@@ -13,7 +13,7 @@ export interface ISignInComponentResult {
 export class SignInComponent {
   @Input() public error: any;
 
-  @Output() public signIn = new EventEmitter<ISignInComponentResult>();
+  @Output() public signIn = new EventEmitter<SignInComponentResult>();
   @Output() public register = new EventEmitter();
 
   public signupForm: FormGroup;
@@ -36,7 +36,7 @@ export class SignInComponent {
       this.CLASS_NAME,
       this.signupForm.value.password,
     );
-    const result: ISignInComponentResult = {
+    const result: SignInComponentResult = {
       email: this.signupForm.value.username,
       password: this.signupForm.value.password,
     };

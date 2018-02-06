@@ -12,14 +12,14 @@ import {
   LoginActionTypes,
   RestoreAuthentication,
 } from '../actions/login.action';
-import { IState } from '../reducers';
+import { State } from '../reducers';
 
 // Do not import from 'firebase' as you'd lose the tree shaking benefits
 @Injectable()
 export class LoginEffects {
   constructor(
     private actions$: Actions,
-    private state$: Store<IState>,
+    private state$: Store<State>,
     public auth$: AngularFireAuth,
   ) {}
 

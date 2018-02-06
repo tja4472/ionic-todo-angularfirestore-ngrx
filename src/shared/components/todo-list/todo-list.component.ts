@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 
-import { IReorderArrayIndexes } from '../../models/reorder-array-indexes.model';
+import { ReorderArrayIndexes } from '../../models/reorder-array-indexes.model';
 import { Todo } from '../../models/todo.model';
 
 @Component({
@@ -12,7 +12,7 @@ export class TodoListComponent {
   @Output() public addItem = new EventEmitter();
   @Output() public toggleCompleteItem = new EventEmitter<Todo>();
   @Output() public editItem = new EventEmitter<Todo>();
-  @Output() public reorderItems = new EventEmitter<IReorderArrayIndexes>();
+  @Output() public reorderItems = new EventEmitter<ReorderArrayIndexes>();
   @Output() public removeItem = new EventEmitter<Todo>();
 
   private readonly CLASS_NAME = 'TodoListComponent';

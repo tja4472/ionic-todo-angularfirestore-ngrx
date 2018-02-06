@@ -2,7 +2,7 @@
 // tslint:disable:no-empty
 import { Action } from '@ngrx/store';
 
-import { ITaskList } from './task-list.model';
+import { TaskList } from './task-list.model';
 
 export enum TaskListActionTypes {
   ListenForData = '[TaskList] Listen For Data',
@@ -29,7 +29,7 @@ export class ListenForData implements Action {
 export class LoadSuccess implements Action {
   readonly type = TaskListActionTypes.LoadSuccess;
 
-  constructor(public payload: ITaskList[]) {}
+  constructor(public payload: TaskList[]) {}
 }
 
 export class Remove implements Action {
@@ -41,7 +41,7 @@ export class Remove implements Action {
 export class Save implements Action {
   readonly type = TaskListActionTypes.Save;
 
-  constructor(public payload: ITaskList) {}
+  constructor(public payload: TaskList) {}
 }
 
 export class SetSelectedList implements Action {

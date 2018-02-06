@@ -6,7 +6,7 @@ import { RegisterPage } from '../register/register.page';
 
 import { LoginService } from '../../services/login.service';
 
-import { ISignInComponentResult } from '../../shared/components/sign-in/sign-in.component';
+import { SignInComponentResult } from '../../shared/components/sign-in/sign-in.component';
 
 // changeDetection: ChangeDetectionStrategy.OnPush,
 
@@ -36,7 +36,7 @@ export class SignInPage {
     this.nav.setRoot(RegisterPage);
   }
 
-  public viewSignIn(x: ISignInComponentResult): void {
+  public viewSignIn(x: SignInComponentResult): void {
     console.log('viewSignIn>', x);
     this.loginService.emailAuthentication(x.email, x.password);
   }

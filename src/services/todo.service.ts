@@ -3,7 +3,7 @@ import { Observable } from 'rxjs/Observable';
 
 import { Store } from '@ngrx/store';
 
-import { IReorderArrayIndexes } from '../shared/models/reorder-array-indexes.model';
+import { ReorderArrayIndexes } from '../shared/models/reorder-array-indexes.model';
 import { Todo } from '../shared/models/todo.model';
 
 import * as FromRootReducer from '../reducers/index';
@@ -11,7 +11,7 @@ import * as TodoActions from '../actions/todo.action';
 
 @Injectable()
 export class TodoService {
-  constructor(private store: Store<FromRootReducer.IState>) {}
+  constructor(private store: Store<FromRootReducer.State>) {}
 
   clearCompletedItems() {
     this.store.dispatch(new TodoActions.ClearCompleted());
@@ -37,7 +37,7 @@ export class TodoService {
     return this.store.select(FromRootReducer.getTodo_GetLoading);
   }
 
-  reorderItems(indexes: IReorderArrayIndexes) {
+  reorderItems(indexes: ReorderArrayIndexes) {
     this.store.dispatch(new TodoActions.ReorderList(indexes));
   }
 

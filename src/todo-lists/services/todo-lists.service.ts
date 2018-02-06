@@ -10,7 +10,7 @@ import * as Actions from '../todo-lists.action';
 
 @Injectable()
 export class TodoListsService {
-  constructor(private store: Store<FromRootReducer.IState>) {}
+  constructor(private store: Store<FromRootReducer.State>) {}
 
   getData(): Observable<TodoListsItem[]> {
     return this.store.select(FromRootReducer.getTodoList_GetTodoLists);

@@ -14,14 +14,14 @@ import { SignedInUser } from '../../models/signed-in-user.model';
 const DATA_COLLECTION = 'todo-lists';
 const USERS_COLLECTION = 'users';
 
-interface IFirestoreDoc {
+interface FirestoreDoc {
   id: string;
   name: string;
 }
 
 @Injectable()
 export class TodoListsDataService {
-  private itemsCollection: AngularFirestoreCollection<IFirestoreDoc>;
+  private itemsCollection: AngularFirestoreCollection<FirestoreDoc>;
 
   private isSignedIn: boolean;
 
@@ -73,15 +73,15 @@ export class TodoListsDataService {
     this.itemsCollection = this.afs
       .collection(USERS_COLLECTION)
       .doc(this.loginService.signedInUser.userId)
-      .collection<IFirestoreDoc>(DATA_COLLECTION, (ref) =>
+      .collection<FirestoreDoc>(DATA_COLLECTION, (ref) =>
         ref.orderBy('name', 'asc'),
       );
   }
 
-  private toFirestoreDoc(item: TodoListsItem): IFirestoreDoc {
+  private toFirestoreDoc(item: TodoListsItem): FirestoreDoc {
     //
 
-    const result: IFirestoreDoc = {
+    const result: FirestoreDoc = {
       id: item.id,
       name: item.name,
     };
@@ -90,7 +90,7 @@ export class TodoListsDataService {
     return result;
   }
 
-  private fromFirestoreDoc(x: IFirestoreDoc): TodoListsItem {
+  private fromFirestoreDoc(x: FirestoreDoc): TodoListsItem {
     //
     // console.log('TodoDataService:fromFirebaseTodo>', x);
 

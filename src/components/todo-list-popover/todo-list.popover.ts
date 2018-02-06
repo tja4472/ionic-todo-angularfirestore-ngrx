@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { ViewController } from 'ionic-angular';
 
-export interface ITodoListPopoverResult {
+export interface TodoListPopoverResult {
   clearCompleted: boolean;
 }
 
@@ -16,7 +16,7 @@ export class TodoListPopover {
   }
 
   clearCompleted() {
-    const result: ITodoListPopoverResult = {
+    const result: TodoListPopoverResult = {
       clearCompleted: true,
     };
 

@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 
 import { LoginService } from '../../services/login.service';
 
-import { IUserFormResult } from '../../shared/components/create-user/create-user.component';
+import { UserFormResult } from '../../shared/components/create-user/create-user.component';
 
 @Component({
   selector: 'tja-page-register',
@@ -20,7 +20,7 @@ export class RegisterPage {
   }
 
   // Used in view
-  public createUser(x: IUserFormResult) {
+  public createUser(x: UserFormResult) {
     console.log('###%s:createUser', this.CLASS_NAME);
     console.log('%s:x>', this.CLASS_NAME, x);
     // this.authService.createUserWithEmailAndPassword(x.email, x.password);

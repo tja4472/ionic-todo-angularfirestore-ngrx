@@ -2,19 +2,19 @@ import { createSelector, createFeatureSelector } from '@ngrx/store';
 import * as fromTaskLists from './task-list.reducer';
 import * as fromRoot from '../reducers';
 
-export interface ITaskListsState {
-  taskLists: fromTaskLists.IState;
+export interface TaskListsState {
+  taskLists: fromTaskLists.State;
 }
 
-export interface IState extends fromRoot.IState {
-  taskLists: ITaskListsState;
+export interface State extends fromRoot.State {
+  taskLists: TaskListsState;
 }
 
 export const reducers = {
   taskLists: fromTaskLists.reducer,
 };
 
-export const getTaskListsState = createFeatureSelector<ITaskListsState>(
+export const getTaskListsState = createFeatureSelector<TaskListsState>(
   'taskLists',
 );
 
