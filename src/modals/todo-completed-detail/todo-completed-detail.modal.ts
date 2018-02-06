@@ -3,7 +3,7 @@ import { NavParams, ViewController } from 'ionic-angular';
 
 import {
   TodoCompleted,
-  NewTodoCompleted,
+  newTodoCompleted,
 } from '../../shared/models/todo-completed.model';
 
 export interface IModalResult {
@@ -31,7 +31,7 @@ export class TodoCompletedDetailModal {
 
     if (paramItem === undefined) {
       // new item.
-      this.viewTodoCompleted = NewTodoCompleted();
+      this.viewTodoCompleted = newTodoCompleted();
     } else {
       // navParams passes by reference.
       this.viewTodoCompleted = { ...paramItem };

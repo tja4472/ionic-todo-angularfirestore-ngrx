@@ -7,7 +7,7 @@ export interface Todo {
   readonly name: string;
 }
 
-export function NewTodo(): Todo {
+export function newTodo(): Todo {
   return {
     description: '',
     id: '',

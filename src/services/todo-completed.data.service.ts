@@ -8,7 +8,7 @@ import {
 
 import {
   TodoCompleted,
-  NewTodoCompleted,
+  newTodoCompleted,
 } from '../shared/models/todo-completed.model';
 
 import { LoginService } from './login.service';
@@ -110,7 +110,7 @@ export class TodoCompletedDataService {
   private fromFirestoreDoc(x: IFirestoreDoc): TodoCompleted {
     console.log('TodoCompletedDataService:fromFirebaseRecord>', x);
     const result: TodoCompleted = {
-      ...NewTodoCompleted(),
+      ...newTodoCompleted(),
       description: x.description,
       id: x.id,
       name: x.name,

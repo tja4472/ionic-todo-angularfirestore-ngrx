@@ -6,7 +6,7 @@ export interface TodoCompleted {
   readonly name: string;
 }
 
-export function NewTodoCompleted(): TodoCompleted {
+export function newTodoCompleted(): TodoCompleted {
   return {
     description: '',
     id: '',

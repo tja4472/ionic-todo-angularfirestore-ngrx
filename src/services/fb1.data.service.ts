@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
 
-import { NewTodo, Todo } from '../shared/models/todo.model';
+import { newTodo, Todo } from '../shared/models/todo.model';
 
 import {
   TodoCompleted,
-  NewTodoCompleted,
+  newTodoCompleted,
 } from '../shared/models/todo-completed.model';
 import { TodoDataService } from '../services/todo.data.service';
 import { TodoCompletedDataService } from '../services/todo-completed.data.service';
@@ -23,7 +23,7 @@ export class Fb1DataService {
       console.log('x>', x);
 
       const todoCompleted = {
-        ...NewTodoCompleted(),
+        ...newTodoCompleted(),
         description: x.description,
         name: x.name,
       };
@@ -43,7 +43,7 @@ export class Fb1DataService {
     console.log('moveToCurrent>', item);
 
     const todo: Todo = {
-      ...NewTodo(),
+      ...newTodo(),
       description: item.description,
       id: item.id!,
       name: item.name,
