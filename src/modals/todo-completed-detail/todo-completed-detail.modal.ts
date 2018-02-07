@@ -6,6 +6,19 @@ import {
   newTodoCompleted,
 } from '../../shared/models/todo-completed.model';
 
+interface ModalInput {
+  item?: TodoCompleted;
+}
+
+export function getModalInput(item: TodoCompleted | undefined) {
+  //
+  const modalInput: ModalInput = { item };
+
+  return {
+    modalInput,
+  };
+}
+
 export interface ModalResult {
   isRemoved: boolean;
   isCancelled: boolean;
@@ -27,14 +40,14 @@ export class TodoCompletedDetailModal {
   ) {
     console.log(`%s:constructor`, this.CLASS_NAME);
 
-    const paramItem: TodoCompleted = navParams.get('todo');
+    const modalInput: ModalInput = this.getModalInput();
 
-    if (paramItem === undefined) {
+    if (modalInput.item === undefined) {
       // new item.
       this.viewTodoCompleted = newTodoCompleted();
     } else {
       // navParams passes by reference.
-      this.viewTodoCompleted = { ...paramItem };
+      this.viewTodoCompleted = { ...modalInput.item };
     }
   }
 
@@ -67,66 +80,9 @@ export class TodoCompletedDetailModal {
 
     this.viewController.dismiss(modalResult);
   }
-  /*
-    dismiss() {
-      console.log('dismiss');
-      const modalResult: IModalResult = {
-        isCancelled: true,
-        isRemoved: false,
-      };
-      this.viewController.dismiss(modalResult);
-    }
 
-    remove() {
-      console.log('remove');
-      const modalResult: IModalResult = {
-        isCancelled: false,
-        isRemoved: true,
-        todo: this.viewTodoCompleted,
-      };
-      this.viewController.dismiss(modalResult);
-    }
-
-    save() {
-      console.log('save');
-
-      if (!this.todoForm.valid) {
-        return;
-      }
-
-      console.log('this.todoForm.value>', this.todoForm.value);
-      console.log('this.todoForm.status>', this.todoForm.status);
-
-      this.viewTodoCompleted = this.prepareSaveData();
-      // console.log('localTodo>', this.todo);
-
-      const modalResult: IModalResult = {
-        isCancelled: false,
-        isRemoved: false,
-        todo: this.viewTodoCompleted,
-      };
-
-      this.viewController.dismiss(modalResult);
-    }
-
-  private createForm(): void {
-    this.todoForm = this.formBuilder.group({
-      description: [this.viewTodoCompleted.description],
-      isComplete: [this.viewTodoCompleted.isComplete],
-      name: [this.viewTodoCompleted.name, Validators.required],
-    });
+  private getModalInput(): ModalInput {
+    //
+    return this.navParams.get('modalInput');
   }
-
-  private prepareSaveData(): TodoCompleted {
-    const formModel = this.todoForm.value;
-
-    const saveData: TodoCompleted = new TodoCompleted();
-    saveData.description = formModel.description;
-    saveData.$key = this.viewTodoCompleted.$key;
-    saveData.name = formModel.name;
-    saveData.userId = this.viewTodoCompleted.userId;
-
-    return saveData;
-  }
-  */
 }

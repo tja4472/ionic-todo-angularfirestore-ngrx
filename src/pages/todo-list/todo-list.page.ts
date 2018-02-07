@@ -13,7 +13,11 @@ import {
   TodoListPopoverResult,
 } from '../../components/todo-list-popover/todo-list.popover';
 import { Todo } from '../../shared/models/todo.model';
-import { TodoDetailModal } from '../../modals/todo-detail/todo-detail.modal';
+import {
+  TodoDetailModal,
+  getModalInput,
+  ModalResult,
+} from '../../modals/todo-detail/todo-detail.modal';
 import { ReorderArrayIndexes } from '../../shared/models/reorder-array-indexes.model';
 
 @Component({
@@ -134,13 +138,19 @@ export class TodoListPage {
 
   private showModal(item?: Todo) {
     //
-    const modal = this.modalCtrl.create(TodoDetailModal, { todo: item });
+    const modalInput = getModalInput(item);
+    const modal = this.modalCtrl.create(TodoDetailModal, modalInput);
 
-    modal.onDidDismiss((data: Todo) => {
+    modal.onDidDismiss((data: ModalResult | null) => {
       console.log('onDidDismiss>', data);
 
-      if (!!data) {
-        this.todoService.save(data);
+      if (data === null) {
+        console.log('onDidDismiss:NULL');
+        return;
+      }
+
+      if (data.save && data.item) {
+        this.todoService.save(data.item);
       }
     });
 

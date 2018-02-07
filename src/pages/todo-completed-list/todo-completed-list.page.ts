@@ -6,6 +6,7 @@ import { TodoCompletedService } from '../../services/todo-completed.service';
 
 import { TodoCompleted } from '../../shared/models/todo-completed.model';
 import {
+  getModalInput,
   ModalResult,
   TodoCompletedDetailModal,
 } from '../../modals/todo-completed-detail/todo-completed-detail.modal';
@@ -43,6 +44,57 @@ export class TodoCompletedListPage {
 
   editItem(item: TodoCompleted) {
     console.log('editItem:item>', item);
+    this.showModal(item);
+  }
+
+  toggleCompleteItem(item: TodoCompleted) {
+    console.log('toggleCompleteItem:item>', item);
+
+    if (item.isComplete) {
+      this.todoCompletedService.moveToCurrent(item);
+    }
+  }
+  /*
+    removeItem(item: RemoveItemOutput) {
+      console.log('removeItem:item>', item);
+      this.todoCompletedService.remove(item);
+    }
+  */
+  private showModal(item?: TodoCompleted) {
+    //
+    const modalInput = getModalInput(item);
+    const modal = this.modalCtrl.create(TodoCompletedDetailModal, modalInput);
+
+    modal.onDidDismiss((modalResult: ModalResult | null) => {
+      console.log('onDidDismiss>', modalResult);
+
+      if (modalResult === null) {
+        console.log('onDidDismiss:NULL');
+        return;
+      }
+
+      if (modalResult.isCancelled) {
+        return;
+      }
+
+      if (modalResult.todo === undefined) {
+        return;
+      }
+      if (modalResult.isRemoved) {
+        this.todoCompletedService.remove(modalResult.todo);
+        return;
+      }
+
+      if (modalResult.todo.isComplete) {
+        this.todoCompletedService.save(modalResult.todo);
+      } else {
+        this.todoCompletedService.moveToCurrent(modalResult.todo);
+      }
+    });
+
+    modal.present();
+  }
+  /*
     const modal = this.modalCtrl.create(TodoCompletedDetailModal, {
       todo: item,
     });
@@ -71,19 +123,5 @@ export class TodoCompletedListPage {
     });
 
     modal.present();
-  }
-
-  toggleCompleteItem(item: TodoCompleted) {
-    console.log('toggleCompleteItem:item>', item);
-
-    if (item.isComplete) {
-      this.todoCompletedService.moveToCurrent(item);
-    }
-  }
-  /*
-    removeItem(item: RemoveItemOutput) {
-      console.log('removeItem:item>', item);
-      this.todoCompletedService.remove(item);
-    }
-  */
+*/
 }
