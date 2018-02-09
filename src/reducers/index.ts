@@ -1,18 +1,20 @@
 import { ActionReducerMap, createSelector, MetaReducer } from '@ngrx/store';
 import { storeFreeze } from 'ngrx-store-freeze';
 
+import * as fromAuth from '../app/auth/auth.reducer';
+import * as fromTodoListReducer from '../todo-lists/todo-lists.reducer';
+import * as fromLoginReducer from './login.reducer';
+import * as fromTodoCompletedReducer from './todo-completed.reducer';
+import * as fromTodoReducer from './todo.reducer';
+
 // import { storeLogger } from 'ngrx-store-logger';
 // import { storeFreeze } from 'ngrx-store-freeze';
 // import { localStorageSync } from 'ngrx-store-localstorage';
 // import { combineReducers } from '@ngrx/store';
 
-import * as fromLoginReducer from './login.reducer';
-import * as fromTodoCompletedReducer from './todo-completed.reducer';
-import * as fromTodoReducer from './todo.reducer';
-import * as fromTodoListReducer from '../todo-lists/todo-lists.reducer';
-
 export interface State {
   // These property names have to match those in the compose.
+  auth: fromAuth.State;
   login: fromLoginReducer.State;
   todo: fromTodoReducer.State;
   todoCompleted: fromTodoCompletedReducer.State;
@@ -20,6 +22,7 @@ export interface State {
 }
 
 export const reducers: ActionReducerMap<State> = {
+  auth: fromAuth.reducer,
   login: fromLoginReducer.reducer,
   todo: fromTodoReducer.reducer,
   todoCompleted: fromTodoCompletedReducer.reducer,
@@ -43,6 +46,24 @@ export function reducer(state: any, action: any) {
 /***********
  * Selectors
  ***********/
+//#region Auth selectors
+export const getAuthState = (state: State) => state.auth;
+
+export const getAuthDisplayName = createSelector(
+  getAuthState,
+  fromAuth.getDisplayName,
+);
+export const getAuthError = createSelector(getAuthState, fromAuth.getError);
+export const getAuthIsAuthenticated = createSelector(
+  getAuthState,
+  fromAuth.getIsAuthenticated,
+);
+export const getAuthIsAuthenticating = createSelector(
+  getAuthState,
+  fromAuth.getIsAuthenticating,
+);
+//#endregion
+
 // login
 export const getLoginState = (state: State) => state.login;
 
