@@ -16,30 +16,25 @@ export class Fb1DataService {
     private todoDataService: TodoDataService,
   ) {}
 
-  clearCompletedTodos(items: Todo[]) {
-    console.log('clearCompletedTodos>', items);
-
+  clearCompletedTodos(items: Todo[], todoListId: string, userId: string) {
+    //
     items.map((x: Todo) => {
-      console.log('x>', x);
-
       const todoCompleted = {
         ...newTodoCompleted(),
         description: x.description,
         name: x.name,
       };
-      /*
-      const todoCompleted = Object.assign(new TodoCompleted(), {
-        description: x.description,
-        name: x.name,
-      });
-      */
-      this.todoCompletedDataService.save(todoCompleted);
 
-      this.todoDataService.removeItem(x.id);
+      this.todoCompletedDataService.save(todoCompleted, todoListId, userId);
+      this.todoDataService.removeItem(x.id, todoListId, userId);
     });
   }
 
-  public moveToCurrent(item: TodoCompleted) {
+  public moveToCurrent(
+    item: TodoCompleted,
+    todoListId: string,
+    userId: string,
+  ): void {
     console.log('moveToCurrent>', item);
 
     const todo: Todo = {
@@ -49,11 +44,11 @@ export class Fb1DataService {
       name: item.name,
     };
 
-    this.todoDataService.save(todo);
+    this.todoDataService.save(todo, todoListId, userId);
 
     if (item.id === undefined) {
       return;
     }
-    this.todoCompletedDataService.removeItem(item.id);
+    this.todoCompletedDataService.removeItem(item.id, todoListId, userId);
   }
 }

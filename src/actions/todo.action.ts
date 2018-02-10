@@ -6,34 +6,53 @@ import { ReorderArrayIndexes } from '../shared/models/reorder-array-indexes.mode
 import { Todo } from '../shared/models/todo.model';
 
 export enum TodoActionTypes {
-  ClearCompleted = '[TodoActions] Clear Completed',
-  ListenForData = '[TodoActions] Listen For Data',
-  LoadSuccess = '[TodoActions] Load Success',
-  ReorderList = '[TodoActions] Reorder List',
-  Remove = '[TodoActions] Remove',
-  Save = '[TodoActions] Save',
-  UnlistenForData = '[TodoActions] Unlisten For Data',
+  ClearCompleted = '[Todo] Clear Completed',
+  DATABASE_LISTEN_FOR_DATA_START = '[Todo] (Database) Listen For Data - Start',
+  DATABASE_LISTEN_FOR_DATA_STOP = '[Todo] (Database) Listen For Data - Stop',
+  DELETE_ITEM = '[Todo] Delete Item',
+  LoadSuccess = '[Todo] Load Success',
+  ReorderList = '[Todo] Reorder List',
+  UPSERT_ITEM = '[Todo] Upsert item',
 }
-/*
-export const CLEAR_COMPLETED = '[TodoActions] Clear Completed';
-export const LISTEN_FOR_DATA = '[TodoActions] Listen For Data';
-export const LOAD_SUCCESS = '[TodoActions] Load Success';
-export const REORDER_LIST = '[TodoActions] Reorder List';
-export const REMOVE = '[TodoActions] Remove';
-export const SAVE = '[TodoActions] Save';
-export const UNLISTEN_FOR_DATA = '[TodoActions] Unlisten For Data';
-*/
 
 export class ClearCompleted implements Action {
   readonly type = TodoActionTypes.ClearCompleted;
 
+  constructor(
+    public payload: {
+      todoListId: string;
+      userId: string;
+    },
+  ) {}
+}
+
+export class DatabaseListenForDataStart implements Action {
+  readonly type = TodoActionTypes.DATABASE_LISTEN_FOR_DATA_START;
+
+  constructor(
+    public payload: {
+      todoListId: string;
+      userId: string;
+    },
+  ) {}
+}
+
+export class DatabaseListenForDataStop implements Action {
+  readonly type = TodoActionTypes.DATABASE_LISTEN_FOR_DATA_STOP;
+
   constructor() {}
 }
 
-export class ListenForData implements Action {
-  readonly type = TodoActionTypes.ListenForData;
+export class DeleteItem implements Action {
+  readonly type = TodoActionTypes.DELETE_ITEM;
 
-  constructor() {}
+  constructor(
+    public payload: {
+      itemId: string;
+      todoListId: string;
+      userId: string;
+    },
+  ) {}
 }
 
 export class LoadSuccess implements Action {
@@ -42,35 +61,35 @@ export class LoadSuccess implements Action {
   constructor(public payload: Todo[]) {}
 }
 
-export class Remove implements Action {
-  readonly type = TodoActionTypes.Remove;
-
-  constructor(public payload: string) {} // itemKey
-}
-
 export class ReorderList implements Action {
   readonly type = TodoActionTypes.ReorderList;
 
-  constructor(public payload: ReorderArrayIndexes) {}
+  constructor(
+    public payload: {
+      indexes: ReorderArrayIndexes;
+      todoListId: string;
+      userId: string;
+    },
+  ) {}
 }
 
-export class Save implements Action {
-  readonly type = TodoActionTypes.Save;
+export class UpsertItem implements Action {
+  readonly type = TodoActionTypes.UPSERT_ITEM;
 
-  constructor(public payload: Todo) {}
-}
-
-export class UnlistenForData implements Action {
-  readonly type = TodoActionTypes.UnlistenForData;
-
-  constructor() {}
+  constructor(
+    public payload: {
+      item: Todo;
+      todoListId: string;
+      userId: string;
+    },
+  ) {}
 }
 
 export type TodoActions =
   | ClearCompleted
-  | ListenForData
+  | DatabaseListenForDataStart
+  | DatabaseListenForDataStop
+  | DeleteItem
   | LoadSuccess
-  | Remove
   | ReorderList
-  | Save
-  | UnlistenForData;
+  | UpsertItem;

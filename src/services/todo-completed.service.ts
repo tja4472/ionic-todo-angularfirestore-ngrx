@@ -2,11 +2,18 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
 
 import { Store } from '@ngrx/store';
+import { take } from 'rxjs/operators';
 
 import { TodoCompleted } from '../shared/models/todo-completed.model';
 
 import * as FromRootReducer from '../reducers/index';
 import * as TodoCompletedActions from '../actions/todo-completed.action';
+import {
+  DatabaseListenForDataStart,
+  DeleteItem,
+  UpsertItem,
+  MoveToCurrent,
+} from '../actions/todo-completed.action';
 
 @Injectable()
 export class TodoCompletedService {
@@ -24,12 +31,25 @@ export class TodoCompletedService {
     );
   }
 
-  initialise(): void {
-    this.store.dispatch(new TodoCompletedActions.ListenForData());
+  ListenForDataStart(): void {
+    //
+    this.store
+      .select(FromRootReducer.getAuthState)
+      .pipe(take(1))
+      .subscribe((state) => {
+        if (state.isAuthenticated) {
+          this.store.dispatch(
+            new DatabaseListenForDataStart({
+              todoListId: state.todoListId,
+              userId: state.userId,
+            }),
+          );
+        }
+      });
   }
 
-  unlisten(): void {
-    this.store.dispatch(new TodoCompletedActions.UnlistenForData());
+  ListenForDataStop(): void {
+    this.store.dispatch(new TodoCompletedActions.DatabaseListenForDataStop());
   }
 
   isLoaded(): Observable<boolean> {
@@ -41,18 +61,56 @@ export class TodoCompletedService {
   }
 
   moveToCurrent(item: TodoCompleted) {
-    this.store.dispatch(new TodoCompletedActions.MoveToCurrent(item));
+    //
+    this.store
+      .select(FromRootReducer.getAuthState)
+      .pipe(take(1))
+      .subscribe((state) => {
+        if (state.isAuthenticated) {
+          this.store.dispatch(
+            new MoveToCurrent({
+              item,
+              todoListId: state.todoListId,
+              userId: state.userId,
+            }),
+          );
+        }
+      });
   }
 
-  remove(todo: TodoCompleted) {
-    if (todo.id === undefined) {
-      return;
-    }
-
-    this.store.dispatch(new TodoCompletedActions.Remove(todo.id));
+  public deleteItem(item: TodoCompleted) {
+    //
+    this.store
+      .select(FromRootReducer.getAuthState)
+      .pipe(take(1))
+      .subscribe((state) => {
+        if (state.isAuthenticated) {
+          this.store.dispatch(
+            new DeleteItem({
+              itemId: item.id,
+              todoListId: state.todoListId,
+              userId: state.userId,
+            }),
+          );
+        }
+      });
   }
 
-  save(item: TodoCompleted) {
-    this.store.dispatch(new TodoCompletedActions.Save(item));
+  public upsertItem(item: TodoCompleted) {
+    //
+    this.store
+      .select(FromRootReducer.getAuthState)
+      .pipe(take(1))
+      .subscribe((state) => {
+        if (state.isAuthenticated) {
+          this.store.dispatch(
+            new UpsertItem({
+              item,
+              todoListId: state.todoListId,
+              userId: state.userId,
+            }),
+          );
+        }
+      });
   }
 }

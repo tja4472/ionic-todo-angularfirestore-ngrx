@@ -28,12 +28,12 @@ export class TodoCompletedListPage {
   }
 
   ionViewDidLoad() {
-    this.todoCompletedService.initialise();
+    this.todoCompletedService.ListenForDataStart();
   }
 
   ionViewWillUnload() {
     console.log('ionViewWillUnload');
-    this.todoCompletedService.unlisten();
+    this.todoCompletedService.ListenForDataStop();
   }
 
   checkItem(item: TodoCompleted) {
@@ -81,12 +81,12 @@ export class TodoCompletedListPage {
         return;
       }
       if (modalResult.isRemoved) {
-        this.todoCompletedService.remove(modalResult.todo);
+        this.todoCompletedService.deleteItem(modalResult.todo);
         return;
       }
 
       if (modalResult.todo.isComplete) {
-        this.todoCompletedService.save(modalResult.todo);
+        this.todoCompletedService.upsertItem(modalResult.todo);
       } else {
         this.todoCompletedService.moveToCurrent(modalResult.todo);
       }

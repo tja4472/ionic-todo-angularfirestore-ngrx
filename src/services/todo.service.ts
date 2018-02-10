@@ -1,32 +1,65 @@
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs/Observable';
 
 import { Store } from '@ngrx/store';
+import { Observable } from 'rxjs/Observable';
+import { take } from 'rxjs/operators';
 
+import {
+  ClearCompleted,
+  DatabaseListenForDataStart,
+  DatabaseListenForDataStop,
+  DeleteItem,
+  ReorderList,
+  UpsertItem,
+} from '../actions/todo.action';
+import * as FromRootReducer from '../reducers';
 import { ReorderArrayIndexes } from '../shared/models/reorder-array-indexes.model';
 import { Todo } from '../shared/models/todo.model';
-
-import * as FromRootReducer from '../reducers/index';
-import * as TodoActions from '../actions/todo.action';
 
 @Injectable()
 export class TodoService {
   constructor(private store: Store<FromRootReducer.State>) {}
 
   clearCompletedItems() {
-    this.store.dispatch(new TodoActions.ClearCompleted());
+    //
+    this.store
+      .select(FromRootReducer.getAuthState)
+      .pipe(take(1))
+      .subscribe((state) => {
+        if (state.isAuthenticated) {
+          this.store.dispatch(
+            new ClearCompleted({
+              todoListId: state.todoListId,
+              userId: state.userId,
+            }),
+          );
+        }
+      });
   }
 
-  getData(): Observable<Todo[]> {
+  getData$(): Observable<Todo[]> {
     return this.store.select(FromRootReducer.getTodo_GetTodos);
   }
 
-  initialise(): void {
-    this.store.dispatch(new TodoActions.ListenForData());
+  public ListenForDataStart(): void {
+    //
+    this.store
+      .select(FromRootReducer.getAuthState)
+      .pipe(take(1))
+      .subscribe((state) => {
+        if (state.isAuthenticated) {
+          this.store.dispatch(
+            new DatabaseListenForDataStart({
+              todoListId: state.todoListId,
+              userId: state.userId,
+            }),
+          );
+        }
+      });
   }
 
-  unlisten(): void {
-    this.store.dispatch(new TodoActions.UnlistenForData());
+  public ListenForDataStop(): void {
+    this.store.dispatch(new DatabaseListenForDataStop());
   }
 
   isLoaded(): Observable<boolean> {
@@ -37,15 +70,57 @@ export class TodoService {
     return this.store.select(FromRootReducer.getTodo_GetLoading);
   }
 
-  reorderItems(indexes: ReorderArrayIndexes) {
-    this.store.dispatch(new TodoActions.ReorderList(indexes));
+  public reorderItems(indexes: ReorderArrayIndexes) {
+    //
+    this.store
+      .select(FromRootReducer.getAuthState)
+      .pipe(take(1))
+      .subscribe((state) => {
+        if (state.isAuthenticated) {
+          this.store.dispatch(
+            new ReorderList({
+              indexes,
+              todoListId: state.todoListId,
+              userId: state.userId,
+            }),
+          );
+        }
+      });
   }
 
-  remove(todo: Todo) {
-    this.store.dispatch(new TodoActions.Remove(todo.id));
+  public deleteItem(item: Todo) {
+    //
+    this.store
+      .select(FromRootReducer.getAuthState)
+      .pipe(take(1))
+      .subscribe((state) => {
+        if (state.isAuthenticated) {
+          this.store.dispatch(
+            new DeleteItem({
+              itemId: item.id,
+              todoListId: state.todoListId,
+              userId: state.userId,
+            }),
+          );
+        }
+      });
   }
 
-  save(todo: Todo) {
-    this.store.dispatch(new TodoActions.Save(todo));
+  public upsertItem(item: Todo) {
+    //
+    this.store
+      .select(FromRootReducer.getAuthState)
+      .pipe(take(1))
+      .subscribe((state) => {
+        if (state.isAuthenticated) {
+          this.store.dispatch(
+            new UpsertItem({
+              item,
+              todoListId: state.todoListId,
+              userId: state.userId,
+            }),
+          );
+        }
+      });
   }
 }

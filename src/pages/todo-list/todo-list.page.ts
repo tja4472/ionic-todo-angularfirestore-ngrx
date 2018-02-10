@@ -36,16 +36,16 @@ export class TodoListPage {
     private todoService: TodoService,
   ) {
     //
-    this.todos$ = todoService.getData();
+    this.todos$ = todoService.getData$();
   }
 
   ionViewDidLoad() {
-    this.todoService.initialise();
+    this.todoService.ListenForDataStart();
   }
 
   ionViewWillUnload() {
     console.log('ionViewWillUnload');
-    this.todoService.unlisten();
+    this.todoService.ListenForDataStop();
   }
 
   addItem() {
@@ -60,7 +60,7 @@ export class TodoListPage {
     this.todoService.save(newItem);
 */
     const newItem: Todo = { ...item, isComplete: !item.isComplete };
-    this.todoService.save(newItem);
+    this.todoService.upsertItem(newItem);
   }
 
   editItem(item: Todo) {
@@ -133,7 +133,7 @@ export class TodoListPage {
 
   removeItem(item: Todo) {
     console.log('removeItem:item>', item);
-    this.todoService.remove(item);
+    this.todoService.deleteItem(item);
   }
 
   private showModal(item?: Todo) {
@@ -150,7 +150,7 @@ export class TodoListPage {
       }
 
       if (data.save && data.item) {
-        this.todoService.save(data.item);
+        this.todoService.upsertItem(data.item);
       }
     });
 

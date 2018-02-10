@@ -10,12 +10,10 @@ export interface State extends EntityState<TaskList> {
   selectedTaskListId: string | null;
 }
 
-export const adapter: EntityAdapter<TaskList> = createEntityAdapter<TaskList>(
-  {
-    selectId: (taskList: TaskList) => taskList.id,
-    sortComparer: false,
-  },
-);
+export const adapter: EntityAdapter<TaskList> = createEntityAdapter<TaskList>({
+  selectId: (taskList: TaskList) => taskList.id,
+  sortComparer: false,
+});
 
 export const initialState: State = adapter.getInitialState({
   loaded: false,

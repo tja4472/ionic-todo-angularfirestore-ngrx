@@ -15,10 +15,7 @@ const initialState: State = {
   todoLists: [],
 };
 
-export function reducer(
-  state = initialState,
-  action: TodoListsActions,
-): State {
+export function reducer(state = initialState, action: TodoListsActions): State {
   switch (action.type) {
     case TodoListsActionTypes.ListenForData: {
       return {

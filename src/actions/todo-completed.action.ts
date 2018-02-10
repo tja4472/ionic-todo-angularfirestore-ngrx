@@ -5,27 +5,41 @@ import { Action } from '@ngrx/store';
 import { TodoCompleted } from '../shared/models/todo-completed.model';
 
 export enum TodoCompletedActionTypes {
-  ListenForData = '[TodoCompletedActions] Listen For Data',
-  LoadSuccess = '[TodoCompletedActions] Load Success',
-  MoveToCurrent = '[TodoCompletedActions] Move To Current',
-  Remove = '[TodoCompletedActions] Remove',
-  Save = '[TodoCompletedActions] Save',
-  UnlistenForData = '[TodoCompletedActions] Unlisten For Data',
+  DATABASE_LISTEN_FOR_DATA_START = '[TodoCompleted] (Database) Listen For Data - Start',
+  DATABASE_LISTEN_FOR_DATA_STOP = '[TodoCompleted] (Database) Listen For Data - Stop',
+  DELETE_ITEM = '[TodoCompleted] Delete Item',
+  LoadSuccess = '[TodoCompleted] Load Success',
+  MoveToCurrent = '[TodoCompleted] Move To Current',
+  UPSERT_ITEM = '[TodoCompleted] Upsert item',
 }
 
-/*
-export const LISTEN_FOR_DATA = '[TodoCompletedActions] Listen For Data';
-export const LOAD_SUCCESS = '[TodoCompletedActions] Load Success';
-export const MOVE_TO_CURRENT = '[TodoCompletedActions] Move To Current';
-export const REMOVE = '[TodoCompletedActions] Remove';
-export const SAVE = '[TodoCompletedActions] Save';
-export const UNLISTEN_FOR_DATA = '[TodoCompletedActions] Unlisten For Data';
-*/
+export class DatabaseListenForDataStart implements Action {
+  readonly type = TodoCompletedActionTypes.DATABASE_LISTEN_FOR_DATA_START;
 
-export class ListenForData implements Action {
-  readonly type = TodoCompletedActionTypes.ListenForData;
+  constructor(
+    public payload: {
+      todoListId: string;
+      userId: string;
+    },
+  ) {}
+}
+
+export class DatabaseListenForDataStop implements Action {
+  readonly type = TodoCompletedActionTypes.DATABASE_LISTEN_FOR_DATA_STOP;
 
   constructor() {}
+}
+
+export class DeleteItem implements Action {
+  readonly type = TodoCompletedActionTypes.DELETE_ITEM;
+
+  constructor(
+    public payload: {
+      itemId: string;
+      todoListId: string;
+      userId: string;
+    },
+  ) {}
 }
 
 export class LoadSuccess implements Action {
@@ -37,31 +51,31 @@ export class LoadSuccess implements Action {
 export class MoveToCurrent implements Action {
   readonly type = TodoCompletedActionTypes.MoveToCurrent;
 
-  constructor(public payload: TodoCompleted) {}
+  constructor(
+    public payload: {
+      item: TodoCompleted;
+      todoListId: string;
+      userId: string;
+    },
+  ) {}
 }
 
-export class Remove implements Action {
-  readonly type = TodoCompletedActionTypes.Remove;
+export class UpsertItem implements Action {
+  readonly type = TodoCompletedActionTypes.UPSERT_ITEM;
 
-  constructor(public payload: string) {} // itemKey
-}
-
-export class Save implements Action {
-  readonly type = TodoCompletedActionTypes.Save;
-
-  constructor(public payload: TodoCompleted) {}
-}
-
-export class UnlistenForData implements Action {
-  readonly type = TodoCompletedActionTypes.UnlistenForData;
-
-  constructor() {}
+  constructor(
+    public payload: {
+      item: TodoCompleted;
+      todoListId: string;
+      userId: string;
+    },
+  ) {}
 }
 
 export type TodoCompletedActions =
-  | ListenForData
+  | DatabaseListenForDataStart
+  | DatabaseListenForDataStop
   | LoadSuccess
   | MoveToCurrent
-  | Remove
-  | Save
-  | UnlistenForData;
+  | DeleteItem
+  | UpsertItem;

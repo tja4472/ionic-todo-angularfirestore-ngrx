@@ -21,7 +21,7 @@ export function reducer(
   action: TodoCompletedActions,
 ): State {
   switch (action.type) {
-    case TodoCompletedActionTypes.ListenForData: {
+    case TodoCompletedActionTypes.DATABASE_LISTEN_FOR_DATA_START: {
       return {
         ...state,
         loading: true,

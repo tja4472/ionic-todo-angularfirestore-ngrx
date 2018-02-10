@@ -15,7 +15,7 @@ const initialState: State = {
 
 export function reducer(state = initialState, action: TodoActions): State {
   switch (action.type) {
-    case TodoActionTypes.ListenForData: {
+    case TodoActionTypes.DATABASE_LISTEN_FOR_DATA_START: {
       return {
         ...state,
         loading: true,

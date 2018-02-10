@@ -5,10 +5,13 @@ import { empty } from 'rxjs/observable/empty';
 
 import {
   LoadSuccess,
-  Remove,
+  DeleteItem,
   ReorderList,
-  Save,
+  UpsertItem,
   TodoActionTypes,
+  ClearCompleted,
+  DatabaseListenForDataStart,
+  DatabaseListenForDataStop,
 } from '../actions/todo.action';
 
 import * as FromRootReducer from '../reducers';
@@ -16,57 +19,55 @@ import { Fb1DataService } from '../services/fb1.data.service';
 import { TodoDataService } from '../services/todo.data.service';
 import { Todo } from '../shared/models/todo.model';
 
-// import { of } from 'rxjs/observable/of';
-// import * as TodoAction from '../actions/todo.action';
-
 @Injectable()
 export class TodoEffects {
+  //
   constructor(
     private actions$: Actions,
     private state$: Store<FromRootReducer.State>,
+    private dataService: TodoDataService,
     private fb1DataService: Fb1DataService,
-    private todoDataService: TodoDataService,
   ) {}
 
   // tslint:disable-next-line:member-ordering
   @Effect({ dispatch: false })
   clearCompleted$ = this.actions$
-    .ofType(TodoActionTypes.ClearCompleted)
+    .ofType<ClearCompleted>(TodoActionTypes.ClearCompleted)
     .withLatestFrom(this.state$)
-    .do(([, state]) => {
+    .do(([action, state]) => {
       const completed = state.todo.todos.filter((a) => a.isComplete);
-      this.fb1DataService.clearCompletedTodos(completed);
+      this.fb1DataService.clearCompletedTodos(
+        completed,
+        action.payload.todoListId,
+        action.payload.userId,
+      );
     });
-  /*
-    @Effect() clearCompleted$ = this.updates$
-      .whenAction(ToDoActions.CLEAR_COMPLETED)
-      .do(x => {
-        let completed = x.state.todo.todos.filter(a => a.isComplete);
-        this.fb1DataService.clearCompletedTodos(completed);
-      })
-      // Terminate effect.
-      .ignoreElements();
-  */
 
   // tslint:disable-next-line:member-ordering
   @Effect()
   listenForData$ = this.actions$
-    .ofType(TodoActionTypes.ListenForData, TodoActionTypes.UnlistenForData)
+    .ofType<DatabaseListenForDataStart | DatabaseListenForDataStop>(
+      TodoActionTypes.DATABASE_LISTEN_FOR_DATA_START,
+      TodoActionTypes.DATABASE_LISTEN_FOR_DATA_STOP,
+    )
     .do((x) => {
       console.log('Effect:listenForData$:A', x);
     })
-    .withLatestFrom(this.state$)
+    // .withLatestFrom(this.state$)
     // tslint:disable-next-line:no-unused-variable
     // .filter(([, state]) => state.login.isAuthenticated)
     // Watch database node and get items.
-    .switchMap(([action]) => {
+    .switchMap((action) => {
       console.log('Effect:listenForData$:action>', action);
 
-      if (action.type === TodoActionTypes.UnlistenForData) {
+      if (action.type === TodoActionTypes.DATABASE_LISTEN_FOR_DATA_STOP) {
         console.log('TodoAction.UNLISTEN_FOR_DATA');
         return empty();
       } else {
-        return this.todoDataService.getData();
+        return this.dataService.getData(
+          action.payload.todoListId,
+          action.payload.userId,
+        );
       }
     })
     .do((x) => {
@@ -90,72 +91,38 @@ export class TodoEffects {
   // tslint:disable-next-line:member-ordering
   @Effect({ dispatch: false })
   reorderList$ = this.actions$
-    .ofType(TodoActionTypes.ReorderList)
+    .ofType<ReorderList>(TodoActionTypes.ReorderList)
     .withLatestFrom(this.state$)
-    .map(([action, state]) => ({ action: action as ReorderList, state }))
-    .do((x) => {
-      console.log('Effect:reorderList$:A', x);
-      this.todoDataService.reorderItemsAndUpdate(
-        x.action.payload,
-        x.state.todo.todos,
+    .do(([action, state]) => {
+      this.dataService.reorderItemsAndUpdate(
+        action.payload.indexes,
+        state.todo.todos,
+        action.payload.todoListId,
+        action.payload.userId,
       );
     });
-  /*
-    @Effect() reorderList$ = this.updates$
-      .whenAction(ToDoActions.REORDER_LIST)
-      .do(x => {
-        console.log('Effect:reorderList$:A', x);
-        this.todoDataService.reorderItemsAndUpdate(
-          x.action.payload.indexes,
-          x.state.todo.todos);
-      })
-
-      // Terminate effect.
-      .ignoreElements();
-  */
 
   // tslint:disable-next-line:member-ordering
   @Effect({ dispatch: false })
   removeItem$ = this.actions$
-    .ofType(TodoActionTypes.Remove)
-    .map((action: Remove) => action.payload)
+    .ofType(TodoActionTypes.DELETE_ITEM)
+    .map((action: DeleteItem) => action.payload)
     .do((payload) => {
       console.log('Effect:removeItem$:A', payload);
-      this.todoDataService.removeItem(payload);
+      this.dataService.removeItem(
+        payload.itemId,
+        payload.todoListId,
+        payload.userId,
+      );
     });
 
-  /*
-    @Effect() removeItem$ = this.updates$
-      .whenAction(ToDoActions.REMOVE)
-      .do(x => {
-        console.log('Effect:removeItem$:A', x);
-        this.todoDataService.removeItem(
-          x.action.payload);
-      })
-
-      // Terminate effect.
-      .ignoreElements();
-  */
   // tslint:disable-next-line:member-ordering
   @Effect({ dispatch: false })
   save$ = this.actions$
-    .ofType(TodoActionTypes.Save)
-    .map((action: Save) => action.payload)
+    .ofType(TodoActionTypes.UPSERT_ITEM)
+    .map((action: UpsertItem) => action.payload)
     .do((payload) => {
       console.log('Effect:save$:A', payload);
-      this.todoDataService.save(payload);
+      this.dataService.save(payload.item, payload.todoListId, payload.userId);
     });
-  /*
-    @Effect() save$ = this.updates$
-      .whenAction(ToDoActions.SAVE)
-      .do(x => {
-        console.log('Effect:save$:A', x);
-        this.todoDataService.save(
-          x.action.payload);
-      })
-
-      // Terminate effect.
-      .ignoreElements();
-  }
-  */
 }
