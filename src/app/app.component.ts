@@ -15,6 +15,19 @@ import { TodoListsPage } from '../todo-lists/pages/todo-lists/todo-lists.page';
 import { LoginService } from '../services/login.service';
 
 import { SignedInUser } from '../models/signed-in-user.model';
+import { TodoListsService } from '../todo-lists/services/todo-lists.service';
+import {
+  map,
+  // skip,
+  withLatestFrom,
+  // merge,
+  // combineLatest,
+  filter,
+} from 'rxjs/operators';
+import { Store } from '@ngrx/store';
+import * as FromRoot from '../reducers';
+import { AuthService } from './auth/auth.service';
+import { UserService } from './user/user.service';
 
 export interface PageInterface {
   title: string;
@@ -30,6 +43,14 @@ export class MyApp {
   @ViewChild(Nav) nav: Nav;
 
   public displayUserName: string;
+  /*
+  public viewTodoLists = [
+    { value: 'aa', label: 'AA' },
+    { value: 'bb', label: 'BB' },
+  ];
+*/
+  public viewTodoLists$: any;
+  public viewSelectedTodoListId$: any;
 
   appPages: PageInterface[] = [
     { title: 'Page One', component: Page1, icon: 'calendar' },
@@ -60,13 +81,106 @@ export class MyApp {
   private signedInUser: SignedInUser | null = null;
 
   constructor(
+    private authService: AuthService,
     private loginService: LoginService,
     public menu: MenuController,
     public platform: Platform,
     public statusBar: StatusBar,
+    private store: Store<FromRoot.State>,
+    public todoListsService: TodoListsService,
+    private userService: UserService,
   ) {
     this.initializeApp();
+    /*
+    this.store
+      .select(FromRoot.getAuthState)
+      .pipe(
+        // Ignore setting of initial state
+        skip(1),
+      )
+      .subscribe((authState) => {
+        console.log('authState>', authState);
 
+        if (authState.isAuthenticated) {
+          this.enableMenu(true);
+          this.nav.setRoot(TodoListPage).catch(() => {
+            console.error('Did not set nav root');
+          });
+
+          this.displayUserName = authState.displayName;
+        } else {
+          this.displayUserName = 'Not signed in';
+          this.enableMenu(false);
+          this.nav.setRoot(SignInPage).catch(() => {
+            console.error('Did not set nav root');
+          });
+        }
+      });
+*/
+    this.store
+      .select(FromRoot.getAuthState)
+      .pipe(
+        filter((authState) => authState.hasChecked),
+        filter((authState) => !authState.isAuthenticated),
+      )
+      .subscribe((authState) => {
+        // Not signed in.
+        console.log('Not signed in:authState>', authState);
+        this.displayUserName = 'Not signed in';
+        this.enableMenu(false);
+        this.nav.setRoot(SignInPage).catch(() => {
+          console.error('Did not set nav root');
+        });
+      });
+
+    this.store
+      .select(FromRoot.getUser_HasLoaded)
+      .pipe(
+        filter((hasLoaded) => hasLoaded),
+        withLatestFrom(this.store.select(FromRoot.getAuthState)),
+        // Ignore setting of initial state
+        // skip(1),
+      )
+      .subscribe(([, authState]) => {
+        console.log('Signed in:authState>', authState);
+
+        this.enableMenu(true);
+        this.nav.setRoot(TodoListPage).catch(() => {
+          console.error('Did not set nav root');
+        });
+
+        this.displayUserName = authState.displayName;
+      });
+    /*
+    this.store
+      .select(FromRoot.getAuthState)
+      .pipe(
+        combineLatest(this.store.select(FromRoot.getUserState)),
+        // Ignore setting of initial state
+        // skip(1),
+        filter(([, userState]) => userState.todoListId !== ''),
+        //         filter(([,userState]) => userState.isLoaded == true),
+      )
+      .subscribe(([authState, userState]) => {
+        console.log('########authState>', authState);
+        console.log('########userState>', userState);
+
+        if (authState.isAuthenticated) {
+          this.enableMenu(true);
+          this.nav.setRoot(TodoListPage).catch(() => {
+            console.error('Did not set nav root');
+          });
+
+          this.displayUserName = authState.displayName;
+        } else {
+          this.displayUserName = 'Not signed in';
+          this.enableMenu(false);
+          this.nav.setRoot(SignInPage).catch(() => {
+            console.error('Did not set nav root');
+          });
+        }
+      });
+*/
     // loginService.initialise();
 
     this.loginState$ = loginService.getLoginState();
@@ -89,6 +203,11 @@ export class MyApp {
     */
   }
 
+  public viewtodoListsSelectChange(todoListId: any): void {
+    console.log('todoListId>', todoListId);
+    this.userService.SetTodoListId(todoListId);
+  }
+
   initializeApp() {
     this.platform.ready().then(() => {
       console.log('platform.ready()');
@@ -99,14 +218,30 @@ export class MyApp {
       this.loginService.notifier$.subscribe((signedInUser: SignedInUser) => {
         console.log('>>>>>>>>>>signedInUser>', signedInUser);
         this.signedInUser = signedInUser;
-
+        /*
+        // AND user Loaded........
         if (signedInUser) {
           this.doSignedIn(signedInUser);
         } else {
           this.doSignedOut();
         }
+*/
       });
 
+      // only if signed in?????/
+      this.viewTodoLists$ = this.todoListsService.getItems$().pipe(
+        map((a) => {
+          console.log('a>', a);
+          return a.map((item) => ({ value: item.id, label: item.name }));
+        }),
+      );
+      this.viewSelectedTodoListId$ = this.todoListsService.getSelectedListId$();
+
+      /*
+      .subscribe((x) => {
+        console.log('select source>', x);
+      });
+*/
       /*
             this.loginService.auth$.subscribe((firebaseUser) => {
               console.log('>>>>>>>>>>firebaseUser>', firebaseUser);
@@ -156,7 +291,9 @@ export class MyApp {
     // this.rootPage = page.component;
 
     if (page.logsOut === true) {
-      this.loginService.logout();
+      this.authService.signOut();
+      // this.loginService.logout();
+
       /*
       // Give the menu time to close before changing to logged out
       setTimeout(() => {
@@ -167,12 +304,12 @@ export class MyApp {
       this.rootPage = page.component;
     }
   }
-
+  /*
   private doSignedIn(user: SignedInUser): void {
     // this.rootPage = TodoListPage;
     this.enableMenu(true);
     this.nav.setRoot(TodoListPage).catch(() => {
-      console.error('Didn\'t set nav root');
+      console.error('Did not set nav root');
     });
 
     this.displayUserName = user.displayName;
@@ -183,10 +320,10 @@ export class MyApp {
     this.displayUserName = 'Not signed in';
     this.enableMenu(false);
     this.nav.setRoot(SignInPage).catch(() => {
-      console.error('Didn\'t set nav root');
+      console.error('Did not set nav root');
     });
   }
-
+*/
   private enableMenu(loggedIn: boolean): void {
     const loggedInMenu = 'loggedInMenu';
     const loggedOutMenu = 'loggedOutMenu';

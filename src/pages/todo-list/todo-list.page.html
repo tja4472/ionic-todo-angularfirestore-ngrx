@@ -17,6 +17,7 @@
 </ion-header>
 
 <ion-content>
+
   <tja-todo-list [todos]="todos$ | async"
                          (addItem)="addItem()"
                          (toggleCompleteItem)="toggleCompleteItem($event)"

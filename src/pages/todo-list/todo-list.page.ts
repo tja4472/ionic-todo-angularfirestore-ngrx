@@ -28,6 +28,8 @@ import { ReorderArrayIndexes } from '../../shared/models/reorder-array-indexes.m
 export class TodoListPage {
   todos$: Observable<Todo[]>;
 
+  aaaa$: Observable<any>;
+
   constructor(
     public navCtrl: NavController,
     public modalCtrl: ModalController,
@@ -37,15 +39,20 @@ export class TodoListPage {
   ) {
     //
     this.todos$ = todoService.getData$();
+/*
+    todoService.getDataAAAAA$().subscribe((x) => {
+      console.log('AAAAAA>', x);
+    });
+*/
   }
 
   ionViewDidLoad() {
-    this.todoService.ListenForDataStart();
+   // this.todoService.ListenForDataStart();
   }
 
   ionViewWillUnload() {
     console.log('ionViewWillUnload');
-    this.todoService.ListenForDataStop();
+    // this.todoService.ListenForDataStop();
   }
 
   addItem() {

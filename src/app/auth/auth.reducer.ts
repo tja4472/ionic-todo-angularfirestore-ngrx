@@ -18,7 +18,7 @@ const initialState: State = {
   hasChecked: false,
   isAuthenticated: false,
   isAuthenticating: false,
-  todoListId: 'TodoList1',
+  todoListId: 'default-list',
   userId: '',
 };
 

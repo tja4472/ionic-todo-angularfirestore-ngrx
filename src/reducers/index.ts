@@ -6,6 +6,7 @@ import * as fromTodoListReducer from '../todo-lists/todo-lists.reducer';
 import * as fromLoginReducer from './login.reducer';
 import * as fromTodoCompletedReducer from './todo-completed.reducer';
 import * as fromTodoReducer from './todo.reducer';
+import * as fromUserReducer from '../app/user/user.reducer';
 
 // import { storeLogger } from 'ngrx-store-logger';
 // import { storeFreeze } from 'ngrx-store-freeze';
@@ -19,6 +20,7 @@ export interface State {
   todo: fromTodoReducer.State;
   todoCompleted: fromTodoCompletedReducer.State;
   todoList: fromTodoListReducer.State;
+  user: fromUserReducer.State;
 }
 
 export const reducers: ActionReducerMap<State> = {
@@ -27,6 +29,7 @@ export const reducers: ActionReducerMap<State> = {
   todo: fromTodoReducer.reducer,
   todoCompleted: fromTodoCompletedReducer.reducer,
   todoList: fromTodoListReducer.reducer,
+  user: fromUserReducer.reducer,
 };
 
 export const metaReducers: Array<MetaReducer<State>> = [storeFreeze];
@@ -139,7 +142,28 @@ export const getTodoList_GetLoading = createSelector(
   fromTodoListReducer.getLoading,
 );
 // tslint:disable-next-line:variable-name
+export const getTodoList_GetSelectedListId = createSelector(
+  getTodoListState,
+  fromTodoListReducer.getSelectedListId,
+);
+// tslint:disable-next-line:variable-name
 export const getTodoList_GetTodoLists = createSelector(
   getTodoListState,
   fromTodoListReducer.getTodoLists,
 );
+//#region User selectors
+export const getUserState = (state: State) => state.user;
+
+
+// tslint:disable-next-line:variable-name
+export const getUser_HasLoaded = createSelector(
+  getUserState,
+  fromUserReducer.getHasLoaded,
+);
+
+// tslint:disable-next-line:variable-name
+export const getUser_TodoListId = createSelector(
+  getUserState,
+  fromUserReducer.getTodoListId,
+);
+//#endregion

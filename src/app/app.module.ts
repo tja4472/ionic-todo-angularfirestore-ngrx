@@ -15,6 +15,8 @@ import { ValidationService } from '../shared/services/validation.service';
 import { TodoListsDataService } from '../todo-lists/services/todo-lists.data.service';
 import { TodoListsService } from '../todo-lists/services/todo-lists.service';
 import { AuthService } from './auth/auth.service';
+import { UserDataService } from './user/user.data.service';
+import { UserService } from './user/user.service';
 
 import { StatusBar } from '@ionic-native/status-bar';
 import { EffectsModule } from '@ngrx/effects';
@@ -52,6 +54,7 @@ import { TodoListsEffects } from '../todo-lists/todo-lists.effect';
 import { MyApp } from './app.component';
 import { AuthEffects } from './auth/auth.effect';
 import { MY_FIREBASE_APP_CONFIG } from './my-firebase-app-config';
+import { UserEffects } from './user/user.effect';
 
 // shared
 // tslint:disable-next-line:max-line-length
@@ -94,6 +97,7 @@ import { MY_FIREBASE_APP_CONFIG } from './my-firebase-app-config';
       TodoCompletedEffects,
       TodoEffects,
       TodoListsEffects,
+      UserEffects,
     ]),
   ],
   // tslint:disable-next-line:object-literal-sort-keys
@@ -123,6 +127,8 @@ import { MY_FIREBASE_APP_CONFIG } from './my-firebase-app-config';
     TodoService,
     TodoListsDataService,
     TodoListsService,
+    UserDataService,
+    UserService,
     ValidationService,
     { provide: ErrorHandler, useClass: IonicErrorHandler },
   ],

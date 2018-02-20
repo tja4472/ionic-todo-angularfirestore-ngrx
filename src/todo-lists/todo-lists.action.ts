@@ -13,25 +13,25 @@ export enum TodoListsActionTypes {
   UnlistenForData = '[TodoListsActions] Unlisten For Data',
 }
 
-/*
-export const LISTEN_FOR_DATA = '[TodoListsActions] Listen For Data';
-export const LOAD_SUCCESS = '[TodoListsActions] Load Success';
-export const REMOVE = '[TodoListsActions] Remove';
-export const SAVE = '[TodoListsActions] Save';
-export const SET_SELECTED_LIST = '[TodoListsActions] Set Selected List';
-export const UNLISTEN_FOR_DATA = '[TodoListsActions] Unlisten For Data';
-*/
-
 export class ListenForData implements Action {
   readonly type = TodoListsActionTypes.ListenForData;
 
-  constructor() {}
+  constructor(
+    public payload: {
+      userId: string;
+    },
+  ) {}
 }
 
 export class LoadSuccess implements Action {
   readonly type = TodoListsActionTypes.LoadSuccess;
 
-  constructor(public payload: TodoListsItem[]) {}
+  constructor(
+    public payload: {
+      items: TodoListsItem[];
+      userId: string;
+    },
+  ) {}
 }
 
 export class Remove implements Action {

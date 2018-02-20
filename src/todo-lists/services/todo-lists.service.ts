@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
+import { take } from 'rxjs/operators/take';
 
 import { Store } from '@ngrx/store';
 
@@ -12,12 +13,28 @@ import * as Actions from '../todo-lists.action';
 export class TodoListsService {
   constructor(private store: Store<FromRootReducer.State>) {}
 
-  getData(): Observable<TodoListsItem[]> {
+  getItems$(): Observable<TodoListsItem[]> {
     return this.store.select(FromRootReducer.getTodoList_GetTodoLists);
   }
 
+  getSelectedListId$(): Observable<string | null> {
+    return this.store.select(FromRootReducer.getTodoList_GetSelectedListId);
+  }
+
   initialise(): void {
-    this.store.dispatch(new Actions.ListenForData());
+    //
+    this.store
+      .select(FromRootReducer.getAuthState)
+      .pipe(take(1))
+      .subscribe((state) => {
+        if (state.isAuthenticated) {
+          this.store.dispatch(
+            new Actions.ListenForData({
+              userId: state.userId,
+            }),
+          );
+        }
+      });
   }
 
   unlisten(): void {

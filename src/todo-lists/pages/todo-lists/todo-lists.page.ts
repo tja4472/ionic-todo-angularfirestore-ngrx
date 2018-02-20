@@ -22,7 +22,7 @@ export class TodoListsPage {
     private todoService: TodoListsService,
   ) {
     //
-    this.todos$ = todoService.getData();
+    this.todos$ = todoService.getItems$();
   }
 
   ionViewDidLoad() {

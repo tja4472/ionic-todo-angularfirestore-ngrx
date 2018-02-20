@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs/Observable';
-import { take } from 'rxjs/operators';
+import { take } from 'rxjs/operators/take';
 
 import {
   ClearCompleted,
@@ -11,14 +11,24 @@ import {
   DeleteItem,
   ReorderList,
   UpsertItem,
+  LoadSuccess,
 } from '../actions/todo.action';
 import * as FromRootReducer from '../reducers';
 import { ReorderArrayIndexes } from '../shared/models/reorder-array-indexes.model';
 import { Todo } from '../shared/models/todo.model';
+import { Subscription } from 'rxjs/Subscription';
+import { TodoDataService } from './todo.data.service';
+// import { withLatestFrom } from 'rxjs/operator/withLatestFrom';
 
 @Injectable()
 export class TodoService {
-  constructor(private store: Store<FromRootReducer.State>) {}
+  //
+  private sub: Subscription;
+
+  constructor(
+    private store: Store<FromRootReducer.State>,
+    private dataService: TodoDataService,
+  ) {}
 
   clearCompletedItems() {
     //
@@ -38,20 +48,36 @@ export class TodoService {
   }
 
   getData$(): Observable<Todo[]> {
-    return this.store.select(FromRootReducer.getTodo_GetTodos);
+    // return this.store.select(FromRootReducer.getTodo_GetTodos);
+    return this.items$;
+  }
+
+  getDataAAAAA$(): Observable<Todo[]> {
+    // return this.store.select(FromRootReducer.getTodo_GetTodos);
+    return this.items$;
   }
 
   public ListenForDataStart(): void {
     //
-    this.store
+    this.sub = this.store
       .select(FromRootReducer.getAuthState)
-      .pipe(take(1))
-      .subscribe((state) => {
-        if (state.isAuthenticated) {
+      // .combineLatest(this.store.select((state) => state.user))
+      // .withLatestFrom(this.store.select((state) => state.user))
+      // .filter(([, userState]) => userState.todoListId !== '')
+      // .take(1)
+      .do(() => console.log('#############################'))
+      // .pipe(withLatestFrom(this.store.select(state => state.user)))
+      // take(1))
+      .subscribe((authState) => {
+        if (authState.todoListId === '') {
+          return;
+        }
+
+        if (authState.isAuthenticated) {
           this.store.dispatch(
             new DatabaseListenForDataStart({
-              todoListId: state.todoListId,
-              userId: state.userId,
+              todoListId: authState.todoListId,
+              userId: authState.userId,
             }),
           );
         }
@@ -60,6 +86,7 @@ export class TodoService {
 
   public ListenForDataStop(): void {
     this.store.dispatch(new DatabaseListenForDataStop());
+    // this.sub.unsubscribe();
   }
 
   isLoaded(): Observable<boolean> {
@@ -74,14 +101,15 @@ export class TodoService {
     //
     this.store
       .select(FromRootReducer.getAuthState)
+      .withLatestFrom(this.store.select((state) => state.user))
       .pipe(take(1))
-      .subscribe((state) => {
-        if (state.isAuthenticated) {
+      .subscribe(([authState, userState]) => {
+        if (authState.isAuthenticated) {
           this.store.dispatch(
             new ReorderList({
               indexes,
-              todoListId: state.todoListId,
-              userId: state.userId,
+              todoListId: userState.todoListId,
+              userId: authState.userId,
             }),
           );
         }
@@ -92,14 +120,15 @@ export class TodoService {
     //
     this.store
       .select(FromRootReducer.getAuthState)
+      .withLatestFrom(this.store.select((state) => state.user))
       .pipe(take(1))
-      .subscribe((state) => {
-        if (state.isAuthenticated) {
+      .subscribe(([authState, userState]) => {
+        if (authState.isAuthenticated) {
           this.store.dispatch(
             new DeleteItem({
               itemId: item.id,
-              todoListId: state.todoListId,
-              userId: state.userId,
+              todoListId: userState.todoListId,
+              userId: authState.userId,
             }),
           );
         }
@@ -110,17 +139,62 @@ export class TodoService {
     //
     this.store
       .select(FromRootReducer.getAuthState)
+      .withLatestFrom(this.store.select((state) => state.user))
       .pipe(take(1))
-      .subscribe((state) => {
-        if (state.isAuthenticated) {
+      .subscribe(([authState, userState]) => {
+        if (authState.isAuthenticated) {
           this.store.dispatch(
             new UpsertItem({
               item,
-              todoListId: state.todoListId,
-              userId: state.userId,
+              todoListId: userState.todoListId,
+              userId: authState.userId,
             }),
           );
         }
       });
   }
+  // https://medium.com/@m3po22/stop-using-ngrx-effects-for-that-a6ccfe186399
+  public muteFirst = <T,R>(first$: Observable<T>, second$: Observable<R>) => Observable.combineLatest(
+    first$,
+    second$,
+    (_a,b) => b
+  ).distinctUntilChanged()
+
+  // tslint:disable-next-line:member-ordering
+  public requireItems$ = this.store
+    .select(FromRootReducer.getAuthState)
+    .filter((authState) => authState.isAuthenticated)
+    // .withLatestFrom(this.store.select((state) => state.user))
+    // .combineLatest(this.store.select((state) => state.user.todoListId))
+    .combineLatest(this.store.select(FromRootReducer.getUser_TodoListId))
+    .filter(([, todoListId]) => todoListId !== '')
+    .do(() => this.store.dispatch({ type: 'GET_USERS' }))
+    .switchMap(([authState, todoListId]) => {
+      console.log('##switchMap##:authState>', authState);
+      console.log('##switchMap##:todoListId>', todoListId);
+
+      return this.dataService.getData(todoListId, authState.userId);
+    }
+    )
+    .do((items) => this.store.dispatch(new LoadSuccess(items)))
+    .finally(() => {
+      console.log('##finally##');
+      this.store.dispatch({ type: 'CANCEL_GET_USERS' });
+  })
+    .share();
+
+  // tslint:disable-next-line:member-ordering
+  public items$ = this.muteFirst(
+    this.requireItems$.startWith(null),
+    this.store.select(FromRootReducer.getTodo_GetTodos));
+
+  /*
+    public items$ = Observable.combineLatest(
+    this.requireItems$.startWith(null),
+    this.store.select(FromRootReducer.getTodo_GetTodos),
+    (_a, b) => b,
+  ).distinctUntilChanged();
+  */
+
+
 }

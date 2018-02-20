@@ -22,6 +22,12 @@ export function reducer(state = initialState, action: TodoActions): State {
       };
     }
 
+    case TodoActionTypes.DATABASE_LISTEN_FOR_DATA_STOP: {
+      return {
+        ...initialState,
+      };
+    }
+
     case TodoActionTypes.LoadSuccess: {
       const items: Todo[] = action.payload;
 

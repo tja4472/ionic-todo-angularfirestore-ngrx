@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
+import { map } from 'rxjs/operators/map';
 
 import {
   AngularFirestore,
@@ -42,17 +43,23 @@ export class TodoListsDataService {
     });
   }
 
-  public getData(): Observable<TodoListsItem[]> {
+  /*
+  public addDefault() {
+    this.save({ id: 'default-list', name: 'Default list'});
+  }
+  */
+
+  public getData(userId: string): Observable<TodoListsItem[]> {
     //
-    if (this.isSignedIn) {
-      return this.itemsCollection.valueChanges().map((items) =>
-        items.map((item) => {
-          return this.fromFirestoreDoc(item);
-        }),
+    return this.firestoreCollection(userId)
+      .valueChanges()
+      .pipe(
+        map((items) =>
+          items.map((item) => {
+            return this.fromFirestoreDoc(item);
+          }),
+        ),
       );
-    } else {
-      return Observable.from<TodoListsItem[]>([]);
-    }
   }
 
   public removeItem(id: string): void {
@@ -78,28 +85,32 @@ export class TodoListsDataService {
       );
   }
 
+  private firestoreCollection(userId: string) {
+    //
+    return this.afs
+    .collection(USERS_COLLECTION)
+    .doc(userId)
+    .collection<FirestoreDoc>(DATA_COLLECTION, (ref) =>
+      ref.orderBy('name', 'asc'),
+    );
+  }
+
   private toFirestoreDoc(item: TodoListsItem): FirestoreDoc {
     //
-
     const result: FirestoreDoc = {
       id: item.id,
       name: item.name,
     };
 
-    // console.log('toFirebaseTodo>', result);
     return result;
   }
 
   private fromFirestoreDoc(x: FirestoreDoc): TodoListsItem {
     //
-    // console.log('TodoDataService:fromFirebaseTodo>', x);
-
     const result: TodoListsItem = new TodoListsItem({
       id: x.id,
       name: x.name,
     });
-
-    // console.log('TodoDataService:fromFirebaseTodo:result>', result);
 
     return result;
   }

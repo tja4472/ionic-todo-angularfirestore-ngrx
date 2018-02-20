@@ -25,12 +25,12 @@ export function reducer(state = initialState, action: TodoListsActions): State {
     }
 
     case TodoListsActionTypes.LoadSuccess: {
-      const items: TodoListsItem[] = action.payload;
+      const items: TodoListsItem[] = action.payload.items;
 
       return {
         loaded: true,
         loading: false,
-        selectedListId: null,
+        selectedListId: 'default-list',
         todoLists: items.map((book) => book),
       };
     }
@@ -54,3 +54,4 @@ export function reducer(state = initialState, action: TodoListsActions): State {
 export const getLoaded = (state: State) => state.loaded;
 export const getLoading = (state: State) => state.loading;
 export const getTodoLists = (state: State) => state.todoLists;
+export const getSelectedListId = (state: State) => state.selectedListId;

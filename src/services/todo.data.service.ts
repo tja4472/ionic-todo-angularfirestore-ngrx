@@ -31,6 +31,8 @@ export class TodoDataService {
 
   public getData(todoListId: string, userId: string): Observable<Todo[]> {
     //
+    console.log('######getData>', userId);
+
     return this.firestoreCollection(todoListId, userId)
       .valueChanges()
       .pipe(
