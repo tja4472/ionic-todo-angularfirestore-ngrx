@@ -39,20 +39,17 @@ export class TodoListPage {
   ) {
     //
     this.todos$ = todoService.getData$();
-/*
-    todoService.getDataAAAAA$().subscribe((x) => {
-      console.log('AAAAAA>', x);
-    });
-*/
   }
 
   ionViewDidLoad() {
-   // this.todoService.ListenForDataStart();
+   //
+    this.todoService.ListenForDataStart();
   }
 
   ionViewWillUnload() {
+    //
     console.log('ionViewWillUnload');
-    // this.todoService.ListenForDataStop();
+    this.todoService.ListenForDataStop();
   }
 
   addItem() {

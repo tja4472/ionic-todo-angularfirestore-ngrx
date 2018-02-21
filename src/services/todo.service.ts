@@ -11,24 +11,15 @@ import {
   DeleteItem,
   ReorderList,
   UpsertItem,
-  LoadSuccess,
 } from '../actions/todo.action';
 import * as FromRootReducer from '../reducers';
 import { ReorderArrayIndexes } from '../shared/models/reorder-array-indexes.model';
 import { Todo } from '../shared/models/todo.model';
-import { Subscription } from 'rxjs/Subscription';
-import { TodoDataService } from './todo.data.service';
-// import { withLatestFrom } from 'rxjs/operator/withLatestFrom';
 
 @Injectable()
 export class TodoService {
   //
-  private sub: Subscription;
-
-  constructor(
-    private store: Store<FromRootReducer.State>,
-    private dataService: TodoDataService,
-  ) {}
+  constructor(private store: Store<FromRootReducer.State>) {}
 
   clearCompletedItems() {
     //
@@ -48,18 +39,12 @@ export class TodoService {
   }
 
   getData$(): Observable<Todo[]> {
-    // return this.store.select(FromRootReducer.getTodo_GetTodos);
-    return this.items$;
-  }
-
-  getDataAAAAA$(): Observable<Todo[]> {
-    // return this.store.select(FromRootReducer.getTodo_GetTodos);
-    return this.items$;
+    return this.store.select(FromRootReducer.getTodo_GetTodos);
   }
 
   public ListenForDataStart(): void {
     //
-    this.sub = this.store
+    this.store
       .select(FromRootReducer.getAuthState)
       // .combineLatest(this.store.select((state) => state.user))
       // .withLatestFrom(this.store.select((state) => state.user))
@@ -153,7 +138,15 @@ export class TodoService {
         }
       });
   }
-  // https://medium.com/@m3po22/stop-using-ngrx-effects-for-that-a6ccfe186399
+  /********************************
+   * https://medium.com/@m3po22/stop-using-ngrx-effects-for-that-a6ccfe186399
+   *******************************/
+  /*
+    getData$(): Observable<Todo[]> {
+    // return this.store.select(FromRootReducer.getTodo_GetTodos);
+    return this.items$;
+  }
+
   public muteFirst = <T,R>(first$: Observable<T>, second$: Observable<R>) => Observable.combineLatest(
     first$,
     second$,
@@ -164,8 +157,6 @@ export class TodoService {
   public requireItems$ = this.store
     .select(FromRootReducer.getAuthState)
     .filter((authState) => authState.isAuthenticated)
-    // .withLatestFrom(this.store.select((state) => state.user))
-    // .combineLatest(this.store.select((state) => state.user.todoListId))
     .combineLatest(this.store.select(FromRootReducer.getUser_TodoListId))
     .filter(([, todoListId]) => todoListId !== '')
     .do(() => this.store.dispatch({ type: 'GET_USERS' }))
@@ -188,13 +179,5 @@ export class TodoService {
     this.requireItems$.startWith(null),
     this.store.select(FromRootReducer.getTodo_GetTodos));
 
-  /*
-    public items$ = Observable.combineLatest(
-    this.requireItems$.startWith(null),
-    this.store.select(FromRootReducer.getTodo_GetTodos),
-    (_a, b) => b,
-  ).distinctUntilChanged();
   */
-
-
 }
