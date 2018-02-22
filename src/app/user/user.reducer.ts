@@ -24,7 +24,7 @@ export function reducer(
       };
     }
 
-    case UserActionTypes.DATABASE_LISTEN_FOR_DATA_START: {
+    case UserActionTypes.LOAD_ITEM: {
       return {
         ...state,
       };
@@ -37,7 +37,7 @@ export function reducer(
       };
     }
 
-    case UserActionTypes.LOAD_SUCCESS: {
+    case UserActionTypes.LOAD_ITEM_SUCCESS: {
       const user = action.payload.item;
       let todoListId = '';
 

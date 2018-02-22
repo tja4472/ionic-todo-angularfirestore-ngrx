@@ -4,15 +4,15 @@ import { Action } from '@ngrx/store';
 import { User } from './user.model';
 
 export enum UserActionTypes {
-  DATABASE_LISTEN_FOR_DATA_START = '[User] (Database) Listen For Data - Start',
   DATABASE_LISTEN_FOR_DATA_STOP = '[User] (Database) Listen For Data - Stop',
-  LOAD_SUCCESS = '[User] Load Success',
+  LOAD_ITEM = '[User] Load Item',
+  LOAD_ITEM_SUCCESS = '[User] Load Item Success',
   SET_TODO_LIST_ID = '[User] Set TodoListId',
   UPSERT_ITEM = '[User] Upsert item',
 }
 
-export class DatabaseListenForDataStart implements Action {
-  readonly type = UserActionTypes.DATABASE_LISTEN_FOR_DATA_START;
+export class LoadItem implements Action {
+  readonly type = UserActionTypes.LOAD_ITEM;
 
   constructor(
     public payload: {
@@ -27,8 +27,8 @@ export class DatabaseListenForDataStop implements Action {
   constructor() {}
 }
 
-export class LoadSuccess implements Action {
-  readonly type = UserActionTypes.LOAD_SUCCESS;
+export class LoadItemSuccess implements Action {
+  readonly type = UserActionTypes.LOAD_ITEM_SUCCESS;
 
   constructor(public payload: { item: User | null }) {}
 }
@@ -38,6 +38,7 @@ export class SetTodoListId implements Action {
 
   constructor(
     public payload: {
+      userId: string;
       todoListId: string;
     },
   ) {}
@@ -55,8 +56,8 @@ export class UpsertItem implements Action {
 }
 
 export type UserActions =
-  | DatabaseListenForDataStart
   | DatabaseListenForDataStop
-  | LoadSuccess
+  | LoadItem
+  | LoadItemSuccess
   | SetTodoListId
   | UpsertItem;

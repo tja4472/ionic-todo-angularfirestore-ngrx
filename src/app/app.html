@@ -53,10 +53,11 @@
       <ion-toolbar>
         <ion-title>Menu</ion-title>
         {{ displayUserName }}
+
         <ion-select (ionChange)="viewtodoListsSelectChange($event)">
-          <ion-option *ngFor="let val of viewTodoLists$ | async"
+          <ion-option *ngFor="let val of viewTodoListsSelect$ | async"
                       [value]="val.value"
-                      [selected]="(viewSelectedTodoListId$ | async) == val.value">{{val.label}} </ion-option>
+                      [selected]="val.selected">{{val.label}} </ion-option>
         </ion-select>
       </ion-toolbar>
     </ion-header>

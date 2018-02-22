@@ -38,7 +38,7 @@ export class UserDataService {
 
   private firestoreDocument(userId: string) {
     //
-    return this.afs.collection(USERS_COLLECTION).doc<User>(userId);
+    return this.afs.collection(USERS_COLLECTION).doc<FirestoreDoc>(userId);
   }
 
   private toFirestoreDoc(item: User): FirestoreDoc {
@@ -52,6 +52,8 @@ export class UserDataService {
 
   private fromFirestoreDoc(x: FirestoreDoc | null): User | null {
     //
+    console.log('ZZZZZZZZZZZZZZZZZ>', x);
+
     if (x == null) {
       return null;
     }

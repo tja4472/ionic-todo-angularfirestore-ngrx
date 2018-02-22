@@ -21,7 +21,7 @@ import {
   // skip,
   withLatestFrom,
   // merge,
-  // combineLatest,
+  combineLatest,
   filter,
 } from 'rxjs/operators';
 import { Store } from '@ngrx/store';
@@ -49,8 +49,7 @@ export class MyApp {
     { value: 'bb', label: 'BB' },
   ];
 */
-  public viewTodoLists$: any;
-  public viewSelectedTodoListId$: any;
+  public viewTodoListsSelect$: any;
 
   appPages: PageInterface[] = [
     { title: 'Page One', component: Page1, icon: 'calendar' },
@@ -228,20 +227,34 @@ export class MyApp {
 */
       });
 
+      this.viewTodoListsSelect$ = this.userService.todoListId$().pipe(
+        combineLatest(this.todoListsService.getItems$()),
+        map(([todoListId, todoLists]) => {
+          const ionSelectSource = todoLists.map((item) => ({
+            label: item.name,
+            selected: item.id === todoListId,
+            value: item.id,
+          }));
+          return ionSelectSource;
+        }),
+      );
+
+      this.userService.todoListId$().subscribe((x) => {
+        console.log('this.userService.todoListId$>', x);
+      });
+
       // only if signed in?????/
+      /*
       this.viewTodoLists$ = this.todoListsService.getItems$().pipe(
         map((a) => {
           console.log('a>', a);
           return a.map((item) => ({ value: item.id, label: item.name }));
         }),
       );
-      this.viewSelectedTodoListId$ = this.todoListsService.getSelectedListId$();
-
-      /*
-      .subscribe((x) => {
-        console.log('select source>', x);
-      });
 */
+      // this should be user:todoListId
+      // this.viewSelectedTodoListId$ = this.todoListsService.getSelectedListId$();
+
       /*
             this.loginService.auth$.subscribe((firebaseUser) => {
               console.log('>>>>>>>>>>firebaseUser>', firebaseUser);

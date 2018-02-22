@@ -1,18 +1,12 @@
 import { Injectable } from '@angular/core';
 
-import { Effect, Actions } from '@ngrx/effects';
-
-import { AuthActionTypes, ListenForAuthSuccess } from '../auth/auth.action';
 import { UserDataService } from './user.data.service';
 
-import {
-  DatabaseListenForDataStart,
-  DatabaseListenForDataStop,
-  UserActionTypes,
-  LoadSuccess,
-} from './user.action';
+import { Actions, Effect } from '@ngrx/effects';
 
-import { empty } from 'rxjs/observable/empty';
+import { AuthActionTypes, ListenForAuthSuccess } from '../auth/auth.action';
+import { LoadItem, LoadItemSuccess, SetTodoListId, UserActionTypes } from './user.action';
+import { User } from './user.model';
 
 @Injectable()
 export class UserEffects {
@@ -27,35 +21,27 @@ export class UserEffects {
   authListenForAuthSuccess$ = this.actions$
     .ofType<ListenForAuthSuccess>(AuthActionTypes.LISTEN_FOR_AUTH_SUCCESS)
     .map((action) => action.payload)
-    .map(
-      (payload) =>
-        new DatabaseListenForDataStart({ userId: payload.signedInUser.userId }),
-    );
+    .map((payload) => new LoadItem({ userId: payload.signedInUser.userId }));
 
   // tslint:disable-next-line:member-ordering
   @Effect()
-  listenForData$ = this.actions$
-    .ofType<DatabaseListenForDataStart | DatabaseListenForDataStop>(
-      UserActionTypes.DATABASE_LISTEN_FOR_DATA_START,
-      UserActionTypes.DATABASE_LISTEN_FOR_DATA_STOP,
-    )
-    .do((x) => {
-      console.log('Effect:listenForData$:A', x);
-    })
-    .switchMap((action) => {
-      console.log('Effect:listenForData$:action>', action);
+  loadItem$ = this.actions$
+    .ofType<LoadItem>(UserActionTypes.LOAD_ITEM)
+    .map((action) => action.payload)
+    .switchMap((payload) => {
+      return this.dataService
+        .getItem$(payload.userId)
+        .take(1)
+        .map((item) => new LoadItemSuccess({ item }));
+    });
 
-      if (action.type === UserActionTypes.DATABASE_LISTEN_FOR_DATA_STOP) {
-        console.log('TodoAction.UNLISTEN_FOR_DATA');
-        return empty();
-      } else {
-        return this.dataService
-          .getItem$(action.payload.userId)
-          .take(1)
-          .map((item) => new LoadSuccess({ item }));
-      }
-    })
-    .do((x) => {
-      console.log('xxxxxEffect:listenForData$:B', x);
+  // tslint:disable-next-line:member-ordering
+  @Effect({ dispatch: false })
+  setTodoListId$ = this.actions$
+    .ofType<SetTodoListId>(UserActionTypes.SET_TODO_LIST_ID)
+    .map((action) => action.payload)
+    .do((payload) => {
+      const user: User = { todoListId: payload.todoListId };
+      this.dataService.save(user, payload.userId);
     });
 }
