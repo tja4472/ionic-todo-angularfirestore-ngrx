@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 
 import { select, Store } from '@ngrx/store';
 import { Observable } from 'rxjs/Observable';
-import { combineLatest } from 'rxjs/operators';
+import { combineLatest, filter } from 'rxjs/operators';
 import { take } from 'rxjs/operators/take';
 import { Subscription } from 'rxjs/Subscription';
 
@@ -26,6 +26,7 @@ export class TodoService {
   private init$ = this.store.pipe(
     select(FromRootReducer.getAuthUserId),
     combineLatest(this.store.pipe(select(FromRootReducer.getUser_TodoListId))),
+    filter(([userId]) => userId !== ''),
   );
 
   constructor(private store: Store<FromRootReducer.State>) {}
@@ -49,16 +50,15 @@ export class TodoService {
 
   public ListenForDataStart(): void {
     //
-    this.listenForDataStartSubscription = this.init$.subscribe(
-      ([userId, todoListId]) => {
+    this.listenForDataStartSubscription = this.init$
+      .subscribe(([userId, todoListId]) => {
         this.store.dispatch(
           new DatabaseListenForDataStart({
             todoListId,
             userId,
           }),
         );
-      },
-    );
+      });
   }
 
   public ListenForDataStop(): void {

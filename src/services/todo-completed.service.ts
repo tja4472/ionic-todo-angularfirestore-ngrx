@@ -15,7 +15,7 @@ import {
   UpsertItem,
   MoveToCurrent,
 } from '../actions/todo-completed.action';
-import { combineLatest } from 'rxjs/operators';
+import { combineLatest, filter } from 'rxjs/operators';
 import { Subscription } from 'rxjs/Subscription';
 
 @Injectable()
@@ -26,6 +26,7 @@ export class TodoCompletedService {
   private init$ = this.store.pipe(
     select(FromRootReducer.getAuthUserId),
     combineLatest(this.store.pipe(select(FromRootReducer.getUser_TodoListId))),
+    filter(([userId]) => userId !== ''),
   );
 
   constructor(private store: Store<FromRootReducer.State>) {}

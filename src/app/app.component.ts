@@ -79,10 +79,13 @@ export class MyApp {
 
   private signedInUser: SignedInUser | null = null;
 
+  private readonly signedInMenuId = 'signedInMenu';
+  private readonly signedOutMenuId = 'signedOutMenu';
+
   constructor(
     private authService: AuthService,
     private loginService: LoginService,
-    public menu: MenuController,
+    public menuController: MenuController,
     public platform: Platform,
     public statusBar: StatusBar,
     private store: Store<FromRoot.State>,
@@ -337,27 +340,25 @@ export class MyApp {
     });
   }
 */
-  private enableMenu(loggedIn: boolean): void {
-    const loggedInMenu = 'loggedInMenu';
-    const loggedOutMenu = 'loggedOutMenu';
-
-    if (!this.menu.get(loggedInMenu)) {
+  private enableMenu(signedIn: boolean): void {
+    //
+    if (!this.menuController.get(this.signedInMenuId)) {
       console.error(
         `%s:enableMenu() *** WARNING: Menu not found>`,
         this.CLASS_NAME,
-        loggedInMenu,
+        this.signedInMenuId,
       );
     }
 
-    if (!this.menu.get(loggedOutMenu)) {
+    if (!this.menuController.get(this.signedOutMenuId)) {
       console.error(
         `%s:enableMenu() *** WARNING: Menu not found>`,
         this.CLASS_NAME,
-        loggedOutMenu,
+        this.signedOutMenuId,
       );
     }
 
-    this.menu.enable(loggedIn, loggedInMenu);
-    this.menu.enable(!loggedIn, loggedOutMenu);
+    this.menuController.enable(signedIn, this.signedInMenuId);
+    this.menuController.enable(!signedIn, this.signedOutMenuId);
   }
 }
