@@ -1,116 +1,109 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
 
-import { Store } from '@ngrx/store';
+import { Store, select } from '@ngrx/store';
 import { take } from 'rxjs/operators';
 
 import { TodoCompleted } from '../shared/models/todo-completed.model';
 
 import * as FromRootReducer from '../reducers/index';
-import * as TodoCompletedActions from '../actions/todo-completed.action';
+// import * as TodoCompletedActions from '../actions/todo-completed.action';
 import {
   DatabaseListenForDataStart,
+  DatabaseListenForDataStop,
   DeleteItem,
   UpsertItem,
   MoveToCurrent,
 } from '../actions/todo-completed.action';
+import { combineLatest } from 'rxjs/operators';
+import { Subscription } from 'rxjs/Subscription';
 
 @Injectable()
 export class TodoCompletedService {
+  //
+  private listenForDataStartSubscription: Subscription;
+
+  private init$ = this.store.pipe(
+    select(FromRootReducer.getAuthUserId),
+    combineLatest(this.store.pipe(select(FromRootReducer.getUser_TodoListId))),
+  );
+
   constructor(private store: Store<FromRootReducer.State>) {}
 
-  getData(): Observable<TodoCompleted[]> {
-    /*
-                this.store.select(s => s.todoCompleted)
-                .subscribe(x => console.log('sssss>', x));
-                let a = this.store.select(s => s.todoCompleted.todoCompletedList);
-                return a;
-        */
-    return this.store.select(
+  getData$(): Observable<TodoCompleted[]> {
+    //
+    return this.store.pipe(select(
       FromRootReducer.getTodoCompleted_GetTodoCompletedList,
+    ));
+  }
+
+  public ListenForDataStart(): void {
+    //
+    this.listenForDataStartSubscription = this.init$.subscribe(
+      ([userId, todoListId]) => {
+        this.store.dispatch(
+          new DatabaseListenForDataStart({
+            todoListId,
+            userId,
+          }),
+        );
+      },
     );
   }
 
-  ListenForDataStart(): void {
+  public ListenForDataStop(): void {
     //
-    this.store
-      .select(FromRootReducer.getAuthState)
-      .pipe(take(1))
-      .subscribe((state) => {
-        if (state.isAuthenticated) {
-          this.store.dispatch(
-            new DatabaseListenForDataStart({
-              todoListId: state.todoListId,
-              userId: state.userId,
-            }),
-          );
-        }
-      });
+    this.listenForDataStartSubscription.unsubscribe();
+    this.store.dispatch(new DatabaseListenForDataStop());
   }
 
-  ListenForDataStop(): void {
-    this.store.dispatch(new TodoCompletedActions.DatabaseListenForDataStop());
+
+  hasLoaded$(): Observable<boolean> {
+    //
+    return this.store.pipe(select(FromRootReducer.getTodoCompleted_GetLoaded));
   }
 
-  isLoaded(): Observable<boolean> {
-    return this.store.select(FromRootReducer.getTodoCompleted_GetLoaded);
-  }
-
-  isLoading(): Observable<boolean> {
-    return this.store.select(FromRootReducer.getTodoCompleted_GetLoading);
+  isLoading$(): Observable<boolean> {
+    //
+    return this.store.pipe(select(FromRootReducer.getTodoCompleted_GetLoading));
   }
 
   moveToCurrent(item: TodoCompleted) {
     //
-    this.store
-      .select(FromRootReducer.getAuthState)
-      .pipe(take(1))
-      .subscribe((state) => {
-        if (state.isAuthenticated) {
+    this.init$.pipe(take(1)).subscribe(([userId, todoListId]) => {
           this.store.dispatch(
             new MoveToCurrent({
               item,
-              todoListId: state.todoListId,
-              userId: state.userId,
+              todoListId,
+              userId,
             }),
           );
-        }
       });
   }
 
   public deleteItem(item: TodoCompleted) {
     //
-    this.store
-      .select(FromRootReducer.getAuthState)
-      .pipe(take(1))
-      .subscribe((state) => {
-        if (state.isAuthenticated) {
-          this.store.dispatch(
-            new DeleteItem({
-              itemId: item.id,
-              todoListId: state.todoListId,
-              userId: state.userId,
-            }),
-          );
-        }
-      });
+    this.init$.pipe(take(1)).subscribe(([userId, todoListId]) => {
+      this.store.dispatch(
+        new DeleteItem({
+          itemId: item.id,
+          todoListId,
+          userId,
+        }),
+      );
+    });
   }
 
   public upsertItem(item: TodoCompleted) {
     //
-    this.store
-      .select(FromRootReducer.getAuthState)
-      .pipe(take(1))
-      .subscribe((state) => {
-        if (state.isAuthenticated) {
-          this.store.dispatch(
-            new UpsertItem({
-              item,
-              todoListId: state.todoListId,
-              userId: state.userId,
-            }),
-          );
-        }
-      });
+    this.init$.pipe(take(1)).subscribe(([userId, todoListId]) => {
+      this.store.dispatch(
+        new UpsertItem({
+          item,
+          todoListId,
+          userId,
+        }),
+      );
+    });
   }
 }

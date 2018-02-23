@@ -29,7 +29,7 @@ export class TodoDataService {
     console.log('TodoDataService:constructor');
   }
 
-  public getData(todoListId: string, userId: string): Observable<Todo[]> {
+  public getData$(todoListId: string, userId: string): Observable<Todo[]> {
     //
     console.log('######getData>', userId);
 

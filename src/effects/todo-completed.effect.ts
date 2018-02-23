@@ -1,25 +1,25 @@
 import { Injectable } from '@angular/core';
 
-import { Effect, Actions } from '@ngrx/effects';
-// import { Store } from '@ngrx/store';
-
-import { empty } from 'rxjs/observable/empty';
-
-// import * as FromRootReducer from '../reducers';
-
 import { Fb1DataService } from '../services/fb1.data.service';
 import { TodoCompletedDataService } from '../services/todo-completed.data.service';
-import { TodoCompleted } from '../shared/models/todo-completed.model';
+
+import { Actions, Effect } from '@ngrx/effects';
+import { empty } from 'rxjs/observable/empty';
 
 import {
-  LoadSuccess,
-  MoveToCurrent,
-  DeleteItem,
-  UpsertItem,
-  TodoCompletedActionTypes,
   DatabaseListenForDataStart,
   DatabaseListenForDataStop,
+  DeleteItem,
+  LoadSuccess,
+  MoveToCurrent,
+  TodoCompletedActionTypes,
+  UpsertItem,
 } from '../actions/todo-completed.action';
+import { TodoCompleted } from '../shared/models/todo-completed.model';
+
+// import { Store } from '@ngrx/store';
+
+// import * as FromRootReducer from '../reducers';
 
 @Injectable()
 export class TodoCompletedEffects {
@@ -38,27 +38,18 @@ export class TodoCompletedEffects {
       TodoCompletedActionTypes.DATABASE_LISTEN_FOR_DATA_START,
       TodoCompletedActionTypes.DATABASE_LISTEN_FOR_DATA_STOP,
     )
-    .do((x) => {
-      console.log('Effect:listenForData$:A', x);
-    })
-    // .withLatestFrom(this.state$)
+    // Watch database node and get items.
     .switchMap((action) => {
       if (
         action.type === TodoCompletedActionTypes.DATABASE_LISTEN_FOR_DATA_STOP
       ) {
-        console.log('TodoCompletedAction.UNLISTEN_FOR_DATA');
         return empty();
       } else {
-        return this.dataService.getData(
-          action.payload.todoListId,
-          action.payload.userId,
-        );
+        return this.dataService
+          .getData(action.payload.todoListId, action.payload.userId)
+          .map((items: TodoCompleted[]) => new LoadSuccess(items));
       }
-    })
-    .do((x) => {
-      console.log('Effect:listenForData$:B', x);
-    })
-    .map((items: TodoCompleted[]) => new LoadSuccess(items));
+    });
 
   // tslint:disable-next-line:member-ordering
   @Effect({ dispatch: false })

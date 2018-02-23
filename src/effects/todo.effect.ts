@@ -1,22 +1,23 @@
 import { Injectable } from '@angular/core';
+
+import { Fb1DataService } from '../services/fb1.data.service';
+import { TodoDataService } from '../services/todo.data.service';
+
 import { Actions, Effect } from '@ngrx/effects';
 import { Store } from '@ngrx/store';
 import { empty } from 'rxjs/observable/empty';
 
 import {
-  LoadSuccess,
-  DeleteItem,
-  ReorderList,
-  UpsertItem,
-  TodoActionTypes,
   ClearCompleted,
   DatabaseListenForDataStart,
   DatabaseListenForDataStop,
+  DeleteItem,
+  LoadSuccess,
+  ReorderList,
+  TodoActionTypes,
+  UpsertItem,
 } from '../actions/todo.action';
-
 import * as FromRootReducer from '../reducers';
-import { Fb1DataService } from '../services/fb1.data.service';
-import { TodoDataService } from '../services/todo.data.service';
 import { Todo } from '../shared/models/todo.model';
 
 @Injectable()
@@ -43,19 +44,6 @@ export class TodoEffects {
       );
     });
 
-      // tslint:disable-next-line:member-ordering
-  @Effect({ dispatch: false })
-  test$ = this.actions$
-    .ofType<DatabaseListenForDataStart | DatabaseListenForDataStop>(
-      TodoActionTypes.DATABASE_LISTEN_FOR_DATA_START,
-      TodoActionTypes.DATABASE_LISTEN_FOR_DATA_STOP,
-    )
-    .merge(this.store.select((state) => state.user.todoListId))
-    .do((x) => {
-      console.log('Effect:test$:x', x);
-      // console.log('Effect:test$:y', y);
-    });
-
   // tslint:disable-next-line:member-ordering
   @Effect()
   listenForData$ = this.actions$
@@ -63,30 +51,16 @@ export class TodoEffects {
       TodoActionTypes.DATABASE_LISTEN_FOR_DATA_START,
       TodoActionTypes.DATABASE_LISTEN_FOR_DATA_STOP,
     )
-    .combineLatest(this.store.select((state) => state.user.todoListId))
-        .do((x) => {
-      console.log('Effect:listenForData$:A', x);
-    })
-    // .withLatestFrom(this.state$)
-    // tslint:disable-next-line:no-unused-variable
-    // .filter(([, state]) => state.login.isAuthenticated)
     // Watch database node and get items.
-    .switchMap(([action, todoListId]) => {
-      console.log('Effect:listenForData$:action>', action);
-
+    .switchMap((action) => {
       if (action.type === TodoActionTypes.DATABASE_LISTEN_FOR_DATA_STOP) {
-        console.log('TodoAction.UNLISTEN_FOR_DATA');
         return empty();
       } else {
         return this.dataService
-          .getData(todoListId, action.payload.userId)
+          .getData$(action.payload.todoListId, action.payload.userId)
           .map((items: Todo[]) => new LoadSuccess(items));
       }
-    })
-    .do((x) => {
-      console.log('Effect:listenForData$:B', x);
     });
-  // .map((items: Todo[]) => new LoadSuccess(items));
 
   /*
     @Effect() loadCollection$ = this.updates$

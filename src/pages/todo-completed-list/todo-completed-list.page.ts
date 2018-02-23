@@ -24,7 +24,7 @@ export class TodoCompletedListPage {
     public todoCompletedService: TodoCompletedService,
   ) {
     //
-    this.data$ = todoCompletedService.getData();
+    this.data$ = todoCompletedService.getData$();
   }
 
   ionViewDidLoad() {

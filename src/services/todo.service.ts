@@ -1,8 +1,10 @@
 import { Injectable } from '@angular/core';
 
-import { Store } from '@ngrx/store';
+import { select, Store } from '@ngrx/store';
 import { Observable } from 'rxjs/Observable';
+import { combineLatest } from 'rxjs/operators';
 import { take } from 'rxjs/operators/take';
+import { Subscription } from 'rxjs/Subscription';
 
 import {
   ClearCompleted,
@@ -19,125 +21,101 @@ import { Todo } from '../shared/models/todo.model';
 @Injectable()
 export class TodoService {
   //
+  private listenForDataStartSubscription: Subscription;
+
+  private init$ = this.store.pipe(
+    select(FromRootReducer.getAuthUserId),
+    combineLatest(this.store.pipe(select(FromRootReducer.getUser_TodoListId))),
+  );
+
   constructor(private store: Store<FromRootReducer.State>) {}
 
   clearCompletedItems() {
     //
-    this.store
-      .select(FromRootReducer.getAuthState)
-      .pipe(take(1))
-      .subscribe((state) => {
-        if (state.isAuthenticated) {
-          this.store.dispatch(
-            new ClearCompleted({
-              todoListId: state.todoListId,
-              userId: state.userId,
-            }),
-          );
-        }
-      });
+    this.init$.pipe(take(1)).subscribe(([userId, todoListId]) => {
+      this.store.dispatch(
+        new ClearCompleted({
+          todoListId,
+          userId,
+        }),
+      );
+    });
   }
 
   getData$(): Observable<Todo[]> {
-    return this.store.select(FromRootReducer.getTodo_GetTodos);
+    //
+    return this.store.pipe(select(FromRootReducer.getTodo_GetTodos));
   }
 
   public ListenForDataStart(): void {
     //
-    this.store
-      .select(FromRootReducer.getAuthState)
-      // .combineLatest(this.store.select((state) => state.user))
-      // .withLatestFrom(this.store.select((state) => state.user))
-      // .filter(([, userState]) => userState.todoListId !== '')
-      // .take(1)
-      .do(() => console.log('#############################'))
-      // .pipe(withLatestFrom(this.store.select(state => state.user)))
-      // take(1))
-      .subscribe((authState) => {
-        if (authState.todoListId === '') {
-          return;
-        }
-
-        if (authState.isAuthenticated) {
-          this.store.dispatch(
-            new DatabaseListenForDataStart({
-              todoListId: authState.todoListId,
-              userId: authState.userId,
-            }),
-          );
-        }
-      });
+    this.listenForDataStartSubscription = this.init$.subscribe(
+      ([userId, todoListId]) => {
+        this.store.dispatch(
+          new DatabaseListenForDataStart({
+            todoListId,
+            userId,
+          }),
+        );
+      },
+    );
   }
 
   public ListenForDataStop(): void {
+    //
+    this.listenForDataStartSubscription.unsubscribe();
     this.store.dispatch(new DatabaseListenForDataStop());
-    // this.sub.unsubscribe();
   }
 
-  isLoaded(): Observable<boolean> {
-    return this.store.select(FromRootReducer.getTodo_GetLoaded);
+  hasLoaded$(): Observable<boolean> {
+    //
+    return this.store.pipe(select(FromRootReducer.getTodo_GetLoaded));
   }
 
-  isLoading(): Observable<boolean> {
-    return this.store.select(FromRootReducer.getTodo_GetLoading);
+  isLoading$(): Observable<boolean> {
+    //
+    return this.store.pipe(select(FromRootReducer.getTodo_GetLoading));
   }
 
   public reorderItems(indexes: ReorderArrayIndexes) {
     //
-    this.store
-      .select(FromRootReducer.getAuthState)
-      .withLatestFrom(this.store.select((state) => state.user))
-      .pipe(take(1))
-      .subscribe(([authState, userState]) => {
-        if (authState.isAuthenticated) {
-          this.store.dispatch(
-            new ReorderList({
-              indexes,
-              todoListId: userState.todoListId,
-              userId: authState.userId,
-            }),
-          );
-        }
-      });
+    this.init$.pipe(take(1)).subscribe(([userId, todoListId]) => {
+      this.store.dispatch(
+        new ReorderList({
+          indexes,
+          todoListId,
+          userId,
+        }),
+      );
+    });
   }
 
   public deleteItem(item: Todo) {
     //
-    this.store
-      .select(FromRootReducer.getAuthState)
-      .withLatestFrom(this.store.select((state) => state.user))
-      .pipe(take(1))
-      .subscribe(([authState, userState]) => {
-        if (authState.isAuthenticated) {
-          this.store.dispatch(
-            new DeleteItem({
-              itemId: item.id,
-              todoListId: userState.todoListId,
-              userId: authState.userId,
-            }),
-          );
-        }
-      });
+    this.init$.pipe(take(1)).subscribe(([userId, todoListId]) => {
+      this.store.dispatch(
+        new DeleteItem({
+          itemId: item.id,
+          todoListId,
+          userId,
+        }),
+      );
+    });
   }
 
   public upsertItem(item: Todo) {
     //
-    this.store
-      .select(FromRootReducer.getAuthState)
-      .withLatestFrom(this.store.select((state) => state.user))
-      .pipe(take(1))
-      .subscribe(([authState, userState]) => {
-        if (authState.isAuthenticated) {
-          this.store.dispatch(
-            new UpsertItem({
-              item,
-              todoListId: userState.todoListId,
-              userId: authState.userId,
-            }),
-          );
-        }
-      });
+    this.init$.pipe(take(1)).subscribe(([userId, todoListId]) => {
+      this.store.dispatch(
+        new UpsertItem({
+          item,
+          todoListId,
+          userId,
+        }),
+      );
+    });
   }
+
   /********************************
    * https://medium.com/@m3po22/stop-using-ngrx-effects-for-that-a6ccfe186399
    *******************************/

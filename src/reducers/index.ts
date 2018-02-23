@@ -65,6 +65,8 @@ export const getAuthIsAuthenticating = createSelector(
   getAuthState,
   fromAuth.getIsAuthenticating,
 );
+
+export const getAuthUserId = createSelector(getAuthState, fromAuth.getUserId);
 //#endregion
 
 // login
