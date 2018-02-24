@@ -3,9 +3,10 @@ import { Injectable } from '@angular/core';
 import { Fb1DataService } from '../services/fb1.data.service';
 import { TodoDataService } from '../services/todo.data.service';
 
-import { Actions, Effect } from '@ngrx/effects';
+import { Actions, Effect, ofType } from '@ngrx/effects';
 import { Store } from '@ngrx/store';
 import { empty } from 'rxjs/observable/empty';
+import { map, tap, withLatestFrom } from 'rxjs/operators';
 
 import {
   ClearCompleted,
@@ -32,17 +33,17 @@ export class TodoEffects {
 
   // tslint:disable-next-line:member-ordering
   @Effect({ dispatch: false })
-  clearCompleted$ = this.actions$
-    .ofType<ClearCompleted>(TodoActionTypes.ClearCompleted)
-    .withLatestFrom(this.store)
-    .do(([action, state]) => {
+  clearCompleted$ = this.actions$.pipe(
+    ofType<ClearCompleted>(TodoActionTypes.ClearCompleted),
+    withLatestFrom(this.store),
+    tap(([action, state]) => {
       const completed = state.todo.todos.filter((a) => a.isComplete);
       this.fb1DataService.clearCompletedTodos(
         completed,
         action.payload.todoListId,
         action.payload.userId,
       );
-    });
+    }));
 
   // tslint:disable-next-line:member-ordering
   @Effect()
@@ -77,39 +78,39 @@ export class TodoEffects {
   */
   // tslint:disable-next-line:member-ordering
   @Effect({ dispatch: false })
-  reorderList$ = this.actions$
-    .ofType<ReorderList>(TodoActionTypes.ReorderList)
-    .withLatestFrom(this.store)
-    .do(([action, state]) => {
+  reorderList$ = this.actions$.pipe(
+    ofType<ReorderList>(TodoActionTypes.ReorderList),
+    withLatestFrom(this.store),
+    tap(([action, state]) => {
       this.dataService.reorderItemsAndUpdate(
         action.payload.indexes,
         state.todo.todos,
         action.payload.todoListId,
         action.payload.userId,
       );
-    });
+    }));
 
   // tslint:disable-next-line:member-ordering
   @Effect({ dispatch: false })
-  removeItem$ = this.actions$
-    .ofType(TodoActionTypes.DELETE_ITEM)
-    .map((action: DeleteItem) => action.payload)
-    .do((payload) => {
+  removeItem$ = this.actions$.pipe(
+    ofType(TodoActionTypes.DELETE_ITEM),
+    map((action: DeleteItem) => action.payload),
+    tap((payload) => {
       console.log('Effect:removeItem$:A', payload);
       this.dataService.removeItem(
         payload.itemId,
         payload.todoListId,
         payload.userId,
       );
-    });
+    }));
 
   // tslint:disable-next-line:member-ordering
   @Effect({ dispatch: false })
-  save$ = this.actions$
-    .ofType(TodoActionTypes.UPSERT_ITEM)
-    .map((action: UpsertItem) => action.payload)
-    .do((payload) => {
+  save$ = this.actions$.pipe(
+    ofType(TodoActionTypes.UPSERT_ITEM),
+    map((action: UpsertItem) => action.payload),
+    tap((payload) => {
       console.log('Effect:save$:A', payload);
       this.dataService.save(payload.item, payload.todoListId, payload.userId);
-    });
+    }));
 }

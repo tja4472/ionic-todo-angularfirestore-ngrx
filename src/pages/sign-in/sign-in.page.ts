@@ -4,9 +4,8 @@ import { NavController } from 'ionic-angular';
 
 import { RegisterPage } from '../register/register.page';
 
-import { LoginService } from '../../services/login.service';
-
 import { SignInComponentResult } from '../../shared/components/sign-in/sign-in.component';
+import { AuthService } from '../../app/auth/auth.service';
 
 // changeDetection: ChangeDetectionStrategy.OnPush,
 
@@ -20,14 +19,14 @@ export class SignInPage {
 
   private readonly CLASS_NAME = 'SignInPage';
 
-  constructor(public loginService: LoginService, public nav: NavController) {
+  constructor(private authService: AuthService, public nav: NavController) {
     console.log('%s:constructor', this.CLASS_NAME);
-    this.viewError$ = loginService.error$();
+    // this.viewError$ = loginService.error$();
   }
 
   public ionViewDidLeave() {
     console.log('###%s:ionViewDidLeave', this.CLASS_NAME);
-    this.loginService.clearError$();
+    // this.loginService.clearError$();
   }
 
   public viewRegister(): void {
@@ -38,6 +37,7 @@ export class SignInPage {
 
   public viewSignIn(x: SignInComponentResult): void {
     console.log('viewSignIn>', x);
-    this.loginService.emailAuthentication(x.email, x.password);
+    // this.loginService.emailAuthentication(x.email, x.password);
+    this.authService.signInWithEmailAndPassword(x.email, x.password);
   }
 }

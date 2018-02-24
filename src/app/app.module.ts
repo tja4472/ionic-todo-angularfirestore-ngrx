@@ -6,7 +6,6 @@ import { AngularFireAuthModule } from 'angularfire2/auth';
 import { AngularFirestoreModule } from 'angularfire2/firestore';
 
 import { Fb1DataService } from '../services/fb1.data.service';
-import { LoginService } from '../services/login.service';
 import { TodoCompletedDataService } from '../services/todo-completed.data.service';
 import { TodoCompletedService } from '../services/todo-completed.service';
 import { TodoDataService } from '../services/todo.data.service';
@@ -26,7 +25,6 @@ import { IonicApp, IonicErrorHandler, IonicModule } from 'ionic-angular';
 
 import { Error } from '../components/error/error.component';
 import { TodoListPopover } from '../components/todo-list-popover/todo-list.popover';
-import { LoginEffects } from '../effects/login.effect';
 import { TodoCompletedEffects } from '../effects/todo-completed.effect';
 import { TodoEffects } from '../effects/todo.effect';
 import { TodoCompletedDetailModal } from '../modals/todo-completed-detail/todo-completed-detail.modal';
@@ -93,7 +91,6 @@ import { UserEffects } from './user/user.effect';
     StoreDevtoolsModule.instrument(),
     EffectsModule.forRoot([
       AuthEffects,
-      LoginEffects,
       TodoCompletedEffects,
       TodoEffects,
       TodoListsEffects,
@@ -119,7 +116,6 @@ import { UserEffects } from './user/user.effect';
   providers: [
     AuthService,
     Fb1DataService,
-    LoginService,
     StatusBar,
     TodoCompletedDataService,
     TodoCompletedService,

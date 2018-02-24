@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 
-import { LoginService } from '../../services/login.service';
+// import { LoginService } from '../../services/login.service';
 
 import { UserFormResult } from '../../shared/components/create-user/create-user.component';
 
@@ -14,9 +14,10 @@ export class RegisterPage {
 
   private readonly CLASS_NAME = 'RegisterPage';
 
-  constructor(private loginService: LoginService) {
+  // constructor(private loginService: LoginService) {
+  constructor() {
     console.log('%s:constructor', this.CLASS_NAME);
-    this.error$ = loginService.error$();
+    // this.error$ = loginService.error$();
   }
 
   // Used in view
@@ -24,11 +25,11 @@ export class RegisterPage {
     console.log('###%s:createUser', this.CLASS_NAME);
     console.log('%s:x>', this.CLASS_NAME, x);
     // this.authService.createUserWithEmailAndPassword(x.email, x.password);
-    this.loginService.createUser(x.email, x.password);
+    // this.loginService.createUser(x.email, x.password);
   }
 
   public ionViewDidLeave() {
     console.log('###%s:ionViewDidLeave', this.CLASS_NAME);
-    this.loginService.clearError$();
+    // this.loginService.clearError$();
   }
 }

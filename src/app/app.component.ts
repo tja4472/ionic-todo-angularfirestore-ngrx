@@ -12,9 +12,6 @@ import { TodoCompletedListPage } from '../pages/todo-completed-list/todo-complet
 
 import { TodoListsPage } from '../todo-lists/pages/todo-lists/todo-lists.page';
 
-import { LoginService } from '../services/login.service';
-
-import { SignedInUser } from '../models/signed-in-user.model';
 import { TodoListsService } from '../todo-lists/services/todo-lists.service';
 import {
   map,
@@ -77,14 +74,11 @@ export class MyApp {
 
   private readonly CLASS_NAME = 'MyApp';
 
-  private signedInUser: SignedInUser | null = null;
-
   private readonly signedInMenuId = 'signedInMenu';
   private readonly signedOutMenuId = 'signedOutMenu';
 
   constructor(
     private authService: AuthService,
-    private loginService: LoginService,
     public menuController: MenuController,
     public platform: Platform,
     public statusBar: StatusBar,
@@ -183,26 +177,6 @@ export class MyApp {
         }
       });
 */
-    // loginService.initialise();
-
-    this.loginState$ = loginService.getLoginState();
-
-    /*
-        loginService.getLoginState()
-          .subscribe(loginState => {
-            console.log('loginState>', loginState);
-            console.log('loginState.isAuthenticated>', loginState.isAuthenticated);
-            console.log('loginState.isAuthenticating>', loginState.isAuthenticating);
-
-            if (loginState.isAuthenticating) {
-              // this.rootPage = Page1;
-            } else if (loginState.isAuthenticated) {
-              this.rootPage = HomePage;
-            } else {
-              this.rootPage = LoginPage;
-            }
-          });
-    */
   }
 
   public viewtodoListsSelectChange(todoListId: any): void {
@@ -216,19 +190,6 @@ export class MyApp {
       // Okay, so the platform is ready and our plugins are available.
       // Here you can do any higher level native things you might need.
       this.statusBar.styleDefault();
-
-      this.loginService.notifier$.subscribe((signedInUser: SignedInUser) => {
-        console.log('>>>>>>>>>>signedInUser>', signedInUser);
-        this.signedInUser = signedInUser;
-        /*
-        // AND user Loaded........
-        if (signedInUser) {
-          this.doSignedIn(signedInUser);
-        } else {
-          this.doSignedOut();
-        }
-*/
-      });
 
       this.viewTodoListsSelect$ = this.userService.todoListId$().pipe(
         combineLatest(this.todoListsService.getItems$()),
@@ -245,48 +206,6 @@ export class MyApp {
       this.userService.todoListId$().subscribe((x) => {
         console.log('this.userService.todoListId$>', x);
       });
-
-      // only if signed in?????/
-      /*
-      this.viewTodoLists$ = this.todoListsService.getItems$().pipe(
-        map((a) => {
-          console.log('a>', a);
-          return a.map((item) => ({ value: item.id, label: item.name }));
-        }),
-      );
-*/
-      // this should be user:todoListId
-      // this.viewSelectedTodoListId$ = this.todoListsService.getSelectedListId$();
-
-      /*
-            this.loginService.auth$.subscribe((firebaseUser) => {
-              console.log('>>>>>>>>>>firebaseUser>', firebaseUser);
-
-                            if (firebaseUser) {
-                              this.doSignedIn();
-                              // this.rootPage = TodoListPage;
-                            } else {
-                              this.doSignedOut();
-                              // this.rootPage = SignInPage;
-                            }
-            });
-      */
-      /*
-      this.loginService.getLoginState()
-        .subscribe((loginState) => {
-          console.log('loginState>', loginState);
-          console.log('loginState.isAuthenticated>', loginState.isAuthenticated);
-          console.log('loginState.isAuthenticating>', loginState.isAuthenticating);
-
-          if (loginState.isAuthenticating) {
-            // this.rootPage = Page1;
-          } else if (loginState.isAuthenticated) {
-            // this.rootPage = HomePage;
-          } else {
-            // this.rootPage = LoginPage;
-          }
-        });
-      */
     });
   }
 
@@ -308,14 +227,6 @@ export class MyApp {
 
     if (page.logsOut === true) {
       this.authService.signOut();
-      // this.loginService.logout();
-
-      /*
-      // Give the menu time to close before changing to logged out
-      setTimeout(() => {
-        this.loginService.logout();
-      }, 1000);
-      */
     } else {
       this.rootPage = page.component;
     }

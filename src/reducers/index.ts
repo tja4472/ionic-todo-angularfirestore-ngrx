@@ -3,7 +3,6 @@ import { storeFreeze } from 'ngrx-store-freeze';
 
 import * as fromAuth from '../app/auth/auth.reducer';
 import * as fromTodoListReducer from '../todo-lists/todo-lists.reducer';
-import * as fromLoginReducer from './login.reducer';
 import * as fromTodoCompletedReducer from './todo-completed.reducer';
 import * as fromTodoReducer from './todo.reducer';
 import * as fromUserReducer from '../app/user/user.reducer';
@@ -16,7 +15,6 @@ import * as fromUserReducer from '../app/user/user.reducer';
 export interface State {
   // These property names have to match those in the compose.
   auth: fromAuth.State;
-  login: fromLoginReducer.State;
   todo: fromTodoReducer.State;
   todoCompleted: fromTodoCompletedReducer.State;
   todoList: fromTodoListReducer.State;
@@ -25,7 +23,6 @@ export interface State {
 
 export const reducers: ActionReducerMap<State> = {
   auth: fromAuth.reducer,
-  login: fromLoginReducer.reducer,
   todo: fromTodoReducer.reducer,
   todoCompleted: fromTodoCompletedReducer.reducer,
   todoList: fromTodoListReducer.reducer,
@@ -68,30 +65,6 @@ export const getAuthIsAuthenticating = createSelector(
 
 export const getAuthUserId = createSelector(getAuthState, fromAuth.getUserId);
 //#endregion
-
-// login
-export const getLoginState = (state: State) => state.login;
-
-// tslint:disable-next-line:variable-name
-export const getLogin_GetDisplayName = createSelector(
-  getLoginState,
-  fromLoginReducer.getDisplayName,
-);
-// tslint:disable-next-line:variable-name
-export const getLogin_GetError = createSelector(
-  getLoginState,
-  fromLoginReducer.getError,
-);
-// tslint:disable-next-line:variable-name
-export const getLogin_GetIsAuthenticated = createSelector(
-  getLoginState,
-  fromLoginReducer.getIsAuthenticated,
-);
-// tslint:disable-next-line:variable-name
-export const getLogin_GetIsAuthenticating = createSelector(
-  getLoginState,
-  fromLoginReducer.getIsAuthenticating,
-);
 //
 // todo
 export const getTodoState = (state: State) => state.todo;
