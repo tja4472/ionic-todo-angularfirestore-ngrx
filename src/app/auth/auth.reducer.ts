@@ -7,7 +7,6 @@ export interface State {
   isAuthenticated: boolean;
   isAuthenticating: boolean;
   error: any;
-  todoListId: string;
   userId: string;
 }
 
@@ -18,7 +17,6 @@ const initialState: State = {
   hasChecked: false,
   isAuthenticated: false,
   isAuthenticating: false,
-  todoListId: 'default-list',
   userId: '',
 };
 
