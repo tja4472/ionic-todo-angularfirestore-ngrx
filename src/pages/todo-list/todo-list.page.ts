@@ -26,7 +26,7 @@ import { ReorderArrayIndexes } from '../../shared/models/reorder-array-indexes.m
   templateUrl: 'todo-list.page.html',
 })
 export class TodoListPage {
-  todos$: Observable<Todo[]>;
+  todos$: Observable<ReadonlyArray<Todo>>;
 
   aaaa$: Observable<any>;
 

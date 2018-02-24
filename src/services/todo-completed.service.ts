@@ -31,7 +31,7 @@ export class TodoCompletedService {
 
   constructor(private store: Store<FromRootReducer.State>) {}
 
-  getData$(): Observable<TodoCompleted[]> {
+  getData$(): Observable<ReadonlyArray<TodoCompleted>> {
     //
     return this.store.pipe(select(
       FromRootReducer.getTodoCompleted_GetTodoCompletedList,

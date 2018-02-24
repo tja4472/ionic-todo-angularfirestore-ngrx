@@ -14,7 +14,7 @@ import { TodoListsDetailModal } from '../../modals/todo-lists-detail/todo-lists-
   templateUrl: 'todo-lists.page.html',
 })
 export class TodoListsPage {
-  todos$: Observable<TodoListsItem[]>;
+  todos$: Observable<ReadonlyArray<TodoListsItem>>;
 
   constructor(
     public navCtrl: NavController,

@@ -16,7 +16,7 @@ import {
   templateUrl: 'todo-completed-list.page.html',
 })
 export class TodoCompletedListPage {
-  data$: Observable<TodoCompleted[]>;
+  data$: Observable<ReadonlyArray<TodoCompleted>>;
 
   constructor(
     public navCtrl: NavController,

@@ -43,7 +43,7 @@ export class TodoService {
     });
   }
 
-  getData$(): Observable<Todo[]> {
+  getData$(): Observable<ReadonlyArray<Todo>> {
     //
     return this.store.pipe(select(FromRootReducer.getTodo_GetTodos));
   }

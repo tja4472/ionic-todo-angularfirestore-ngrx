@@ -13,7 +13,7 @@ import * as Actions from '../todo-lists.action';
 export class TodoListsService {
   constructor(private store: Store<FromRootReducer.State>) {}
 
-  getItems$(): Observable<TodoListsItem[]> {
+  getItems$(): Observable<ReadonlyArray<TodoListsItem>> {
     return this.store.select(FromRootReducer.getTodoList_GetTodoLists);
   }
 
