@@ -17,6 +17,7 @@ import {
 import * as FromRootReducer from '../reducers';
 import { ReorderArrayIndexes } from '../shared/models/reorder-array-indexes.model';
 import { Todo } from '../shared/models/todo.model';
+import * as FromAuthSelector from '../app/auth/auth.selector';
 
 @Injectable()
 export class TodoService {
@@ -24,7 +25,7 @@ export class TodoService {
   private listenForDataStartSubscription: Subscription;
 
   private init$ = this.store.pipe(
-    select(FromRootReducer.getAuthUserId),
+    select(FromAuthSelector.getUserId),
     combineLatest(this.store.pipe(select(FromRootReducer.getUser_TodoListId))),
     filter(([userId]) => userId !== ''),
   );
@@ -50,15 +51,16 @@ export class TodoService {
 
   public ListenForDataStart(): void {
     //
-    this.listenForDataStartSubscription = this.init$
-      .subscribe(([userId, todoListId]) => {
+    this.listenForDataStartSubscription = this.init$.subscribe(
+      ([userId, todoListId]) => {
         this.store.dispatch(
           new DatabaseListenForDataStart({
             todoListId,
             userId,
           }),
         );
-      });
+      },
+    );
   }
 
   public ListenForDataStop(): void {

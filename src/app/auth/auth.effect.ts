@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Actions, Effect, ofType } from '@ngrx/effects';
 import { defer } from 'rxjs/observable/defer';
 import { of } from 'rxjs/observable/of';
-import { catchError, map, switchMap, tap } from 'rxjs/operators';
+import { catchError, concatMap, map, switchMap, tap } from 'rxjs/operators';
 
 import { Observable } from 'rxjs/Observable';
 import {
@@ -66,19 +66,19 @@ export class AuthEffects {
 
   // tslint:disable-next-line:member-ordering
   @Effect()
-  public emailAuthentication$ = this.actions$
-    .ofType(AuthActionTypes.EMAIL_AUTHENTICATION)
-    .map((action: EmailAuthentication) => action.payload)
-    .switchMap((payload) =>
+  public emailAuthentication$ = this.actions$.pipe(
+    ofType<EmailAuthentication>(AuthActionTypes.EMAIL_AUTHENTICATION),
+    map((action) => action.payload),
+    concatMap((payload) =>
       this.authService
         .signInWithEmailAndPassword(payload.userName, payload.password)
-        .pipe(
-          map(() => new EmailAuthenticationSuccess()),
-          catchError((error: any) =>
-            of(new EmailAuthenticationFailure({ error })),
-          ),
-        ),
-    );
+        .then(() => new EmailAuthenticationSuccess())
+        .catch((firebaseError: any) => {
+          const error = this.handleFirebaseError(firebaseError);
+          return new EmailAuthenticationFailure({ error });
+        }),
+    ),
+  );
 
   // Should be your last effect
   // tslint:disable-next-line:member-ordering
@@ -86,4 +86,13 @@ export class AuthEffects {
   public init$: Observable<any> = defer(() => {
     return of(new ListenForAuth());
   });
+
+  private handleFirebaseError(firebaseError: any) {
+    //
+    return {
+      code: firebaseError.code,
+      message: firebaseError.message,
+      name: firebaseError.name,
+    };
+  }
 }

@@ -10,6 +10,8 @@ import { SignInPage } from '../pages/sign-in/sign-in.page';
 import { RegisterPage } from '../pages/register/register.page';
 import { TodoCompletedListPage } from '../pages/todo-completed-list/todo-completed-list.page';
 
+import * as FromAuthSelector from '../app/auth/auth.selector';
+
 import { TodoListsPage } from '../todo-lists/pages/todo-lists/todo-lists.page';
 
 import { TodoListsService } from '../todo-lists/services/todo-lists.service';
@@ -170,9 +172,9 @@ export class MyApp {
   private setStartPage(): void {
     //
     this.store
-      .select(FromRoot.getAuthState)
+      .select(FromAuthSelector.getAuthState)
       .pipe(
-        filter((authState) => authState.hasChecked),
+        filter((authState) => authState.hasDoneFirstCheck),
         filter((authState) => !authState.isAuthenticated),
       )
       .subscribe((authState) => {
@@ -189,7 +191,7 @@ export class MyApp {
       .select(FromRoot.getUser_HasLoaded)
       .pipe(
         filter((hasLoaded) => hasLoaded),
-        withLatestFrom(this.store.select(FromRoot.getAuthState)),
+        withLatestFrom(this.store.select(FromAuthSelector.getAuthState)),
         // Ignore setting of initial state
         // skip(1),
       )

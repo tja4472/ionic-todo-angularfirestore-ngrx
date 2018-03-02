@@ -8,6 +8,7 @@ import { TodoListsItem } from '../todo-lists-item.model';
 
 import * as FromRootReducer from '../../reducers/index';
 import * as Actions from '../todo-lists.action';
+import * as FromAuthSelector from '../../app/auth/auth.selector';
 
 @Injectable()
 export class TodoListsService {
@@ -24,7 +25,7 @@ export class TodoListsService {
   initialise(): void {
     //
     this.store
-      .select(FromRootReducer.getAuthState)
+      .select(FromAuthSelector.getAuthState)
       .pipe(take(1))
       .subscribe((state) => {
         if (state.isAuthenticated) {

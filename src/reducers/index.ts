@@ -14,7 +14,7 @@ import * as fromUserReducer from '../app/user/user.reducer';
 
 export interface State {
   // These property names have to match those in the compose.
-  auth: fromAuth.State;
+  auth: fromAuth.AuthState;
   todo: fromTodoReducer.State;
   todoCompleted: fromTodoCompletedReducer.State;
   todoList: fromTodoListReducer.State;
@@ -46,25 +46,6 @@ export function reducer(state: any, action: any) {
 /***********
  * Selectors
  ***********/
-//#region Auth selectors
-export const getAuthState = (state: State) => state.auth;
-
-export const getAuthDisplayName = createSelector(
-  getAuthState,
-  fromAuth.getDisplayName,
-);
-export const getAuthError = createSelector(getAuthState, fromAuth.getError);
-export const getAuthIsAuthenticated = createSelector(
-  getAuthState,
-  fromAuth.getIsAuthenticated,
-);
-export const getAuthIsAuthenticating = createSelector(
-  getAuthState,
-  fromAuth.getIsAuthenticating,
-);
-
-export const getAuthUserId = createSelector(getAuthState, fromAuth.getUserId);
-//#endregion
 //
 // todo
 export const getTodoState = (state: State) => state.todo;

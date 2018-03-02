@@ -1,30 +1,29 @@
 import { Injectable } from '@angular/core';
+
+import { select, Store } from '@ngrx/store';
 import { Observable } from 'rxjs/Observable';
+import { combineLatest, filter, take } from 'rxjs/operators';
+import { Subscription } from 'rxjs/Subscription';
 
-import { Store, select } from '@ngrx/store';
-import { take } from 'rxjs/operators';
-
-import { TodoCompleted } from '../shared/models/todo-completed.model';
-
-import * as FromRootReducer from '../reducers/index';
-// import * as TodoCompletedActions from '../actions/todo-completed.action';
 import {
   DatabaseListenForDataStart,
   DatabaseListenForDataStop,
   DeleteItem,
-  UpsertItem,
   MoveToCurrent,
+  UpsertItem,
 } from '../actions/todo-completed.action';
-import { combineLatest, filter } from 'rxjs/operators';
-import { Subscription } from 'rxjs/Subscription';
+import * as FromAuthSelector from '../app/auth/auth.selector';
+import * as FromRootReducer from '../reducers';
+import { TodoCompleted } from '../shared/models/todo-completed.model';
 
+// import * as TodoCompletedActions from '../actions/todo-completed.action';
 @Injectable()
 export class TodoCompletedService {
   //
   private listenForDataStartSubscription: Subscription;
 
   private init$ = this.store.pipe(
-    select(FromRootReducer.getAuthUserId),
+    select(FromAuthSelector.getUserId),
     combineLatest(this.store.pipe(select(FromRootReducer.getUser_TodoListId))),
     filter(([userId]) => userId !== ''),
   );
@@ -33,9 +32,9 @@ export class TodoCompletedService {
 
   getData$(): Observable<ReadonlyArray<TodoCompleted>> {
     //
-    return this.store.pipe(select(
-      FromRootReducer.getTodoCompleted_GetTodoCompletedList,
-    ));
+    return this.store.pipe(
+      select(FromRootReducer.getTodoCompleted_GetTodoCompletedList),
+    );
   }
 
   public ListenForDataStart(): void {
@@ -58,7 +57,6 @@ export class TodoCompletedService {
     this.store.dispatch(new DatabaseListenForDataStop());
   }
 
-
   hasLoaded$(): Observable<boolean> {
     //
     return this.store.pipe(select(FromRootReducer.getTodoCompleted_GetLoaded));
@@ -72,14 +70,14 @@ export class TodoCompletedService {
   moveToCurrent(item: TodoCompleted) {
     //
     this.init$.pipe(take(1)).subscribe(([userId, todoListId]) => {
-          this.store.dispatch(
-            new MoveToCurrent({
-              item,
-              todoListId,
-              userId,
-            }),
-          );
-      });
+      this.store.dispatch(
+        new MoveToCurrent({
+          item,
+          todoListId,
+          userId,
+        }),
+      );
+    });
   }
 
   public deleteItem(item: TodoCompleted) {

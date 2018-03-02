@@ -1,14 +1,16 @@
 import { Component } from '@angular/core';
 
+import { Store } from '@ngrx/store';
 import { NavController } from 'ionic-angular';
 
+import { EmailAuthentication } from '../../app/auth/auth.action';
+import * as FromAuthSelector from '../../app/auth/auth.selector';
+import * as FromRoot from '../../reducers';
+import { SignInComponentResult } from '../../shared/components/sign-in/sign-in.component';
 import { RegisterPage } from '../register/register.page';
 
-import { SignInComponentResult } from '../../shared/components/sign-in/sign-in.component';
-import { AuthService } from '../../app/auth/auth.service';
-
+// import { AuthService } from '../../app/auth/auth.service';
 // changeDetection: ChangeDetectionStrategy.OnPush,
-
 @Component({
   selector: 'tja-page-sign-in',
   templateUrl: 'sign-in.page.html',
@@ -19,9 +21,9 @@ export class SignInPage {
 
   private readonly CLASS_NAME = 'SignInPage';
 
-  constructor(private authService: AuthService, public nav: NavController) {
+  constructor(public nav: NavController, private store: Store<FromRoot.State>) {
     console.log('%s:constructor', this.CLASS_NAME);
-    // this.viewError$ = loginService.error$();
+    this.viewError$ = this.store.select(FromAuthSelector.getError);
   }
 
   public ionViewDidLeave() {
@@ -36,8 +38,15 @@ export class SignInPage {
   }
 
   public viewSignIn(x: SignInComponentResult): void {
-    console.log('viewSignIn>', x);
+    //
+    // console.log('viewSignIn>', x);
     // this.loginService.emailAuthentication(x.email, x.password);
-    this.authService.signInWithEmailAndPassword(x.email, x.password);
+    // this.authService.signInWithEmailAndPassword(x.email, x.password);
+    this.store.dispatch(
+      new EmailAuthentication({
+        password: x.password,
+        userName: x.email,
+      }),
+    );
   }
 }

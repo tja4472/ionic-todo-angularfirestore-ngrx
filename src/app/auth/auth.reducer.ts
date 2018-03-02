@@ -1,33 +1,35 @@
 import { AuthActions, AuthActionTypes } from './auth.action';
 
-export interface State {
+export interface AuthState {
   displayName: string;
   email: string | null;
-  hasChecked: boolean;
+  emailVerified: boolean;
+  hasDoneFirstCheck: boolean;
   isAuthenticated: boolean;
   isAuthenticating: boolean;
   error: any;
   userId: string;
 }
 
-const initialState: State = {
+const initialState: AuthState = {
   displayName: '',
   email: '',
+  emailVerified: false,
   error: null,
-  hasChecked: false,
+  hasDoneFirstCheck: false,
   isAuthenticated: false,
   isAuthenticating: false,
   userId: '',
 };
 
-export function reducer(state = initialState, action: AuthActions): State {
+export function reducer(state = initialState, action: AuthActions): AuthState {
   switch (action.type) {
     case AuthActionTypes.LISTEN_FOR_AUTH_SUCCESS: {
       return {
         ...state,
         displayName: makeDisplayName(action.payload.signedInUser),
         email: action.payload.signedInUser.email,
-        hasChecked: true,
+        hasDoneFirstCheck: true,
         isAuthenticated: true,
         isAuthenticating: false,
         userId: action.payload.signedInUser.userId,
@@ -39,7 +41,7 @@ export function reducer(state = initialState, action: AuthActions): State {
         ...state,
         displayName: 'Not Signed In',
         email: '',
-        hasChecked: true,
+        hasDoneFirstCheck: true,
         isAuthenticated: false,
         isAuthenticating: false,
         userId: '',
@@ -94,8 +96,10 @@ function makeDisplayName(user: {
   return defaultDisplayName;
 }
 
-export const getDisplayName = (state: State) => state.displayName;
-export const getError = (state: State) => state.error;
-export const getIsAuthenticated = (state: State) => state.isAuthenticated;
-export const getIsAuthenticating = (state: State) => state.isAuthenticating;
-export const getUserId = (state: State) => state.userId;
+export const getDisplayName = (state: AuthState) => state.displayName;
+export const getHasDoneFirstCheck = (state: AuthState) => state.hasDoneFirstCheck;
+export const getEmailVerified = (state: AuthState) => state.emailVerified;
+export const getError = (state: AuthState) => state.error;
+export const getIsAuthenticated = (state: AuthState) => state.isAuthenticated;
+export const getIsAuthenticating = (state: AuthState) => state.isAuthenticating;
+export const getUserId = (state: AuthState) => state.userId;
