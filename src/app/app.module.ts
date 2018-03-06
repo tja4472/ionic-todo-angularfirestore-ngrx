@@ -17,7 +17,6 @@ import { AuthService } from './auth/auth.service';
 import { UserDataService } from './user/user.data.service';
 import { UserService } from './user/user.service';
 
-import { StatusBar } from '@ionic-native/status-bar';
 import { EffectsModule } from '@ngrx/effects';
 import { StoreModule } from '@ngrx/store';
 import { StoreDevtoolsModule } from '@ngrx/store-devtools';
@@ -116,7 +115,6 @@ import { UserEffects } from './user/user.effect';
   providers: [
     AuthService,
     Fb1DataService,
-    StatusBar,
     TodoCompletedDataService,
     TodoCompletedService,
     TodoDataService,

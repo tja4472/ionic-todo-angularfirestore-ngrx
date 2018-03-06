@@ -1,6 +1,5 @@
 import { Component, ViewChild } from '@angular/core';
 import { MenuController, Nav, Platform } from 'ionic-angular';
-import { StatusBar } from '@ionic-native/status-bar';
 
 import { Page1 } from '../pages/page1/page1';
 import { Page2 } from '../pages/page2/page2';
@@ -84,7 +83,6 @@ export class MyApp {
     private authService: AuthService,
     public menuController: MenuController,
     public platform: Platform,
-    public statusBar: StatusBar,
     private store: Store<FromRoot.State>,
     public todoListsService: TodoListsService,
     private userService: UserService,
@@ -104,7 +102,6 @@ export class MyApp {
       console.log('platform.ready()');
       // Okay, so the platform is ready and our plugins are available.
       // Here you can do any higher level native things you might need.
-      this.statusBar.styleDefault();
 
       this.viewTodoListsSelect$ = this.userService.todoListId$().pipe(
         combineLatest(this.todoListsService.getItems$()),
