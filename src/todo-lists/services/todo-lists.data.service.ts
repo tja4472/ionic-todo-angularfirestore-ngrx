@@ -21,9 +21,7 @@ interface FirestoreDoc {
 export class TodoListsDataService {
   private itemsCollection: AngularFirestoreCollection<FirestoreDoc>;
 
-  constructor(
-    public readonly afs: AngularFirestore,
-  ) {
+  constructor(public readonly afs: AngularFirestore) {
     console.log('TodoDataService:constructor');
   }
 
@@ -57,11 +55,11 @@ export class TodoListsDataService {
   private firestoreCollection(userId: string) {
     //
     return this.afs
-    .collection(USERS_COLLECTION)
-    .doc(userId)
-    .collection<FirestoreDoc>(DATA_COLLECTION, (ref) =>
-      ref.orderBy('name', 'asc'),
-    );
+      .collection(USERS_COLLECTION)
+      .doc(userId)
+      .collection<FirestoreDoc>(DATA_COLLECTION, (ref) =>
+        ref.orderBy('name', 'asc'),
+      );
   }
 
   private toFirestoreDoc(item: TodoListsItem): FirestoreDoc {

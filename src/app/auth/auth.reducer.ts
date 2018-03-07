@@ -97,7 +97,8 @@ function makeDisplayName(user: {
 }
 
 export const getDisplayName = (state: AuthState) => state.displayName;
-export const getHasDoneFirstCheck = (state: AuthState) => state.hasDoneFirstCheck;
+export const getHasDoneFirstCheck = (state: AuthState) =>
+  state.hasDoneFirstCheck;
 export const getEmailVerified = (state: AuthState) => state.emailVerified;
 export const getError = (state: AuthState) => state.error;
 export const getIsAuthenticated = (state: AuthState) => state.isAuthenticated;

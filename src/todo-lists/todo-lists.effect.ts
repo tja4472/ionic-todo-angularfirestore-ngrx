@@ -45,14 +45,16 @@ export class TodoListsEffects {
     map((action) => action.payload),
     map(
       (payload) => new ListenForData({ userId: payload.signedInUser.userId }),
-    ));
+    ),
+  );
 
   // tslint:disable-next-line:member-ordering
   @Effect()
   authListenForAuthNoUser$ = this.actions$.pipe(
     ofType<ListenForAuthNoUser>(AuthActionTypes.LISTEN_FOR_AUTH_NO_USER),
     // .map((action) => action.payload)
-    map(() => new UnlistenForData()));
+    map(() => new UnlistenForData()),
+  );
 
   /*
   // tslint:disable-next-line:member-ordering
@@ -92,7 +94,8 @@ export class TodoListsEffects {
     }),
     tap((x) => {
       console.log('xxxxxEffect:listenForData$:B', x);
-    }));
+    }),
+  );
 
   // tslint:disable-next-line:member-ordering
   @Effect({ dispatch: false })
@@ -102,7 +105,8 @@ export class TodoListsEffects {
     tap((payload) => {
       console.log('Effect:removeItem$:A', payload);
       this.dataService.removeItem(payload);
-    }));
+    }),
+  );
 
   // tslint:disable-next-line:member-ordering
   @Effect({ dispatch: false })
@@ -112,5 +116,6 @@ export class TodoListsEffects {
     tap((payload) => {
       console.log('Effect:save$:A', payload);
       this.dataService.save(payload);
-    }));
+    }),
+  );
 }

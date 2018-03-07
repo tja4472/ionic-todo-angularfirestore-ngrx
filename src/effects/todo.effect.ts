@@ -43,7 +43,8 @@ export class TodoEffects {
         action.payload.todoListId,
         action.payload.userId,
       );
-    }));
+    }),
+  );
 
   // tslint:disable-next-line:member-ordering
   @Effect()
@@ -88,7 +89,8 @@ export class TodoEffects {
         action.payload.todoListId,
         action.payload.userId,
       );
-    }));
+    }),
+  );
 
   // tslint:disable-next-line:member-ordering
   @Effect({ dispatch: false })
@@ -102,7 +104,8 @@ export class TodoEffects {
         payload.todoListId,
         payload.userId,
       );
-    }));
+    }),
+  );
 
   // tslint:disable-next-line:member-ordering
   @Effect({ dispatch: false })
@@ -112,5 +115,6 @@ export class TodoEffects {
     tap((payload) => {
       console.log('Effect:save$:A', payload);
       this.dataService.save(payload.item, payload.todoListId, payload.userId);
-    }));
+    }),
+  );
 }

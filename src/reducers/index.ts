@@ -110,7 +110,6 @@ export const getTodoList_GetTodoLists = createSelector(
 //#region User selectors
 export const getUserState = (state: State) => state.user;
 
-
 // tslint:disable-next-line:variable-name
 export const getUser_HasLoaded = createSelector(
   getUserState,

@@ -51,7 +51,8 @@ export class TodoCompletedEffects {
           .getData(action.payload.todoListId, action.payload.userId)
           .map((items: TodoCompleted[]) => new LoadSuccess(items));
       }
-    }));
+    }),
+  );
 
   // tslint:disable-next-line:member-ordering
   @Effect({ dispatch: false })
@@ -65,7 +66,8 @@ export class TodoCompletedEffects {
         payload.todoListId,
         payload.userId,
       );
-    }));
+    }),
+  );
 
   // tslint:disable-next-line:member-ordering
   @Effect({ dispatch: false })
@@ -79,7 +81,8 @@ export class TodoCompletedEffects {
         payload.todoListId,
         payload.userId,
       );
-    }));
+    }),
+  );
 
   // tslint:disable-next-line:member-ordering
   @Effect({ dispatch: false })
@@ -89,5 +92,6 @@ export class TodoCompletedEffects {
     tap((payload) => {
       console.log('Effect:save$:A', payload);
       this.dataService.save(payload.item, payload.todoListId, payload.userId);
-    }));
+    }),
+  );
 }

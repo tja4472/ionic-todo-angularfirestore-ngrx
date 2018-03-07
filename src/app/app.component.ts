@@ -106,11 +106,13 @@ export class MyApp {
       this.viewTodoListsSelect$ = this.userService.todoListId$().pipe(
         combineLatest(this.todoListsService.getItems$()),
         map(([todoListId, todoLists]) => {
-          const ionSelectSource: ReadonlyArray<SelectSource> = todoLists.map((item) => ({
-            label: item.name,
-            selected: item.id === todoListId,
-            value: item.id,
-          }));
+          const ionSelectSource: ReadonlyArray<SelectSource> = todoLists.map(
+            (item) => ({
+              label: item.name,
+              selected: item.id === todoListId,
+              value: item.id,
+            }),
+          );
           return ionSelectSource;
         }),
       );

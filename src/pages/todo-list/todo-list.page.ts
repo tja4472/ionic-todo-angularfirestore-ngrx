@@ -42,7 +42,7 @@ export class TodoListPage {
   }
 
   ionViewDidLoad() {
-   //
+    //
     this.todoService.ListenForDataStart();
   }
 
