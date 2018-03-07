@@ -28,6 +28,7 @@ SignupPage
 
 * Remove @ionic-native from package.json, app.module.ts & app.component.ts.
 * Remove cordovaPlugins and cordovaPlatforms from package.json.
+* Remove sw-toolbox from package.json.
 * ionic.config.json: Clear "integrations".
 
 ```
