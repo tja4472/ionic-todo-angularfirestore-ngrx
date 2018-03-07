@@ -3,6 +3,7 @@
 * https://github.com/angular/angularfire2
 * https://github.com/ngrx/platform
 * https://firebase.google.com/docs/firestore
+* https://golb.hplar.ch/2017/11/Ionic-with-Workbox-Service-Worker.html
 
 ```
 TodoListPage
@@ -30,6 +31,12 @@ SignupPage
 * Remove cordovaPlugins and cordovaPlatforms from package.json.
 * Remove sw-toolbox from package.json.
 * ionic.config.json: Clear "integrations".
+* index.html: Remove the script tag that imports cordova.js
+
+```
+<script src="cordova.js"></script>
+```
+
 
 ```
 "integrations": {}
