@@ -21,6 +21,14 @@ npm run open-nocache
 
 Use Chrome incognito window.
 
+## Firebase hosting
+
+```
+npm install -g firebase-tools
+firebase init
+firebase deploy
+```
+
 ```
 TodoListPage
     shared/TodoListComponent
@@ -266,6 +274,46 @@ export class MyApp {
         toast.present();
       }
     });
+  }
+}
+```
+
+## Firbase Hosting
+
+firebase.json
+
+```json
+{
+  "hosting": {
+    "public": "www",
+    "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
+    "rewrites": [
+      {
+        "source": "**",
+        "destination": "/index.html"
+      }
+    ],
+    "headers": [
+      {
+        "source": "service-worker.js",
+        "headers": [
+          {
+            "key": "Cache-Control",
+            "value": "no-cache"
+          }
+        ]
+      }
+    ]
+  }
+}
+```
+
+.firebaserc
+
+```
+{
+  "projects": {
+    "default": "ionic-todo-angularfirestore"
   }
 }
 ```
