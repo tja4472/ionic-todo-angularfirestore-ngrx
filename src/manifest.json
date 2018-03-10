@@ -1,6 +1,6 @@
 {
-  "name": "Ionic",
-  "short_name": "Ionic",
+  "name": "TJA Todo App",
+  "short_name": "TJA Todo App",
   "start_url": "index.html",
   "display": "standalone",
   "icons": [{

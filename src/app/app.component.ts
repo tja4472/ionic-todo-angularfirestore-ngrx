@@ -1,5 +1,5 @@
 import { Component, ViewChild } from '@angular/core';
-import { MenuController, Nav, Platform } from 'ionic-angular';
+import { MenuController, Nav, Platform, ToastController } from 'ionic-angular';
 
 import { Page1 } from '../pages/page1/page1';
 import { Page2 } from '../pages/page2/page2';
@@ -84,6 +84,7 @@ export class MyApp {
     public menuController: MenuController,
     public platform: Platform,
     private store: Store<FromRoot.State>,
+    private toastCtrl: ToastController,
     public todoListsService: TodoListsService,
     private userService: UserService,
   ) {
@@ -102,6 +103,7 @@ export class MyApp {
       console.log('platform.ready()');
       // Okay, so the platform is ready and our plugins are available.
       // Here you can do any higher level native things you might need.
+      this.serviceWorkerUpdatesCheck();
 
       this.viewTodoListsSelect$ = this.userService.todoListId$().pipe(
         combineLatest(this.todoListsService.getItems$()),
@@ -203,6 +205,32 @@ export class MyApp {
         });
 
         this.displayUserName = authState.displayName;
+      });
+  }
+
+  private serviceWorkerUpdatesCheck(): void {
+    // listen to the service worker promise in index.html to see if there has been a new update.
+    // condition: the service-worker.js needs to have some kind of change - e.g. increment CACHE_VERSION.
+    // tslint:disable-next-line:no-string-literal
+    (window as any)['isUpdateAvailable']
+      .then((isAvailable: boolean) => {
+        console.log('isUpdateAvailable>', isAvailable);
+        if (isAvailable) {
+          console.log('isUpdateAvailable');
+          // window.location.reload();
+
+          const toast = this.toastCtrl.create({
+            closeButtonText: 'Reload',
+            message: 'A new version is available, reload ',
+            showCloseButton: true,
+          });
+          toast.onDidDismiss((_data,role) => {
+            if (role === 'close') {
+              window.location.reload();
+            }
+          });
+          toast.present();
+        }
       });
   }
 }

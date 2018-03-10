@@ -3,56 +3,184 @@
       dir="ltr">
 
 <head>
-      <meta charset="UTF-8">
-      <title>Ionic App</title>
-      <meta name="viewport"
-            content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
-      <meta name="format-detection"
-            content="telephone=no">
-      <meta name="msapplication-tap-highlight"
-            content="no">
+  <meta charset="UTF-8">
+  <title>Todo App</title>
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="format-detection"
+        content="telephone=no">
+  <meta name="msapplication-tap-highlight"
+        content="no">
 
-      <link rel="icon"
-            type="image/x-icon"
-            href="assets/icon/favicon.ico">
-      <link rel="manifest"
-            href="manifest.json">
-      <meta name="theme-color"
-            content="#4e8ef7">
+  <link rel="icon"
+        type="image/x-icon"
+        href="assets/icon/favicon.ico">
+  <link rel="manifest"
+        href="manifest.json">
+  <meta name="theme-color"
+        content="#4e8ef7">
 
-      <!-- cordova.js required for cordova apps -->
-      <!--
+  <!-- cordova.js required for cordova apps -->
+  <!--
   <script src="cordova.js"></script>
  -->
+  <!-- #region Service Worker -->
+  <!--
+   The following script is based on 
+   https://developers.google.com/web/tools/workbox/guides/advanced-recipes#offer_a_page_reload_for_users
 
-      <!-- un-comment this code to enable service worker
+   I added the window.isUpdateAvailable stuff.
+   The window.addEventListener('load'... causes the reload detection to fail.
+  -->
   <script>
-    if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('service-worker.js')
-        .then(() => console.log('service worker installed'))
-        .catch(err => console.log('Error', err));
-    }
-  </script>-->
+    function onNewServiceWorker(registration, callback) {
+      if (registration.waiting) {
+        // SW is waiting to activate. Can occur if multiple clients open and
+        // one of the clients is refreshed.
+        return callback();
+      }
 
-      <link href="build/main.css"
-            rel="stylesheet">
+      function listenInstalledStateChange() {
+        registration.installing.addEventListener('statechange', function (event) {
+          if (event.target.state === 'installed') {
+            // A new service worker is available, inform the user
+            callback();
+          }
+        });
+      }
+
+      if (registration.installing) {
+        return listenInstalledStateChange();
+      }
+
+      // We are currently controlled so a new SW may be found...
+      // Add a listener in case a new SW is found,
+      registration.addEventListener('updatefound', listenInstalledStateChange);
+    }
+
+    // make the whole serviceworker process into a promise so later on we can
+    // listen to it and in case new content is available a toast will be shown
+    window.isUpdateAvailable = new Promise(function (resolve, reject) {
+      // Commented out by me.
+      // window.addEventListener('load', function () {
+      navigator.serviceWorker.register('service-worker.js').then(function (registration) {
+        console.log('##-serviceWorker:register');
+
+        // Track updates to the Service Worker.
+        if (!navigator.serviceWorker.controller) {
+          // The window client isn't currently controlled so it's a new service
+          // worker that will activate immediately
+          console.log('##-serviceWorker:new');
+          return;
+        }
+
+        /* Commented out by me.
+        // When the user asks to refresh the UI, we'll need to reload the window
+        var preventDevToolsReloadLoop;
+        navigator.serviceWorker.addEventListener('controllerchange', function (
+          event,
+        ) {
+          console.log('##-serviceWorker:controllerchange:preventDevToolsReloadLoop>', preventDevToolsReloadLoop);
+          // Ensure refresh is only called once.
+          // This works around a bug in "force update on reload".
+          if (preventDevToolsReloadLoop) return;
+          preventDevToolsReloadLoop = true;
+          console.log('#### window.location.reload() required');
+          // window.location.reload();
+
+        });
+        */
+        onNewServiceWorker(registration, function () {
+          // Commented out by me.
+          // showRefreshUI(registration);
+          resolve(true);
+        });
+      });
+
+    }); // addEventListener- load'
+    // Commented out by me.  
+    // }); // Promise  
+  </script>
+  <!-- #endregion -->
+
+  <!--
+  <script>
+
+
+    if ('serviceWorker' in navigator) {
+
+
+      navigator.serviceWorker.register('service-worker.js')
+        .then((reg) => {
+          console.log('service worker: installed')
+          reg.onupdatefound = () => {
+                  console.log('service worker: onupdatefound');
+          }
+
+        })
+        .catch(err => console.log('Error', err));
+       
+    }
+
+  </script>
+-->
+
+  <!--  
+  <script>
+      // make the whole serviceworker process into a promise so later on we can
+      // listen to it and in case new content is available a toast will be shown
+      window.isUpdateAvailable = new Promise(function (resolve, reject) {
+        // lazy way of disabling service workers while developing
+        window.addEventListener('load', function () {
+          if ('serviceWorker' in navigator) {
+            // register service worker file
+            navigator.serviceWorker.register('service-worker.js')
+              .then(reg => {
+                console.log('service worker: installed')
+                reg.onupdatefound = () => {
+                  console.log('service worker: onupdatefound')
+                  const installingWorker = reg.installing;
+                  installingWorker.onstatechange = () => {
+                    switch (installingWorker.state) {
+                      case 'installed':
+                        if (navigator.serviceWorker.controller) {
+                          // new update available
+                          console.log('service worker: new update available')
+                          resolve(true);
+                        } else {
+                          // no update available
+                          resolve(false);
+                        }
+                        break;
+                    }
+                  };
+                };
+              })
+              .catch(err => console.error('[SW ERROR]', err));
+          }
+        });
+      });
+    </script>
+  -->
+  <link href="build/main.css"
+        rel="stylesheet">
 
 </head>
 
 <body>
 
-      <!-- Ionic's root component and where the app will load -->
-      <ion-app></ion-app>
+  <!-- Ionic's root component and where the app will load -->
+  <ion-app></ion-app>
 
-      <!-- The vendor js is generated during the build process
+  <!-- The vendor js is generated during the build process
        It contains all of the dependencies in node_modules -->
-      <script src="build/vendor.js"></script>
+  <script src="build/vendor.js"></script>
 
-      <!-- The polyfills js is generated during the build process -->
-      <script src="build/polyfills.js"></script>
+  <!-- The polyfills js is generated during the build process -->
+  <script src="build/polyfills.js"></script>
 
-      <!-- The bundle js is generated during the build process -->
-      <script src="build/main.js"></script>
+  <!-- The bundle js is generated during the build process -->
+  <script src="build/main.js"></script>
 
 </body>
 
