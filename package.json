@@ -10,7 +10,7 @@
     "postbuild": "workbox inject:manifest",
     "lint": "ionic-app-scripts lint",
     "open": "http-server www  -o -a localhost -p 1235",
-    "open-nocache": "http-server www -c-1 -o -a localhost -p 1235",    
+    "open-nocache": "http-server www -c-1 -o -a localhost -p 1235",
     "ionic:build": "ionic-app-scripts build",
     "ionic:serve": "ionic-app-scripts serve",
     "prettier:base": "prettier \"./{e2e,src}/**/*.{scss,ts}\"",
