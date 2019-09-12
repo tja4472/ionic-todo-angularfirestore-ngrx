@@ -1,13 +1,13 @@
 import { Injectable } from '@angular/core';
 
 import { Effect, Actions, ofType } from '@ngrx/effects';
-import { map, switchMap, tap } from 'rxjs/operators';
+import { map, switchMap, tap, withLatestFrom } from 'rxjs/operators';
 
-// import { Store } from '@ngrx/store';
+import { Store } from '@ngrx/store';
 
 import { empty } from 'rxjs/observable/empty';
 
-// import * as FromRootReducer from '../reducers';
+import * as FromRootReducer from '../reducers';
 
 import {
   LoadSuccess,
@@ -26,6 +26,8 @@ import {
   ListenForAuthSuccess,
   ListenForAuthNoUser,
 } from '../app/auth/auth.action';
+import * as authSelector from '../app/auth/auth.selector';
+
 // import { of } from 'rxjs/observable/of';
 // import { forkJoin } from 'rxjs/observable/forkJoin';
 // import { combineLatest } from 'rxjs/observable/combineLatest';
@@ -34,7 +36,7 @@ import {
 export class TodoListsEffects {
   constructor(
     private actions$: Actions,
-    // private state$: Store<FromRootReducer.State>,
+    private store: Store<FromRootReducer.State>,
     private dataService: TodoListsDataService,
   ) {}
 
@@ -100,22 +102,23 @@ export class TodoListsEffects {
   // tslint:disable-next-line:member-ordering
   @Effect({ dispatch: false })
   removeItem$ = this.actions$.pipe(
-    ofType(TodoListsActionTypes.Remove),
-    map((action: Remove) => action.payload),
-    tap((payload) => {
-      console.log('Effect:removeItem$:A', payload);
-      this.dataService.removeItem(payload);
+    ofType<Remove>(TodoListsActionTypes.Remove),
+    withLatestFrom(this.store.select(authSelector.getUserId)),
+    tap(([action, userId]) => {
+      console.log('Effect:removeItem$:A', { action, userId });
+      this.dataService.removeItem(action.payload, userId);
     }),
   );
 
   // tslint:disable-next-line:member-ordering
   @Effect({ dispatch: false })
   save$ = this.actions$.pipe(
-    ofType(TodoListsActionTypes.Save),
-    map((action: Save) => action.payload),
-    tap((payload) => {
-      console.log('Effect:save$:A', payload);
-      this.dataService.save(payload);
+    ofType<Save>(TodoListsActionTypes.Save),
+    withLatestFrom(this.store.select(authSelector.getUserId)),
+    tap(([action, userId]) => {
+      console.log('Effect:save$:A', { action, userId });
+
+      this.dataService.save(action.payload, userId);
     }),
   );
 }

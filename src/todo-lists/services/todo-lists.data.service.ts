@@ -4,7 +4,7 @@ import { map } from 'rxjs/operators/map';
 
 import {
   AngularFirestore,
-  AngularFirestoreCollection,
+  // AngularFirestoreCollection,
 } from 'angularfire2/firestore';
 
 import { TodoListsItem } from '../todo-lists-item.model';
@@ -19,8 +19,6 @@ interface FirestoreDoc {
 
 @Injectable()
 export class TodoListsDataService {
-  private itemsCollection: AngularFirestoreCollection<FirestoreDoc>;
-
   constructor(public readonly afs: AngularFirestore) {
     console.log('TodoDataService:constructor');
   }
@@ -38,18 +36,18 @@ export class TodoListsDataService {
       );
   }
 
-  public removeItem(id: string): void {
-    this.itemsCollection.doc(id).delete();
+  public removeItem(id: string, userId: string): void {
+    this.firestoreCollection(userId).doc(id).delete();
   }
 
-  public save(item: TodoListsItem): void {
+  public save(item: TodoListsItem, userId: string): void {
     const doc = this.toFirestoreDoc(item);
 
     if (item.isNew()) {
       doc.id = this.afs.createId();
     }
 
-    this.itemsCollection.doc(doc.id).set(doc);
+    this.firestoreCollection(userId).doc(doc.id).set(doc);
   }
 
   private firestoreCollection(userId: string) {
