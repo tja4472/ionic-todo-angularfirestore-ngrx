@@ -7,8 +7,6 @@ import { Store } from '@ngrx/store';
 
 import { empty } from 'rxjs/observable/empty';
 
-import * as FromRootReducer from '../reducers';
-
 import {
   LoadSuccess,
   Remove,
@@ -36,7 +34,7 @@ import * as authSelector from '../app/auth/auth.selector';
 export class TodoListsEffects {
   constructor(
     private actions$: Actions,
-    private store: Store<FromRootReducer.State>,
+    private store: Store<any>,
     private dataService: TodoListsDataService,
   ) {}
 
